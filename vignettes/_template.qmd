@@ -1,0 +1,33 @@
+---
+title: "Vignette title"
+description: "One sentence summary for the vignette index."
+date: today
+categories: [segregation, methods]
+author: "Benjamin F. Jarvis"
+format:
+  html:
+    code-fold: true
+---
+
+## Question
+
+What substantive question does this vignette answer?
+
+## Data and Measurement
+
+Describe the data source, sample restrictions, scale, and key variables.
+
+## Analysis
+
+```{r}
+# Replace with analysis code.
+summary(cars)
+```
+
+## Interpretation
+
+Translate the result into a substantive claim and state the uncertainty.
+
+## Sensitivity
+
+Describe the checks that would most change your confidence in the interpretation.

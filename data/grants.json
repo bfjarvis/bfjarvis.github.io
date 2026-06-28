@@ -1,0 +1,26 @@
+[
+  {
+    "id": "kin-propinquity-segregation",
+    "status": "ongoing",
+    "title": "Kin Propinquity, Residential Mobility, and the Persistence of Segregation",
+    "dates": "Ongoing",
+    "funder": "Add funder",
+    "role": "Principal investigator or collaborator",
+    "amount": "Add amount if public",
+    "summary": "Project page placeholder for an ongoing grant or research project. Use this for aims, collaborators, outputs, data, vignettes, and related publications.",
+    "page": "grants/kin-propinquity-segregation.html",
+    "image": "assets/research-header.png"
+  },
+  {
+    "id": "segregation-micro-macro",
+    "status": "completed",
+    "title": "Segregation: Micro-Mechanisms and Macro-Dynamics",
+    "dates": "Completed",
+    "funder": "Add funder",
+    "role": "Researcher",
+    "amount": "",
+    "summary": "Completed grant/project placeholder. Completed projects can remain listed without needing a detailed ongoing project page.",
+    "page": "",
+    "image": ""
+  }
+]

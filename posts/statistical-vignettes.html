@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A starter format for statistical analysis vignettes by Benjamin F. Jarvis."
+    >
+    <title>A Template for Reproducible Analysis Vignettes | Benjamin F. Jarvis</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header is-scrolled" data-nav>
+      <a class="site-mark" href="../" aria-label="Benjamin F. Jarvis home"><span>BFJ</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../publications/">Publications</a>
+        <a href="../grants/">Grants</a>
+        <a href="../teaching/">Teaching</a>
+        <a href="../vignettes/">Vignettes</a>
+        <a href="../cv/">CV</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="post-hero">
+        <h1>A template for reproducible analysis vignettes</h1>
+        <p>
+          A reusable structure for writing compact, transparent notes about statistical
+          choices, interpretation, and uncertainty.
+        </p>
+      </section>
+
+      <section class="post-page">
+        <article>
+          <p class="meta">Draft post · Replace with publication date</p>
+          <p>
+            Statistical vignettes are useful when a full paper is too heavy but a short claim
+            still deserves a transparent empirical trail. Each vignette should show the research
+            question, data, estimand or target quantity, model, sensitivity checks, and limits.
+          </p>
+
+          <h2>Question</h2>
+          <p>
+            State the substantive question in plain language. For segregation and stratification
+            research, this usually means naming the population, spatial or institutional scale,
+            outcome, and comparison being made.
+          </p>
+
+          <h2>Data and Measurement</h2>
+          <p>
+            Describe the data source, sample restrictions, time period, missingness decisions,
+            and how core concepts become variables. Flag measurement choices that could change
+            interpretation.
+          </p>
+
+          <h2>Model</h2>
+          <p>
+            Explain the model as a bridge between the question and the evidence. Give enough
+            detail for a reader to understand what is being estimated without requiring them to
+            reconstruct the analysis from code alone.
+          </p>
+
+          <pre><code># Replace with the core model or workflow snippet.
+model <- lm(outcome ~ exposure + controls, data = analysis_data)</code></pre>
+
+          <h2>Interpretation</h2>
+          <p>
+            Translate the estimate into a substantive statement. Report uncertainty directly and
+            make clear which comparisons are descriptive, associational, or intended as causal.
+          </p>
+
+          <h2>Sensitivity</h2>
+          <p>
+            Close with the checks that would most change your confidence: alternate specifications,
+            scale choices, functional forms, sample restrictions, and robustness to influential
+            cases or places.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <p>&copy; <span data-year></span> Benjamin F. Jarvis</p>
+        <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="../publications/">Publications</a>
+        <a href="../grants/">Grants</a>
+        <a href="../teaching/">Teaching</a>
+        <a href="../vignettes/">Vignettes</a>
+        <a href="../cv/">CV</a>
+      </nav>
+    </footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>

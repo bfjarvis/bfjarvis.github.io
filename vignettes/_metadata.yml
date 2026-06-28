@@ -1,0 +1,43 @@
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    css: ../styles.css
+    page-layout: article
+    include-before-body:
+      text: |
+        <header class="site-header is-scrolled" data-nav>
+          <a class="site-mark" href="../" aria-label="Benjamin F. Jarvis home"><span>BFJ</span></a>
+          <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+          <nav class="site-nav" aria-label="Primary navigation">
+            <a href="../publications/">Publications</a>
+            <a href="../grants/">Grants</a>
+            <a href="../teaching/">Teaching</a>
+            <a href="../vignettes/">Vignettes</a>
+            <a href="../cv/">CV</a>
+          </nav>
+        </header>
+        <main class="quarto-vignette">
+    include-after-body:
+      text: |
+        </main>
+        <footer class="site-footer">
+          <div>
+            <p>&copy; <span data-year></span> Benjamin F. Jarvis</p>
+            <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="../publications/">Publications</a>
+            <a href="../grants/">Grants</a>
+            <a href="../teaching/">Teaching</a>
+            <a href="../vignettes/">Vignettes</a>
+            <a href="../cv/">CV</a>
+          </nav>
+        </footer>
+        <script src="../script.js"></script>
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: auto

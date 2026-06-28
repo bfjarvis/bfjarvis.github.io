@@ -1,0 +1,32 @@
+[
+  {
+    "id": "statistical-analysis-social-scientists",
+    "status": "current",
+    "title": "Statistical Analysis for Social Scientists",
+    "level": "Graduate or advanced undergraduate",
+    "role": "Instructor",
+    "summary": "Applied regression, uncertainty, model criticism, reproducible workflows, and interpretation for substantive social science questions.",
+    "selected": true,
+    "page": ""
+  },
+  {
+    "id": "social-stratification-inequality",
+    "status": "current",
+    "title": "Social Stratification & Inequality",
+    "level": "Undergraduate or graduate",
+    "role": "Instructor",
+    "summary": "Theories and evidence on class, education, neighborhoods, mobility, and the institutional production of inequality.",
+    "selected": true,
+    "page": ""
+  },
+  {
+    "id": "supervision",
+    "status": "ongoing",
+    "title": "Supervision",
+    "level": "Thesis and project supervision",
+    "role": "Supervisor",
+    "summary": "Supervision in quantitative methods, segregation, life chances, spatial inequality, and reproducible empirical research.",
+    "selected": true,
+    "page": ""
+  }
+]
