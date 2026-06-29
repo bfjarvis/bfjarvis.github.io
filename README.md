@@ -14,7 +14,6 @@ Personal GitHub Pages site for Benjamin F. Jarvis.
 - `cv/index.html` - HTML curriculum vitae page. It renders `cv/cv.md`, `publications.json`, and `supervision.json` in the browser.
 - `grants/` - grant and project index plus project detail pages for ongoing work.
 - `teaching/` - teaching index page fed by `data/teaching.json`.
-- `supervision/` - supervision index page fed by `supervision.json`.
 - `cv/Benjamin-F-Jarvis-CV.pdf` - generated PDF CV.
 - `posts/statistical-vignettes.html` - starter post for statistical analysis vignettes.
 - `vignettes/` - Quarto `.qmd` source files and rendered vignette pages.
@@ -94,13 +93,13 @@ put its relative URL in that entry's `page` field. Otherwise, leave `page` blank
 ## Updating Supervision
 
 Export supervised MSc and PhD theses from Zotero as Better CSL JSON to `supervision.json`.
-The homepage highlights PhD thesis supervision, the full list appears on
-`supervision/index.html`, and the CV includes a separate Supervision section.
+The CV includes a separate Supervision section, split into doctoral and master's
+supervision.
 
 Keep supervisor and co-supervisor details in Zotero's Extra or Notes field. Better CSL
 JSON exports those notes as `note`, which the site displays under each supervised thesis.
-MSc theses and dissertations can remain together in Zotero; the homepage filter uses
-the CSL genre to highlight dissertation or PhD records.
+MSc theses and dissertations can remain together in Zotero; the site uses the CSL
+genre to split dissertation or PhD records from master's thesis records.
 
 ## Updating the CV
 

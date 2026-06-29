@@ -447,7 +447,6 @@ function filterEntries(entries, mode) {
     supervision: isThesis,
     "supervision-doctoral": isPhdThesis,
     "supervision-masters": isMasterThesis,
-    "supervision-selected": isPhdThesis,
   };
 
   const filter = filters[mode];
@@ -565,9 +564,7 @@ async function renderPublications() {
           const mode = target.dataset.publications;
           const selected = mode === "selected"
             ? featuredEntries(entries)
-            : mode === "supervision-selected"
-              ? filterEntries(entries, mode).slice(0, 4)
-              : filterEntries(entries, mode);
+            : filterEntries(entries, mode);
 
           if (!selected.length) {
             target.innerHTML = '<article class="publication-item is-empty"><p>No entries found for this section.</p></article>';

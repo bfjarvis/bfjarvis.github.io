@@ -529,8 +529,14 @@ def build():
             story.extend(section(title, publication_entries(entries), styles))
     if SUPERVISION_SOURCE.exists():
         supervision_entries = [entry for entry in parse_reference_data(SUPERVISION_SOURCE) if is_thesis(entry)]
-        if supervision_entries:
-            story.extend(section("Supervision", publication_entries(supervision_entries), styles))
+        doctoral_entries = [entry for entry in supervision_entries if not is_master_thesis(entry)]
+        masters_entries = [entry for entry in supervision_entries if is_master_thesis(entry)]
+        if doctoral_entries or masters_entries:
+            story.append(paragraph("Supervision", styles["Section"]))
+        if doctoral_entries:
+            story.extend(section("Doctoral Supervision", publication_entries(doctoral_entries), styles))
+        if masters_entries:
+            story.extend(section("Master's Supervision", publication_entries(masters_entries), styles))
     story.extend(
         section(
             "Grants",

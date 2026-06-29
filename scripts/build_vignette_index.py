@@ -71,7 +71,7 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260628-home-list">
+    <link rel="stylesheet" href="../styles.css?v=20260629-cv-supervision">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -84,7 +84,6 @@ def build():
         <a href="../publications/">Publications</a>
         <a href="../grants/">Grants</a>
         <a href="../teaching/">Teaching</a>
-        <a href="../supervision/">Supervision</a>
         <a href="../vignettes/">Vignettes</a>
         <a href="../cv/">CV</a>
       </nav>
@@ -106,19 +105,18 @@ def build():
       </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" aria-labelledby="footer-contact-title">
       <div>
-        <p>&copy; <span data-year></span> Benjamin F. Jarvis</p>
-        <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+        <h2 id="footer-contact-title">For collaboration, teaching, and research conversations.</h2>
       </div>
-      <nav aria-label="Footer navigation">
-        <a href="../publications/">Publications</a>
-        <a href="../grants/">Grants</a>
-        <a href="../teaching/">Teaching</a>
-        <a href="../supervision/">Supervision</a>
-        <a href="./">Vignettes</a>
-        <a href="../cv/">CV</a>
-      </nav>
+      <div class="contact-links">
+        <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+        <a href="https://liu.se/en/organisation/liu/iei/ias">Institute for Analytical Sociology</a>
+        <a href="https://scholar.google.com/citations?user=AZvfKd8AAAAJ&amp;hl=en&amp;oi=ao">Google Scholar</a>
+        <a href="https://orcid.org/0000-0001-8127-4051">ORCID</a>
+        <a href="https://github.com/bfjarvis">GitHub</a>
+      </div>
+      <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
     <script src="../script.js"></script>
