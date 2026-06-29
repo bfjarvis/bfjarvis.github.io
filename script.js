@@ -287,6 +287,26 @@ function splitAuthors(authorField = "") {
     });
 }
 
+function asaAuthorName(name = {}, invert = false) {
+  if (name.literal) return name.literal;
+  return [name.given, name.family].filter(Boolean).join(" ");
+}
+
+function joinNameList(names = []) {
+  if (names.length < 2) return names.join("");
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
+function citationAuthors(entry) {
+  const authorField = entry.fields.author || entry.fields.editor || "";
+  if (Array.isArray(authorField)) {
+    return joinNameList(authorField.map((author) => asaAuthorName(author)).filter(Boolean));
+  }
+
+  return joinNameList(splitAuthors(authorField)) || "Author information forthcoming";
+}
+
 function entryYear(entry) {
   const raw = entry.fields.date || entry.fields.year || "";
   const match = String(raw).match(/\d{4}/);
@@ -343,19 +363,31 @@ function publicationVenue(entry) {
 
 function citationFor(entry) {
   const f = entry.fields;
-  const authors = splitAuthors(f.author || f.editor || "");
-  const authorText = authors.length ? authors.join(", ") : "Author information forthcoming";
+  const authorText = citationAuthors(entry);
   const venue = publicationVenue(entry);
-  const parts = [
-    venue && `<em>${escapeHtml(venue)}</em>`,
-    f.volume && escapeHtml(f.volume),
-    f.number && `(${escapeHtml(f.number)})`,
-    f.pages && escapeHtml(f.pages),
+  const rawDoi = f.doi || "";
+  const doiUrl = rawDoi ? (rawDoi.startsWith("http") ? rawDoi : `https://doi.org/${rawDoi}`) : "";
+  const url = !doiUrl && f.url ? f.url : "";
+  const title = f.title || "Untitled publication";
+  const quotedTitle = ["article", "article-journal", "paper-conference", "speech"].includes(entry.type) || isWorkingPaper(entry);
+  const titleHtml = quotedTitle ? `"${escapeHtml(title)}."` : `<em>${escapeHtml(title)}.</em>`;
+  const volumeIssue = f.volume
+    ? `${escapeHtml(f.volume)}${f.number ? `(${escapeHtml(f.number)})` : ""}`
+    : "";
+  const pages = f.pages ? `${volumeIssue ? ":" : ""}${escapeHtml(f.pages)}` : "";
+  const venueAndVolume = venue
+    ? `<em>${escapeHtml(venue)}</em>${volumeIssue || pages ? ` ${volumeIssue}${pages}` : ""}`
+    : `${volumeIssue}${pages}`;
+  const venueParts = [
+    venueAndVolume,
+    doiUrl && `<a href="${escapeHtml(doiUrl)}">${escapeHtml(doiUrl)}</a>`,
+    url && `<a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`,
   ].filter(Boolean);
+  const fullCitation = `${escapeHtml(authorText)}. ${entryYear(entry)}. ${titleHtml}${venueParts.length ? ` ${venueParts.join(", ")}.` : ""}`;
 
   return {
     authors: authorText,
-    title: f.title || "Untitled publication",
+    title,
     year: entryYear(entry),
     label: isPhdThesis(entry)
       ? "PhD Thesis"
@@ -364,7 +396,8 @@ function citationFor(entry) {
         : isWorkingPaper(entry)
           ? "Working Paper / Preprint"
           : (typeLabels[entry.type] || entry.type),
-    detail: parts.join(", "),
+    detail: venueParts.join(", "),
+    fullCitation,
     abstract: f.abstract || "",
     extra: f.note || f.annotation || f.annote || f.extra || "",
     doi: f.doi || "",
@@ -492,24 +525,13 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}, s
   const citation = citationFor(entry);
   const asset = publicationAssets[entry.key];
   const images = publicationImagesFor(asset);
-  const links = [];
-
-  if (citation.doi) {
-    const doiUrl = citation.doi.startsWith("http") ? citation.doi : `https://doi.org/${citation.doi}`;
-    links.push(`<a href="${escapeHtml(doiUrl)}">DOI</a>`);
-  }
-
-  if (citation.url && (!citation.doi || !citation.url.includes(citation.doi))) {
-    links.push(`<a href="${escapeHtml(citation.url)}">Link</a>`);
-  }
 
   if (compact) {
     return `
       <div class="cv-entry">
         <span class="date">${escapeHtml(citation.year)}</span>
         <div>
-          <h3>${escapeHtml(citation.authors)}. ${escapeHtml(citation.title)}.</h3>
-          <p>${citation.detail || escapeHtml(citation.label)}${citation.extra ? `. ${escapeHtml(citation.extra)}` : ""}${links.length ? ` ${links.join(" ")}` : ""}</p>
+          <p class="citation-line">${citation.fullCitation}${citation.extra ? ` ${escapeHtml(citation.extra)}` : ""}</p>
         </div>
       </div>
     `;
@@ -527,12 +549,10 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}, s
         ` : ""}
       </div>
       <div>
-        <h3>${escapeHtml(citation.title)}</h3>
-        <p>${escapeHtml(citation.authors)}${citation.detail ? `. ${citation.detail}` : ""}</p>
+        <p class="citation-line">${citation.fullCitation}</p>
         ${citation.extra ? `<p>${escapeHtml(citation.extra)}</p>` : ""}
         ${citation.abstract ? `<p>${escapeHtml(truncateText(citation.abstract))}</p>` : ""}
       </div>
-      ${links.length ? `<div class="item-links">${links.join("")}</div>` : ""}
     </article>
   `;
 }

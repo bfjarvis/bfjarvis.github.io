@@ -71,7 +71,7 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260629-hero-anchor2">
+    <link rel="stylesheet" href="../styles.css?v=20260629-asa-citations">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>

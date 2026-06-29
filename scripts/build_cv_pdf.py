@@ -243,6 +243,29 @@ def author_text(author_field):
     return ", ".join(filter(None, authors)) or "Author information forthcoming"
 
 
+def asa_author_text(author_field):
+    def join_names(names):
+        names = [name for name in names if name]
+        if len(names) < 2:
+            return "".join(names) or "Author information forthcoming"
+        if len(names) == 2:
+            return f"{names[0]} and {names[1]}"
+        return f"{', '.join(names[:-1])}, and {names[-1]}"
+
+    if isinstance(author_field, list):
+        authors = []
+        for author in author_field:
+            if author.get("literal"):
+                authors.append(author["literal"])
+                continue
+            given = author.get("given", "")
+            family = author.get("family", "")
+            authors.append(" ".join(part for part in [given, family] if part))
+        return join_names(authors)
+
+    return join_names(author_text(author_field).split(", "))
+
+
 def entry_year(entry):
     raw = entry["fields"].get("date") or entry["fields"].get("year") or ""
     match = re.search(r"\d{4}", str(raw))
@@ -369,25 +392,44 @@ def publication_entries(entries):
     for entry in entries:
         fields = entry["fields"]
         venue = publication_venue(entry)
+        doi = fields.get("doi", "")
+        doi_url = doi if doi.startswith("http") else f"https://doi.org/{doi}" if doi else ""
+        url = "" if doi_url else fields.get("url", "")
+        volume_issue = fields.get("volume", "")
+        if volume_issue and fields.get("number"):
+            volume_issue = f"{volume_issue}({fields['number']})"
+        pages = fields.get("pages", "")
+        if volume_issue and pages:
+            volume_issue = f"{volume_issue}:{pages}"
+        elif pages:
+            volume_issue = pages
+        venue_and_volume = f"<i>{clean_text(venue)}</i>{f' {clean_text(volume_issue)}' if volume_issue else ''}" if venue else clean_text(volume_issue)
         details = [
-            f"<i>{clean_text(venue)}</i>",
-            clean_text(fields.get("volume", "")),
-            f"({clean_text(fields['number'])})" if fields.get("number") else "",
-            clean_text(fields.get("pages", "")),
-            f"DOI: {clean_text(fields['doi'])}" if fields.get("doi") else "",
+            venue_and_volume,
+            clean_text(doi_url),
+            clean_text(url) if url and url != doi_url else "",
         ]
+        title = clean_text(fields.get("title", "Untitled publication"))
+        if entry["type"] in {"article", "article-journal", "paper-conference", "speech"} or is_working_paper(entry):
+            title = f'"{title}."'
+        else:
+            title = f"<i>{title}.</i>"
+        detail = ". ".join(
+            part
+            for part in [
+                ", ".join(part for part in details if part),
+                clean_text(fields.get("note") or fields.get("annotation") or fields.get("annote") or fields.get("extra") or ""),
+            ]
+            if part
+        )
+        citation = f"{clean_text(asa_author_text(fields.get('author', '')))}. {entry_year(entry)}. {title}"
+        if detail:
+            citation = f"{citation} {detail}."
         publications.append(
             (
                 entry_year(entry),
-                f"{clean_text(author_text(fields.get('author', '')))}. {clean_text(fields.get('title', 'Untitled publication'))}.",
-                ". ".join(
-                    part
-                    for part in [
-                        ", ".join(part for part in details if part),
-                        clean_text(fields.get("note") or fields.get("annotation") or fields.get("annote") or fields.get("extra") or ""),
-                    ]
-                    if part
-                ),
+                citation,
+                "",
             )
         )
     return publications
@@ -401,8 +443,8 @@ def section(title, entries, styles):
                 [
                     paragraph(date, styles["Date"]),
                     [
-                        paragraph(heading, styles["EntryHeading"]),
-                        paragraph(detail, styles["Body"]),
+                        paragraph(heading, styles["EntryHeading"] if detail else styles["Body"]),
+                        paragraph(detail, styles["Body"]) if detail else Spacer(1, 0),
                     ],
                 ]
             ],
