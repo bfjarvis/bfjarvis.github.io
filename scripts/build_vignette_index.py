@@ -71,7 +71,7 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../styles.css?v=20260628-home-list">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -84,6 +84,7 @@ def build():
         <a href="../publications/">Publications</a>
         <a href="../grants/">Grants</a>
         <a href="../teaching/">Teaching</a>
+        <a href="../supervision/">Supervision</a>
         <a href="../vignettes/">Vignettes</a>
         <a href="../cv/">CV</a>
       </nav>
@@ -114,6 +115,7 @@ def build():
         <a href="../publications/">Publications</a>
         <a href="../grants/">Grants</a>
         <a href="../teaching/">Teaching</a>
+        <a href="../supervision/">Supervision</a>
         <a href="./">Vignettes</a>
         <a href="../cv/">CV</a>
       </nav>

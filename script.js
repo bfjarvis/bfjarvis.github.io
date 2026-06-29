@@ -4,17 +4,23 @@ const year = document.querySelector("[data-year]");
 const publicationLightboxAssets = {};
 
 const typeLabels = {
-  article: "Journal Article",
+  article: "Preprint",
+  "article-journal": "Journal Article",
   book: "Book",
+  chapter: "Book Chapter",
   inbook: "Book Chapter",
   incollection: "Book Chapter",
+  "paper-conference": "Conference Presentation",
   inproceedings: "Conference Paper",
   proceedings: "Conference Paper",
+  manuscript: "Working Paper",
+  speech: "Talk",
   unpublished: "Working Paper",
   report: "Report",
   techreport: "Report",
   phdthesis: "PhD Thesis",
-  mastersthesis: "Thesis",
+  mastersthesis: "Master's Thesis",
+  thesis: "Thesis",
   misc: "Presentation",
 };
 
@@ -150,7 +156,64 @@ function parseBibTeX(source) {
     index = close;
   }
 
-  return entries.sort((a, b) => Number(b.fields.year || 0) - Number(a.fields.year || 0));
+  return entries.sort((a, b) => sortDateValue(b) - sortDateValue(a));
+}
+
+function nameFromCslName(name = {}) {
+  if (name.literal) return name.literal;
+  return [name.given, name.family].filter(Boolean).join(" ");
+}
+
+function cslDateValue(date = {}) {
+  const parts = date["date-parts"]?.[0] || [];
+  if (!parts.length) return "";
+  return parts.map(String).join("-");
+}
+
+function normalizeCslItem(item = {}) {
+  const fields = {
+    title: item.title || "",
+    author: item.author || [],
+    editor: item.editor || [],
+    date: cslDateValue(item.issued),
+    year: cslDateValue(item.issued).slice(0, 4),
+    journaltitle: item["container-title"] || "",
+    journal: item["container-title"] || "",
+    booktitle: item["container-title"] || "",
+    eventtitle: item["event-title"] || "",
+    location: item["event-place"] || item["publisher-place"] || "",
+    publisher: item.publisher || "",
+    school: item.publisher || "",
+    volume: item.volume || "",
+    number: item.issue || item.number || "",
+    pages: item.page || "",
+    doi: item.DOI || "",
+    url: item.URL || "",
+    abstract: item.abstract || "",
+    note: item.note || "",
+    annotation: item.note || "",
+    type: item.genre || item.type || "",
+    keywords: Array.isArray(item.keyword) ? item.keyword.join(", ") : (item.keyword || ""),
+    source: item.source || "",
+  };
+
+  return {
+    key: item["citation-key"] || item.id || "",
+    type: item.type || "",
+    fields,
+    csl: item,
+  };
+}
+
+function parseReferenceData(source = "") {
+  const trimmed = source.trim();
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+    const data = JSON.parse(trimmed);
+    const items = Array.isArray(data) ? data : (data.items || []);
+    return items.map(normalizeCslItem).sort((a, b) => sortDateValue(b) - sortDateValue(a));
+  }
+
+  return parseBibTeX(source);
 }
 
 function parseBibFields(fieldText) {
@@ -210,6 +273,10 @@ function parseBibFields(fieldText) {
 }
 
 function splitAuthors(authorField = "") {
+  if (Array.isArray(authorField)) {
+    return authorField.map(nameFromCslName).filter(Boolean);
+  }
+
   return authorField
     .split(/\s+and\s+/i)
     .map((author) => author.trim())
@@ -220,11 +287,65 @@ function splitAuthors(authorField = "") {
     });
 }
 
+function entryYear(entry) {
+  const raw = entry.fields.date || entry.fields.year || "";
+  const match = String(raw).match(/\d{4}/);
+  return match ? match[0] : "Year";
+}
+
+function sortDateValue(entry) {
+  const raw = entry.fields.date || entry.fields.year || "";
+  const match = String(raw).match(/(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);
+  if (!match) return 0;
+  return Number(`${match[1]}${match[2] || "00"}${match[3] || "00"}`);
+}
+
+function firstField(fields, names) {
+  return names.map((name) => fields[name]).find(Boolean) || "";
+}
+
+function presentationVenue(entry) {
+  const f = entry.fields;
+  const host = firstField(f, [
+    "eventtitle",
+    "event",
+    "booktitle",
+    "organization",
+    "institution",
+    "school",
+    "howpublished",
+    "publisher",
+  ]);
+  const location = f.location || f.address || "";
+  const type = f.type || "";
+
+  if (host && location) return `${host}, ${location}`;
+  if (host) return host;
+  if (type && location) return `${type}, ${location}`;
+  return location || type;
+}
+
+function publicationVenue(entry) {
+  const f = entry.fields;
+  if (isConferencePresentation(entry) || isInvitedTalk(entry)) {
+    return presentationVenue(entry);
+  }
+
+  const venue = firstField(f, ["journaltitle", "journal", "booktitle", "publisher", "school"]);
+  const location = f.location || f.address || "";
+
+  if (venue && (["book", "inbook", "incollection", "chapter"].includes(entry.type) || isThesis(entry)) && location) {
+    return `${venue}, ${location}`;
+  }
+
+  return venue || f.note || location || "";
+}
+
 function citationFor(entry) {
   const f = entry.fields;
   const authors = splitAuthors(f.author || f.editor || "");
   const authorText = authors.length ? authors.join(", ") : "Author information forthcoming";
-  const venue = f.journaltitle || f.journal || f.booktitle || f.publisher || f.note || f.address || "";
+  const venue = publicationVenue(entry);
   const parts = [
     venue && `<em>${escapeHtml(venue)}</em>`,
     f.volume && escapeHtml(f.volume),
@@ -235,10 +356,17 @@ function citationFor(entry) {
   return {
     authors: authorText,
     title: f.title || "Untitled publication",
-    year: f.year || "Year",
-    label: typeLabels[entry.type] || entry.type,
+    year: entryYear(entry),
+    label: isPhdThesis(entry)
+      ? "PhD Thesis"
+      : isMasterThesis(entry)
+        ? "Master's Thesis"
+        : isWorkingPaper(entry)
+          ? "Working Paper / Preprint"
+          : (typeLabels[entry.type] || entry.type),
     detail: parts.join(", "),
-    abstract: f.abstract || f.note || "",
+    abstract: f.abstract || "",
+    extra: f.note || f.annotation || f.annote || f.extra || "",
     doi: f.doi || "",
     url: f.url || "",
     keywords: (f.keywords || "").toLowerCase(),
@@ -248,43 +376,78 @@ function citationFor(entry) {
 }
 
 function isInvitedTalk(entry) {
-  const citation = citationFor(entry);
-  return citation.annotation.includes("invited") || citation.entryType.includes("invited");
+  const f = entry.fields;
+  const entryType = (f.type || "").toLowerCase();
+  return (
+    entry.type === "speech" && !entryType.includes("conference")
+  ) || (f.annotation || "").toLowerCase().includes("invited") || entryType.includes("invited");
 }
 
 function isWorkingPaper(entry) {
-  const citation = citationFor(entry);
+  const f = entry.fields;
+  const entryType = (f.type || "").toLowerCase();
+  const source = [f.source, f.publisher, f.url].join(" ").toLowerCase();
   return (
     entry.type === "unpublished" ||
     entry.type === "preprint" ||
-    citation.entryType.includes("working") ||
+    entry.type === "manuscript" ||
+    entryType.includes("working") ||
+    entryType.includes("preprint") ||
+    source.includes("preprint") ||
+    source.includes("socarxiv") ||
+    source.includes("osf") ||
     Boolean(entry.fields.eprint || entry.fields.archiveprefix)
   );
 }
 
 function isConferencePresentation(entry) {
-  const citation = citationFor(entry);
+  const entryType = (entry.fields.type || "").toLowerCase();
   return (
     entry.type === "inproceedings" ||
     entry.type === "proceedings" ||
-    citation.entryType.includes("conference") ||
+    entry.type === "paper-conference" ||
+    entryType.includes("conference") ||
     (entry.type === "misc" && !isInvitedTalk(entry) && !isWorkingPaper(entry))
   );
+}
+
+function isThesis(entry) {
+  const entryType = (entry.fields.type || "").toLowerCase();
+  return (
+    ["phdthesis", "mastersthesis", "thesis"].includes(entry.type) ||
+    entryType.includes("thesis") ||
+    entryType.includes("dissertation")
+  );
+}
+
+function isMasterThesis(entry) {
+  const entryType = (entry.fields.type || "").toLowerCase();
+  return isThesis(entry) && !entryType.includes("dissertation") && !entryType.includes("phd");
+}
+
+function isPhdThesis(entry) {
+  const entryType = (entry.fields.type || "").toLowerCase();
+  return isThesis(entry) && (entryType.includes("dissertation") || entryType.includes("phd"));
 }
 
 function filterEntries(entries, mode) {
   const filters = {
     selected: (entry) => {
       const selected = citationFor(entry).keywords.includes("selected");
-      const publicType = ["article", "book", "inbook", "incollection"].includes(entry.type) || isWorkingPaper(entry);
-      return selected && publicType;
+      const publicType = ["article", "article-journal", "book", "inbook", "incollection", "chapter"].includes(entry.type);
+      return selected && publicType && !isWorkingPaper(entry);
     },
-    "journal-articles": (entry) => entry.type === "article",
-    "books-chapters": (entry) => ["book", "inbook", "incollection"].includes(entry.type),
+    "journal-articles": (entry) => (entry.type === "article" || entry.type === "article-journal") && !isWorkingPaper(entry),
+    "books-chapters": (entry) => ["book", "inbook", "incollection", "chapter"].includes(entry.type),
+    "works-progress": isWorkingPaper,
     "working-papers": isWorkingPaper,
     "conference-presentations": (entry) => isConferencePresentation(entry) && !isInvitedTalk(entry),
     "invited-talks": isInvitedTalk,
-    theses: (entry) => ["phdthesis", "mastersthesis"].includes(entry.type),
+    theses: isThesis,
+    supervision: isThesis,
+    "supervision-doctoral": isPhdThesis,
+    "supervision-masters": isMasterThesis,
+    "supervision-selected": isPhdThesis,
   };
 
   const filter = filters[mode];
@@ -298,7 +461,7 @@ function featuredEntries(entries) {
   if (selected.length) return selected;
 
   return entries
-    .filter((entry) => ["article", "book", "inbook", "incollection"].includes(entry.type) || isWorkingPaper(entry))
+    .filter((entry) => ["article", "article-journal", "book", "inbook", "incollection", "chapter"].includes(entry.type) && !isWorkingPaper(entry))
     .slice(0, 4);
 }
 
@@ -326,7 +489,7 @@ function resolveAssetPath(path = "") {
   return document.querySelector('script[src^="../"]') ? `../${path}` : path;
 }
 
-function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
+function renderPublicationItem(entry, compact = false, publicationAssets = {}, source = "publications.json") {
   const citation = citationFor(entry);
   const asset = publicationAssets[entry.key];
   const images = publicationImagesFor(asset);
@@ -337,7 +500,7 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
     links.push(`<a href="${escapeHtml(doiUrl)}">DOI</a>`);
   }
 
-  if (citation.url && !citation.url.includes(citation.doi)) {
+  if (citation.url && (!citation.doi || !citation.url.includes(citation.doi))) {
     links.push(`<a href="${escapeHtml(citation.url)}">Link</a>`);
   }
 
@@ -347,7 +510,7 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
         <span class="date">${escapeHtml(citation.year)}</span>
         <div>
           <h3>${escapeHtml(citation.authors)}. ${escapeHtml(citation.title)}.</h3>
-          <p>${citation.detail || escapeHtml(citation.label)}${links.length ? ` ${links.join(" ")}` : ""}</p>
+          <p>${citation.detail || escapeHtml(citation.label)}${citation.extra ? `. ${escapeHtml(citation.extra)}` : ""}${links.length ? ` ${links.join(" ")}` : ""}</p>
         </div>
       </div>
     `;
@@ -367,9 +530,10 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
       <div>
         <h3>${escapeHtml(citation.title)}</h3>
         <p>${escapeHtml(citation.authors)}${citation.detail ? `. ${citation.detail}` : ""}</p>
+        ${citation.extra ? `<p>${escapeHtml(citation.extra)}</p>` : ""}
         ${citation.abstract ? `<p>${escapeHtml(truncateText(citation.abstract))}</p>` : ""}
       </div>
-      <div class="item-links">${links.join("") || '<a href="publications.bib">BibTeX</a>'}</div>
+      ${links.length ? `<div class="item-links">${links.join("")}</div>` : ""}
     </article>
   `;
 }
@@ -387,19 +551,23 @@ async function renderPublications() {
 
   try {
     targets.forEach((target) => {
-      const bibSource = target.dataset.bibSource || "publications.bib";
+      const source = target.dataset.cslSource || target.dataset.bibSource || "publications.json";
       const assetsSource = target.dataset.assetsSource
-        || (bibSource.startsWith("../") ? "../data/publication-assets.json" : "data/publication-assets.json");
+        || (source.startsWith("../") ? "../data/publication-assets.json" : "data/publication-assets.json");
 
       Promise.all([
-        fetch(bibSource).then((response) => response.text()),
+        fetch(source).then((response) => response.text()),
         fetch(assetsSource).then((response) => response.ok ? response.json() : {}).catch(() => ({})),
       ])
-        .then(([bibText, publicationAssets]) => {
+        .then(([referenceText, publicationAssets]) => {
           Object.assign(publicationLightboxAssets, publicationAssets);
-          const entries = parseBibTeX(bibText);
+          const entries = parseReferenceData(referenceText);
           const mode = target.dataset.publications;
-          const selected = mode === "selected" ? featuredEntries(entries) : filterEntries(entries, mode);
+          const selected = mode === "selected"
+            ? featuredEntries(entries)
+            : mode === "supervision-selected"
+              ? filterEntries(entries, mode).slice(0, 4)
+              : filterEntries(entries, mode);
 
           if (!selected.length) {
             target.innerHTML = '<article class="publication-item is-empty"><p>No entries found for this section.</p></article>';
@@ -407,7 +575,7 @@ async function renderPublications() {
           }
 
           target.innerHTML = selected
-            .map((entry) => renderPublicationItem(entry, target.classList.contains("cv-publications"), publicationAssets))
+            .map((entry) => renderPublicationItem(entry, target.classList.contains("cv-publications"), publicationAssets, source))
             .join("");
         })
         .catch(() => {

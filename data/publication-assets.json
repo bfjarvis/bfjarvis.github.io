@@ -2,14 +2,14 @@
   "jarvisKinPropinquityResidential2025": {
     "images": [
       {
-        "image": "assets/research-header.png",
+        "image": "assets/research-header-painterly.png",
         "alt": "Research-derived spatial simulation image representing segregation dynamics.",
         "caption": "Representative research image"
       }
     ]
   },
   "jarvisAssortativeMatingResidential2023": {
-    "image": "assets/research-header.png",
+    "image": "assets/research-header-painterly.png",
     "alt": "Research-derived spatial simulation image representing residential segregation.",
     "caption": "Representative research image"
   }

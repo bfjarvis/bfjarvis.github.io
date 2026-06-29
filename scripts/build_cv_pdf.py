@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import re
 
 from reportlab.lib import colors
@@ -11,7 +12,8 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "cv" / "Benjamin-F-Jarvis-CV.pdf"
 CV_SOURCE = ROOT / "cv" / "cv.md"
-BIB_SOURCE = ROOT / "publications.bib"
+PUBLICATIONS_SOURCE = ROOT / "publications.json"
+SUPERVISION_SOURCE = ROOT / "supervision.json"
 
 
 def paragraph(text, style):
@@ -125,7 +127,50 @@ def parse_bibtex(path):
         entries.append({"type": entry_type, "fields": fields})
         index = close
 
-    return sorted(entries, key=lambda entry: int(entry["fields"].get("year", 0)), reverse=True)
+    return sorted(entries, key=sort_date_value, reverse=True)
+
+
+def csl_date_value(date):
+    parts = (date or {}).get("date-parts", [[]])[0]
+    return "-".join(str(part) for part in parts if part)
+
+
+def normalize_csl_item(item):
+    issued = csl_date_value(item.get("issued"))
+    fields = {
+        "title": item.get("title", ""),
+        "author": item.get("author", []),
+        "editor": item.get("editor", []),
+        "date": issued,
+        "year": issued[:4],
+        "journaltitle": item.get("container-title", ""),
+        "journal": item.get("container-title", ""),
+        "booktitle": item.get("container-title", ""),
+        "eventtitle": item.get("event-title", ""),
+        "location": item.get("event-place") or item.get("publisher-place", ""),
+        "publisher": item.get("publisher", ""),
+        "school": item.get("publisher", ""),
+        "volume": item.get("volume", ""),
+        "number": item.get("issue") or item.get("number", ""),
+        "pages": item.get("page", ""),
+        "doi": item.get("DOI", ""),
+        "url": item.get("URL", ""),
+        "abstract": item.get("abstract", ""),
+        "note": item.get("note", ""),
+        "annotation": item.get("note", ""),
+        "type": item.get("genre") or item.get("type", ""),
+        "source": item.get("source", ""),
+    }
+    return {"type": item.get("type", ""), "fields": fields}
+
+
+def parse_reference_data(path):
+    if path.suffix.lower() == ".json":
+        data = json.loads(path.read_text(encoding="utf-8"))
+        items = data if isinstance(data, list) else data.get("items", [])
+        return sorted((normalize_csl_item(item) for item in items), key=sort_date_value, reverse=True)
+
+    return parse_bibtex(path)
 
 
 def parse_bib_fields(field_text):
@@ -182,6 +227,15 @@ def parse_bib_fields(field_text):
 
 
 def author_text(author_field):
+    if isinstance(author_field, list):
+        authors = []
+        for author in author_field:
+            if author.get("literal"):
+                authors.append(author["literal"])
+            else:
+                authors.append(" ".join(part for part in [author.get("given"), author.get("family")] if part))
+        return ", ".join(filter(None, authors)) or "Author information forthcoming"
+
     authors = []
     for author in re.split(r"\s+and\s+", author_field or ""):
         parts = [part.strip() for part in author.split(",")]
@@ -189,18 +243,47 @@ def author_text(author_field):
     return ", ".join(filter(None, authors)) or "Author information forthcoming"
 
 
+def entry_year(entry):
+    raw = entry["fields"].get("date") or entry["fields"].get("year") or ""
+    match = re.search(r"\d{4}", str(raw))
+    return match.group(0) if match else "Year"
+
+
+def sort_date_value(entry):
+    raw = entry["fields"].get("date") or entry["fields"].get("year") or ""
+    match = re.search(r"(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?", str(raw))
+    if not match:
+        return 0
+    return int(f"{match.group(1)}{match.group(2) or '00'}{match.group(3) or '00'}")
+
+
+def first_field(fields, names):
+    for name in names:
+        if fields.get(name):
+            return fields[name]
+    return ""
+
+
 def is_invited_talk(entry):
     fields = entry["fields"]
-    return "invited" in fields.get("annotation", "").lower() or "invited" in fields.get("type", "").lower()
+    zotero_type = fields.get("type", "").lower()
+    return (
+        entry["type"] == "speech" and "conference" not in zotero_type
+    ) or "invited" in fields.get("annotation", "").lower() or "invited" in zotero_type
 
 
 def is_working_paper(entry):
     fields = entry["fields"]
     entry_type = entry["type"]
     zotero_type = fields.get("type", "").lower()
+    source = " ".join([fields.get("source", ""), fields.get("publisher", ""), fields.get("url", "")]).lower()
     return (
-        entry_type in {"unpublished", "preprint"}
+        entry_type in {"unpublished", "preprint", "manuscript"}
         or "working" in zotero_type
+        or "preprint" in zotero_type
+        or "preprint" in source
+        or "socarxiv" in source
+        or "osf" in source
         or bool(fields.get("eprint") or fields.get("archiveprefix"))
     )
 
@@ -209,40 +292,83 @@ def is_conference_presentation(entry):
     fields = entry["fields"]
     zotero_type = fields.get("type", "").lower()
     return (
-        entry["type"] in {"inproceedings", "proceedings"}
+        entry["type"] in {"inproceedings", "proceedings", "paper-conference"}
         or "conference" in zotero_type
         or (entry["type"] == "misc" and not is_invited_talk(entry) and not is_working_paper(entry))
     )
 
 
+def is_thesis(entry):
+    thesis_type = entry["fields"].get("type", "").lower()
+    return entry["type"] in {"phdthesis", "mastersthesis", "thesis"} or "thesis" in thesis_type or "dissertation" in thesis_type
+
+
+def is_master_thesis(entry):
+    thesis_type = entry["fields"].get("type", "").lower()
+    return is_thesis(entry) and "dissertation" not in thesis_type and "phd" not in thesis_type
+
+
 def publication_groups(path):
-    entries = parse_bibtex(path)
+    entries = parse_reference_data(path)
     return [
-        ("Journal Articles", [entry for entry in entries if entry["type"] == "article"]),
-        ("Books and Book Chapters", [entry for entry in entries if entry["type"] in {"book", "inbook", "incollection"}]),
-        ("Working Papers and Preprints", [entry for entry in entries if is_working_paper(entry)]),
+        ("Journal Articles", [entry for entry in entries if entry["type"] in {"article", "article-journal"} and not is_working_paper(entry)]),
+        ("Books and Book Chapters", [entry for entry in entries if entry["type"] in {"book", "inbook", "incollection", "chapter"}]),
+        ("Works in Progress", [entry for entry in entries if is_working_paper(entry)]),
         (
             "Conference Presentations",
             [entry for entry in entries if is_conference_presentation(entry) and not is_invited_talk(entry)],
         ),
-        ("Invited Talks", [entry for entry in entries if is_invited_talk(entry)]),
-        ("Theses", [entry for entry in entries if entry["type"] in {"phdthesis", "mastersthesis"}]),
+        ("Invited and Other Talks", [entry for entry in entries if is_invited_talk(entry)]),
+        ("Theses", [entry for entry in entries if is_thesis(entry)]),
     ]
+
+
+def presentation_venue(entry):
+    fields = entry["fields"]
+    host = first_field(
+        fields,
+        [
+            "eventtitle",
+            "event",
+            "booktitle",
+            "organization",
+            "institution",
+            "school",
+            "howpublished",
+            "publisher",
+        ],
+    )
+    location = fields.get("location") or fields.get("address") or ""
+    talk_type = fields.get("type", "")
+
+    if host and location:
+        return f"{host}, {location}"
+    if host:
+        return host
+    if talk_type and location:
+        return f"{talk_type}, {location}"
+    return location or talk_type
+
+
+def publication_venue(entry):
+    fields = entry["fields"]
+    if is_conference_presentation(entry) or is_invited_talk(entry):
+        return presentation_venue(entry)
+
+    venue = first_field(fields, ["journaltitle", "journal", "booktitle", "publisher", "school"])
+    location = fields.get("location") or fields.get("address") or ""
+
+    if venue and (entry["type"] in {"book", "inbook", "incollection"} or is_thesis(entry)) and location:
+        return f"{venue}, {location}"
+
+    return venue or fields.get("note") or location or entry["type"]
 
 
 def publication_entries(entries):
     publications = []
     for entry in entries:
         fields = entry["fields"]
-        venue = (
-            fields.get("journaltitle")
-            or fields.get("journal")
-            or fields.get("booktitle")
-            or fields.get("publisher")
-            or fields.get("note")
-            or fields.get("address")
-            or entry["type"]
-        )
+        venue = publication_venue(entry)
         details = [
             f"<i>{clean_text(venue)}</i>",
             clean_text(fields.get("volume", "")),
@@ -252,16 +378,23 @@ def publication_entries(entries):
         ]
         publications.append(
             (
-                fields.get("year", "Year"),
+                entry_year(entry),
                 f"{clean_text(author_text(fields.get('author', '')))}. {clean_text(fields.get('title', 'Untitled publication'))}.",
-                ", ".join(part for part in details if part),
+                ". ".join(
+                    part
+                    for part in [
+                        ", ".join(part for part in details if part),
+                        clean_text(fields.get("note") or fields.get("annotation") or fields.get("annote") or fields.get("extra") or ""),
+                    ]
+                    if part
+                ),
             )
         )
     return publications
 
 
 def section(title, entries, styles):
-    story = [paragraph(title, styles["Section"]), Spacer(1, 0.06 * inch)]
+    story = [paragraph(title, styles["Section"])]
     for date, heading, detail in entries:
         table = Table(
             [
@@ -273,7 +406,7 @@ def section(title, entries, styles):
                     ],
                 ]
             ],
-            colWidths=[1.1 * inch, 5.35 * inch],
+            colWidths=[0.82 * inch, 6.04 * inch],
         )
         table.setStyle(
             TableStyle(
@@ -281,13 +414,13 @@ def section(title, entries, styles):
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                    ("TOPPADDING", (0, 0), (-1, -1), 4),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 1.4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3.8),
                 ]
             )
         )
         story.append(table)
-    story.append(Spacer(1, 0.16 * inch))
+    story.append(Spacer(1, 0.05 * inch))
     return story
 
 
@@ -298,10 +431,10 @@ def build():
     doc = SimpleDocTemplate(
         str(OUTPUT),
         pagesize=letter,
-        rightMargin=0.7 * inch,
-        leftMargin=0.7 * inch,
-        topMargin=0.62 * inch,
-        bottomMargin=0.62 * inch,
+        rightMargin=0.5 * inch,
+        leftMargin=0.5 * inch,
+        topMargin=0.45 * inch,
+        bottomMargin=0.48 * inch,
         title="Benjamin F. Jarvis CV",
         author="Benjamin F. Jarvis",
     )
@@ -312,55 +445,55 @@ def build():
             "Name",
             parent=base["Title"],
             fontName="Times-Bold",
-            fontSize=25,
-            leading=28,
+            fontSize=21,
+            leading=23,
             textColor=colors.HexColor("#1d2224"),
             alignment=0,
-            spaceAfter=4,
+            spaceAfter=2,
         ),
         "Contact": ParagraphStyle(
             "Contact",
             parent=base["BodyText"],
             fontName="Helvetica",
-            fontSize=9.5,
-            leading=13,
+            fontSize=8.2,
+            leading=10,
             textColor=colors.HexColor("#475054"),
-            spaceAfter=16,
+            spaceAfter=7,
         ),
         "Section": ParagraphStyle(
             "Section",
             parent=base["Heading2"],
             fontName="Helvetica-Bold",
-            fontSize=10.5,
-            leading=13,
+            fontSize=9.2,
+            leading=10.5,
             textColor=colors.HexColor("#1d6f6e"),
             uppercase=True,
-            spaceBefore=8,
-            spaceAfter=4,
+            spaceBefore=4,
+            spaceAfter=2,
         ),
         "Date": ParagraphStyle(
             "Date",
             parent=base["BodyText"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=11,
+            fontSize=7.5,
+            leading=9,
             textColor=colors.HexColor("#9a4d39"),
         ),
         "EntryHeading": ParagraphStyle(
             "EntryHeading",
             parent=base["BodyText"],
             fontName="Helvetica-Bold",
-            fontSize=9.6,
-            leading=12,
+            fontSize=8.2,
+            leading=9.7,
             textColor=colors.HexColor("#1d2224"),
-            spaceAfter=2,
+            spaceAfter=0.5,
         ),
         "Body": ParagraphStyle(
             "Body",
             parent=base["BodyText"],
             fontName="Helvetica",
-            fontSize=9.1,
-            leading=12,
+            fontSize=7.8,
+            leading=9.3,
             textColor=colors.HexColor("#475054"),
         ),
     }
@@ -391,9 +524,13 @@ def build():
     story.extend(
         []
     )
-    for title, entries in publication_groups(BIB_SOURCE):
+    for title, entries in publication_groups(PUBLICATIONS_SOURCE):
         if entries:
             story.extend(section(title, publication_entries(entries), styles))
+    if SUPERVISION_SOURCE.exists():
+        supervision_entries = [entry for entry in parse_reference_data(SUPERVISION_SOURCE) if is_thesis(entry)]
+        if supervision_entries:
+            story.extend(section("Supervision", publication_entries(supervision_entries), styles))
     story.extend(
         section(
             "Grants",

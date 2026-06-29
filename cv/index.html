@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Curriculum vitae for Benjamin F. Jarvis.">
     <title>CV | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../styles.css?v=20260629-profile-links">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -18,6 +18,7 @@
         <a href="../publications/">Publications</a>
         <a href="../grants/">Grants</a>
         <a href="../teaching/">Teaching</a>
+        <a href="../supervision/">Supervision</a>
         <a href="../vignettes/">Vignettes</a>
         <a href="./">CV</a>
       </nav>
@@ -43,12 +44,13 @@
             <a href="#education">Education</a>
             <a href="#journal-articles">Journal Articles</a>
             <a href="#books-chapters">Books & Chapters</a>
-            <a href="#working-papers">Working Papers</a>
+            <a href="#working-papers">Works in Progress</a>
             <a href="#presentations">Presentations</a>
-            <a href="#invited-talks">Invited Talks</a>
+            <a href="#invited-talks">Invited & Other Talks</a>
             <a href="#theses">Theses</a>
             <a href="#grants">Grants</a>
             <a href="#teaching">Teaching</a>
+            <a href="#supervision">Supervision</a>
             <a href="#service">Service</a>
           </aside>
 
@@ -77,7 +79,7 @@
 
             <section class="cv-section" id="journal-articles">
               <h2>Journal Articles</h2>
-              <div data-publications="journal-articles" data-bib-source="../publications.bib" class="cv-publications">
+              <div data-publications="journal-articles" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -90,7 +92,7 @@
 
             <section class="cv-section" id="books-chapters">
               <h2>Books & Book Chapters</h2>
-              <div data-publications="books-chapters" data-bib-source="../publications.bib" class="cv-publications">
+              <div data-publications="books-chapters" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -102,8 +104,8 @@
             </section>
 
             <section class="cv-section" id="working-papers">
-              <h2>Working Papers & Preprints</h2>
-              <div data-publications="working-papers" data-bib-source="../publications.bib" class="cv-publications">
+              <h2>Works in Progress</h2>
+              <div data-publications="works-progress" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -116,7 +118,7 @@
 
             <section class="cv-section" id="presentations">
               <h2>Conference Presentations</h2>
-              <div data-publications="conference-presentations" data-bib-source="../publications.bib" class="cv-publications">
+              <div data-publications="conference-presentations" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -128,8 +130,8 @@
             </section>
 
             <section class="cv-section" id="invited-talks">
-              <h2>Invited Talks</h2>
-              <div data-publications="invited-talks" data-bib-source="../publications.bib" class="cv-publications">
+              <h2>Invited and Other Talks</h2>
+              <div data-publications="invited-talks" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -142,7 +144,7 @@
 
             <section class="cv-section" id="theses">
               <h2>Theses</h2>
-              <div data-publications="theses" data-bib-source="../publications.bib" class="cv-publications">
+              <div data-publications="theses" data-csl-source="../publications.json" class="cv-publications">
                 <div class="cv-entry">
                   <span class="date">Year</span>
                   <div>
@@ -175,6 +177,19 @@
               </div>
             </section>
 
+            <section class="cv-section" id="supervision">
+              <h2>Supervision</h2>
+              <div data-publications="supervision" data-csl-source="../supervision.json" class="cv-publications">
+                <div class="cv-entry">
+                  <span class="date">Year</span>
+                  <div>
+                    <h3>Student. Thesis title.</h3>
+                    <p>Institution, location, supervisors and co-supervisors.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <section class="cv-section" id="service" data-cv-section="service-and-skills">
               <h2>Service & Skills</h2>
               <div class="cv-entry">
@@ -197,18 +212,18 @@
       </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" aria-labelledby="footer-contact-title">
       <div>
-        <p>&copy; <span data-year></span> Benjamin F. Jarvis</p>
-        <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+        <h2 id="footer-contact-title">For collaboration, teaching, and research conversations.</h2>
       </div>
-      <nav aria-label="Footer navigation">
-        <a href="../publications/">Publications</a>
-        <a href="../grants/">Grants</a>
-        <a href="../teaching/">Teaching</a>
-        <a href="../vignettes/">Vignettes</a>
-        <a href="./">CV</a>
-      </nav>
+      <div class="contact-links">
+        <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
+        <a href="https://liu.se/en/organisation/liu/iei/ias">Institute for Analytical Sociology</a>
+        <a href="https://scholar.google.com/citations?user=AZvfKd8AAAAJ&amp;hl=en&amp;oi=ao">Google Scholar</a>
+        <a href="https://orcid.org/0000-0001-8127-4051">ORCID</a>
+        <a href="https://github.com/bfjarvis">GitHub</a>
+      </div>
+      <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
     <script src="../script.js"></script>
