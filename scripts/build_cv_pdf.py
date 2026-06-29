@@ -20,6 +20,10 @@ def paragraph(text, style):
     return Paragraph(text, style)
 
 
+def format_cv_date(text):
+    return "<br/>".join(clean_text(part.strip()) for part in text.split(";") if part.strip())
+
+
 def clean_text(text):
     return decode_latex(
         text.replace("&", "&amp;")
@@ -63,6 +67,13 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower().replace("&", "and")).strip("-")
 
 
+def normalize_cv_section_slug(slug):
+    aliases = {
+        "service-skills-etc": "service-and-skills",
+    }
+    return aliases.get(slug, slug)
+
+
 def parse_cv_markdown(path):
     sections = {}
     current = None
@@ -74,7 +85,7 @@ def parse_cv_markdown(path):
             continue
 
         if line.startswith("## "):
-            current = slugify(line[3:])
+            current = normalize_cv_section_slug(slugify(line[3:]))
             sections[current] = []
             current_entry = None
             continue
@@ -410,7 +421,29 @@ def publication_entries(entries):
             clean_text(url) if url and url != doi_url else "",
         ]
         title = clean_text(fields.get("title", "Untitled publication"))
-        if entry["type"] in {"article", "article-journal", "paper-conference", "speech"} or is_working_paper(entry):
+        is_chapter = entry["type"] in {"chapter", "inbook", "incollection"}
+        if is_chapter:
+            chapter_details = []
+            chapter_book = []
+            if fields.get("pages"):
+                chapter_book.append(f"Pp. {clean_text(fields['pages'])} in")
+            if fields.get("booktitle"):
+                chapter_book.append(f"<i>{clean_text(fields['booktitle'])}</i>")
+            if chapter_book:
+                chapter_details.append(" ".join(chapter_book))
+            if fields.get("editor"):
+                chapter_details.append(f"edited by {clean_text(asa_author_text(fields['editor']))}")
+            publication_place = " ".join(part for part in [fields.get("location", ""), fields.get("publisher", "")] if part)
+            if fields.get("location") and fields.get("publisher"):
+                publication_place = f"{fields['location']}: {fields['publisher']}"
+            if publication_place:
+                chapter_details.append(clean_text(publication_place))
+            details = [
+                ", ".join(part for part in chapter_details if part),
+                clean_text(doi_url),
+                clean_text(url) if url and url != doi_url else "",
+            ]
+        if entry["type"] in {"article", "article-journal", "paper-conference", "speech"} or is_working_paper(entry) or is_chapter:
             title = f'"{title}."'
         else:
             title = f"<i>{title}.</i>"
@@ -441,7 +474,7 @@ def section(title, entries, styles):
         table = Table(
             [
                 [
-                    paragraph(date, styles["Date"]),
+                    paragraph(format_cv_date(date), styles["Date"]),
                     [
                         paragraph(heading, styles["EntryHeading"] if detail else styles["Body"]),
                         paragraph(detail, styles["Body"]) if detail else Spacer(1, 0),
@@ -595,11 +628,22 @@ def build():
     )
     story.extend(
         section(
-            "Service and Skills",
-            [
-                (entry["date"], entry["heading"], " ".join(entry["detail"]))
-                for entry in cv_sections.get("service-and-skills", [])
-            ],
+            "Service",
+            [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("service", [])],
+            styles,
+        )
+    )
+    story.extend(
+        section(
+            "Skills",
+            [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("skills", [])],
+            styles,
+        )
+    )
+    story.extend(
+        section(
+            "Miscellaneous",
+            [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("miscellaneous", [])],
             styles,
         )
     )

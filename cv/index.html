@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Curriculum vitae for Benjamin F. Jarvis.">
-    <title>CV | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260629-asa-citations">
+    <title>Curriculum Vitae | Benjamin F. Jarvis</title>
+    <link rel="stylesheet" href="../styles.css?v=20260630-title-align-size">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -25,11 +25,7 @@
 
     <main>
       <section class="cv-hero">
-        <h1>Benjamin F. Jarvis</h1>
-        <p>
-          Academic CV covering appointments, education, publications, grants, teaching,
-          presentations, service, and technical skills.
-        </p>
+        <h1>Curriculum Vitae</h1>
         <div class="hero-actions">
           <a class="button primary" href="../cv/Benjamin-F-Jarvis-CV.pdf">Download PDF</a>
           <a class="button secondary" href="mailto:benjamin.jarvis@liu.se">Email</a>
@@ -51,9 +47,11 @@
             <a href="#teaching">Teaching</a>
             <a href="#supervision">Supervision</a>
             <a href="#service">Service</a>
+            <a href="#skills">Skills</a>
+            <a href="#miscellaneous">Miscellaneous</a>
           </aside>
 
-          <div data-cv-source="../cv/cv.md?v=20260629-cv-details">
+          <div data-cv-source="../cv/cv.md?v=20260629-cv-sections">
             <section class="cv-section" id="appointments" data-cv-section="appointments">
               <h2>Appointments</h2>
               <div class="cv-entry">
@@ -200,8 +198,8 @@
               </div>
             </section>
 
-            <section class="cv-section" id="service" data-cv-section="service-and-skills">
-              <h2>Service & Skills</h2>
+            <section class="cv-section" id="service" data-cv-section="service">
+              <h2>Service</h2>
               <div class="cv-entry">
                 <span class="date">Ongoing</span>
                 <div>
@@ -209,11 +207,26 @@
                   <p>Peer review, committees, conference organization, memberships, and outreach.</p>
                 </div>
               </div>
+            </section>
+
+            <section class="cv-section" id="skills" data-cv-section="skills">
+              <h2>Skills</h2>
               <div class="cv-entry">
                 <span class="date">Tools</span>
                 <div>
                   <h3>Statistical and computational skills</h3>
                   <p>R, Stata, Python, reproducible research workflows, causal inference, spatial analysis.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="cv-section" id="miscellaneous" data-cv-section="miscellaneous">
+              <h2>Miscellaneous</h2>
+              <div class="cv-entry">
+                <span class="date">Selected</span>
+                <div>
+                  <h3>Additional CV notes</h3>
+                  <p>Other relevant professional information.</p>
                 </div>
               </div>
             </section>
@@ -236,6 +249,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js"></script>
+    <script src="../script.js?v=20260629-cv-date-lines"></script>
   </body>
 </html>

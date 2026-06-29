@@ -57,6 +57,10 @@ function escapeHtml(value = "") {
   })[char]);
 }
 
+function formatCvDate(date = "") {
+  return date.split(";").map((part) => escapeHtml(part.trim())).filter(Boolean).join("<br>");
+}
+
 function normalizeBibValue(value = "") {
   return decodeLatex(value)
     .trim()
@@ -300,6 +304,10 @@ function joinNameList(names = []) {
 
 function citationAuthors(entry) {
   const authorField = entry.fields.author || entry.fields.editor || "";
+  return citationNames(authorField);
+}
+
+function citationNames(authorField = "") {
   if (Array.isArray(authorField)) {
     return joinNameList(authorField.map((author) => asaAuthorName(author)).filter(Boolean));
   }
@@ -369,17 +377,28 @@ function citationFor(entry) {
   const doiUrl = rawDoi ? (rawDoi.startsWith("http") ? rawDoi : `https://doi.org/${rawDoi}`) : "";
   const url = !doiUrl && f.url ? f.url : "";
   const title = f.title || "Untitled publication";
-  const quotedTitle = ["article", "article-journal", "paper-conference", "speech"].includes(entry.type) || isWorkingPaper(entry);
+  const isChapter = ["chapter", "inbook", "incollection"].includes(entry.type);
+  const quotedTitle = ["article", "article-journal", "paper-conference", "speech"].includes(entry.type) || isWorkingPaper(entry) || isChapter;
   const titleHtml = quotedTitle ? `"${escapeHtml(title)}."` : `<em>${escapeHtml(title)}.</em>`;
   const volumeIssue = f.volume
     ? `${escapeHtml(f.volume)}${f.number ? `(${escapeHtml(f.number)})` : ""}`
     : "";
   const pages = f.pages ? `${volumeIssue ? ":" : ""}${escapeHtml(f.pages)}` : "";
-  const venueAndVolume = venue
+  const editorText = f.editor?.length ? citationNames(f.editor) : "";
+  const chapterBook = [
+    f.pages && `Pp. ${escapeHtml(f.pages)} in`,
+    f.booktitle && `<em>${escapeHtml(f.booktitle)}</em>`,
+  ].filter(Boolean).join(" ");
+  const chapterParts = isChapter ? [
+    chapterBook,
+    editorText && `edited by ${escapeHtml(editorText)}`,
+    [f.location, f.publisher].filter(Boolean).map(escapeHtml).join(": "),
+  ].filter(Boolean) : [];
+  const venueAndVolume = !isChapter && venue
     ? `<em>${escapeHtml(venue)}</em>${volumeIssue || pages ? ` ${volumeIssue}${pages}` : ""}`
-    : `${volumeIssue}${pages}`;
+    : !isChapter ? `${volumeIssue}${pages}` : "";
   const venueParts = [
-    venueAndVolume,
+    ...(isChapter ? [chapterParts.join(", ")] : [venueAndVolume]),
     doiUrl && `<a href="${escapeHtml(doiUrl)}">${escapeHtml(doiUrl)}</a>`,
     url && `<a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`,
   ].filter(Boolean);
@@ -816,6 +835,13 @@ function slugify(text) {
   return text.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function normalizeCvSectionSlug(slug) {
+  const aliases = {
+    "service-skills-etc": "service-and-skills",
+  };
+  return aliases[slug] || slug;
+}
+
 function parseCvMarkdown(markdown) {
   const sections = {};
   const lines = markdown.split(/\r?\n/);
@@ -827,7 +853,7 @@ function parseCvMarkdown(markdown) {
     if (!line || line.startsWith("# ")) continue;
 
     if (line.startsWith("## ")) {
-      current = slugify(line.slice(3));
+      current = normalizeCvSectionSlug(slugify(line.slice(3)));
       sections[current] = [];
       currentEntry = null;
       continue;
@@ -867,7 +893,7 @@ async function renderCvMarkdown() {
       const heading = section.querySelector("h2")?.outerHTML || "";
       section.innerHTML = `${heading}${entries.map((entry) => `
         <div class="cv-entry">
-          <span class="date">${escapeHtml(entry.date)}</span>
+          <span class="date">${formatCvDate(entry.date)}</span>
           <div>
             <h3>${escapeHtml(entry.heading)}</h3>
             <p>${escapeHtml(entry.detail.join(" "))}</p>

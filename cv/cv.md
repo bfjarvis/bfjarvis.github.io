@@ -13,13 +13,10 @@ The Institute for Analytical Sociology, Linköping University.
 
 The Institute for Analytical Sociology, Linköping University.
 
-### 2015-2016 | Postdoctoral Research
+### 2015-2016 | Postdoctoral Researcher
 
 The Institute for Analytical Sociology, Linköping University.
 
-### 2022-2023; 2020; 2017 | Parental Leave
-
-November 2022-January 2023; January-December 2020; August-December 2017.
 
 ## Education
 
@@ -107,7 +104,7 @@ Instructor. Linköping University, course 771A06.
 
 Atlanta Public Schools. Teacher, Grade 9 Physical Science and Grade 11-12 Physics.
 
-## Service and Skills
+## Service
 
 ### Ongoing | Peer Review
 
@@ -117,6 +114,8 @@ Reviewer for American Journal of Sociology, American Sociological Review, Socius
 
 Member, Population Association of America (2012-present); American Sociological Association (2015-present); ISA RC28 Social Stratification (2015-present).
 
+## Skills
+
 ### 2010-Present | Stata
 
 Discrete choice models, including logit, multinomial logit, conditional logit, and mixed logit.
@@ -125,10 +124,24 @@ Discrete choice models, including logit, multinomial logit, conditional logit, a
 
 Network analysis, discrete choice modeling, data wrangling, and visualization, including sna, ergm, mlogit, tidyr, and ggplot2.
 
-### 2014-Present | AnyLogic
+### 2014-2015 | AnyLogic
 
 Java-based agent-based modeling.
 
 ### 2000-2003 | MATLAB
 
 Scientific computing and applied physics coursework.
+
+## Miscellaneous
+
+### 2022-2023 | Parental Leave
+
+November-January 
+
+### 2020 | Parental Leave
+
+January-December
+
+### 2017 | Parental Leave
+
+August-December 2017
