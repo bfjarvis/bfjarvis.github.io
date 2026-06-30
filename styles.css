@@ -174,7 +174,7 @@ h1 {
 }
 
 .hero h1 {
-  max-width: min(920px, calc(100vw - 36px));
+  max-width: min(920px, 75vw);
   text-shadow: var(--page-title-shadow);
 }
 
@@ -740,7 +740,7 @@ h3 {
 }
 
 .page-hero-image h1 {
-  max-width: 980px;
+  max-width: min(980px, 75vw);
   font-size: var(--page-title-size);
   text-shadow: var(--page-title-shadow);
 }
@@ -769,7 +769,7 @@ h3 {
 
 .cv-hero h1,
 .post-hero h1 {
-  max-width: 860px;
+  max-width: min(860px, 75vw);
   font-size: var(--page-title-size);
   text-shadow: var(--page-title-shadow);
 }
@@ -964,6 +964,13 @@ h3 {
 
   .hero-content {
     margin-inline: 18px;
+  }
+
+  .hero h1,
+  .page-hero-image h1,
+  .cv-hero h1,
+  .post-hero h1 {
+    max-width: min(75vw, calc(100vw - 36px));
   }
 
   .intro-section {
