@@ -89,6 +89,7 @@ function normalizeCslItem(item = {}) {
     title: item.title || "",
     author: item.author || [],
     editor: item.editor || [],
+    contributor: item.contributor || [],
     date: cslDateValue(item.issued),
     year: cslDateValue(item.issued).slice(0, 4),
     journaltitle: item["container-title"] || "",
@@ -130,10 +131,34 @@ function asaAuthorName(name = {}, invert = false) {
   return [name.given, name.family].filter(Boolean).join(" ");
 }
 
-function joinNameList(names = []) {
+function formatNameList(names = []) {
   if (names.length < 2) return names.join("");
   if (names.length === 2) return `${names[0]} and ${names[1]}`;
   return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
+function isBenjaminJarvisName(name = "") {
+  return /benjamin\s+f\.?\s+jarvis/i.test(name) || /benjamin\s+jarvis/i.test(name);
+}
+
+function cslNameList(people = [], { excludeSelf = false } = {}) {
+  const names = people
+    .map((person) => asaAuthorName(person))
+    .filter(Boolean)
+    .filter((name) => !excludeSelf || !isBenjaminJarvisName(name));
+  return formatNameList(names);
+}
+
+function supervisionNameList(entry) {
+  const contributors = entry.fields.contributor || [];
+  const names = contributors
+    .map((person, index) => {
+      const name = asaAuthorName(person);
+      if (!name) return "";
+      return isPhdThesis(entry) && index === 0 ? `${name} (Main)` : name;
+    })
+    .filter(Boolean);
+  return formatNameList(names);
 }
 
 function citationAuthors(entry) {
@@ -143,7 +168,7 @@ function citationAuthors(entry) {
 
 function citationNames(authorField = "") {
   if (Array.isArray(authorField)) {
-    return joinNameList(authorField.map((author) => asaAuthorName(author)).filter(Boolean));
+    return cslNameList(authorField);
   }
 
   return String(authorField || "").trim() || "Author information forthcoming";
@@ -409,6 +434,34 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
   `;
 }
 
+function supervisionRoleDetail(entry) {
+  const f = entry.fields;
+  return [
+    f.type || (isPhdThesis(entry) ? "Dissertation" : "Master's thesis"),
+    f.publisher,
+    f.location,
+  ].filter(Boolean).map(escapeHtml).join(". ");
+}
+
+function renderSupervisionItem(entry) {
+  const f = entry.fields;
+  const student = citationNames(f.author);
+  const title = f.title || "Untitled thesis";
+  const detail = supervisionRoleDetail(entry);
+  const supervisors = supervisionNameList(entry);
+
+  return `
+    <div class="cv-entry">
+      <span class="date">${escapeHtml(entryYear(entry))}</span>
+      <div>
+        <h3>${escapeHtml(student)}. ${escapeHtml(title)}</h3>
+        ${supervisors ? `<p class="supervision-line">Supervision: ${escapeHtml(supervisors)}.</p>` : ""}
+        ${detail ? `<p>${detail}.</p>` : ""}
+      </div>
+    </div>
+  `;
+}
+
 async function renderPublications() {
   const targets = document.querySelectorAll("[data-publications]");
   if (!targets.length) return;
@@ -446,7 +499,9 @@ async function renderPublications() {
           }
 
           target.innerHTML = selected
-            .map((entry) => renderPublicationItem(entry, target.classList.contains("cv-publications"), publicationAssets, source))
+            .map((entry) => mode?.startsWith("supervision")
+              ? renderSupervisionItem(entry)
+              : renderPublicationItem(entry, target.classList.contains("cv-publications"), publicationAssets, source))
             .join("");
         })
         .catch(() => {
@@ -667,18 +722,15 @@ function groupTeachingRecords(items = []) {
   }).sort((a, b) => b.latestValue - a.latestValue || a.title.localeCompare(b.title));
 }
 
-function isBenjaminJarvis(name = "") {
-  return /benjamin\s+f\.?\s+jarvis/i.test(name) || /benjamin\s+jarvis/i.test(name);
-}
-
 function teachingRoleLabel(role) {
   const baseRole = role.role || "Teaching";
-  const otherOrganizers = role.organizers.filter((name) => !isBenjaminJarvis(name));
-  const userIsOrganizer = role.organizers.some(isBenjaminJarvis);
+  const otherOrganizers = role.organizers.filter((name) => !isBenjaminJarvisName(name));
+  const userIsOrganizer = role.organizers.some(isBenjaminJarvisName);
+  const organizerList = formatNameList(otherOrganizers);
 
   if (!otherOrganizers.length) return baseRole;
-  if (userIsOrganizer) return `${baseRole} (With ${otherOrganizers.join(", ")})`;
-  return `${baseRole} (Coordinator: ${otherOrganizers.join(", ")})`;
+  if (userIsOrganizer) return `${baseRole} (With ${organizerList})`;
+  return `${baseRole} (Coordinator: ${organizerList})`;
 }
 
 function renderTeachingRole(role) {
@@ -732,6 +784,37 @@ function renderTeachingCourse(course, compact = false) {
   `;
 }
 
+function teachingDateRange(roles = []) {
+  const years = roles
+    .map((role) => String(role.term || "").match(/(?:19|20)\d{2}/)?.[0])
+    .filter(Boolean)
+    .map(Number);
+
+  if (!years.length) return "";
+  const first = Math.min(...years);
+  const last = Math.max(...years);
+  return first === last ? String(last) : `${first}-${last}`;
+}
+
+function renderCvTeachingEntry(course) {
+  const meta = [course.program, course.institution].filter(Boolean).map(escapeHtml).join(" | ");
+  const roleHistory = course.roles
+    .filter((role) => role.term)
+    .map((role) => `${escapeHtml(role.term)}: ${escapeHtml(teachingRoleLabel(role))}`)
+    .join("; ");
+  const detail = [meta, roleHistory].filter(Boolean).join(". ");
+
+  return `
+    <div class="cv-entry">
+      <span class="date">${escapeHtml(teachingDateRange(course.roles))}</span>
+      <div>
+        <h3>${escapeHtml(course.title)}</h3>
+        ${detail ? `<p>${detail}</p>` : ""}
+      </div>
+    </div>
+  `;
+}
+
 async function renderGrants() {
   const targets = document.querySelectorAll("[data-grants]");
   if (!targets.length) return;
@@ -765,6 +848,31 @@ async function renderGrants() {
         target.innerHTML = "<p>Project list could not be loaded.</p>";
       });
   });
+}
+
+async function renderCvTeaching() {
+  const target = document.querySelector("[data-cv-teaching-source]");
+  if (!target) return;
+
+  if (isFilePreview()) {
+    target.innerHTML = '<h2>Teaching</h2><p>Teaching data needs a local server.</p>';
+    return;
+  }
+
+  try {
+    const response = await fetch(target.dataset.cvTeachingSource);
+    const courses = groupTeachingRecords(await response.json());
+    const courseGroups = courses.filter((course) => course.kind === "course");
+    const programGroups = courses.filter((course) => course.kind === "program");
+    const sections = [
+      courseGroups.length && `<h3 class="cv-subheading">Courses</h3>${courseGroups.map(renderCvTeachingEntry).join("")}`,
+      programGroups.length && `<h3 class="cv-subheading">Programs</h3>${programGroups.map(renderCvTeachingEntry).join("")}`,
+    ].filter(Boolean);
+
+    target.innerHTML = `<h2>Teaching</h2>${sections.join("") || "<p>No teaching entries found.</p>"}`;
+  } catch {
+    target.innerHTML = "<h2>Teaching</h2><p>Teaching list could not be loaded.</p>";
+  }
 }
 
 async function renderTeaching() {
@@ -883,3 +991,4 @@ renderPublications();
 renderCvMarkdown();
 renderGrants();
 renderTeaching();
+renderCvTeaching();

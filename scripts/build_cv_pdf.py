@@ -91,6 +91,7 @@ def normalize_csl_item(item):
         "title": item.get("title", ""),
         "author": item.get("author", []),
         "editor": item.get("editor", []),
+        "contributor": item.get("contributor", []),
         "date": issued,
         "year": issued[:4],
         "journaltitle": item.get("container-title", ""),
@@ -121,26 +122,50 @@ def parse_reference_data(path):
 
 
 def asa_author_text(author_field):
-    def join_names(names):
-        names = [name for name in names if name]
-        if len(names) < 2:
-            return "".join(names) or "Author information forthcoming"
-        if len(names) == 2:
-            return f"{names[0]} and {names[1]}"
-        return f"{', '.join(names[:-1])}, and {names[-1]}"
-
     if isinstance(author_field, list):
-        authors = []
-        for author in author_field:
-            if author.get("literal"):
-                authors.append(author["literal"])
-                continue
-            given = author.get("given", "")
-            family = author.get("family", "")
-            authors.append(" ".join(part for part in [given, family] if part))
-        return join_names(authors)
+        return format_name_list(csl_person_name(author) for author in author_field) or "Author information forthcoming"
 
     return str(author_field or "").strip() or "Author information forthcoming"
+
+
+def csl_person_name(person):
+    if person.get("literal"):
+        return person["literal"]
+    return " ".join(part for part in [person.get("given", ""), person.get("family", "")] if part)
+
+
+def format_name_list(names):
+    names = [name for name in names if name]
+    if len(names) < 2:
+        return "".join(names)
+    if len(names) == 2:
+        return f"{names[0]} and {names[1]}"
+    return f"{', '.join(names[:-1])}, and {names[-1]}"
+
+
+def is_benjamin_jarvis_name(name):
+    return bool(re.search(r"benjamin\s+f\.?\s+jarvis|benjamin\s+jarvis", name, re.I))
+
+
+def csl_name_list(people, exclude_self=False):
+    names = [
+        csl_person_name(person)
+        for person in people
+        if csl_person_name(person) and (not exclude_self or not is_benjamin_jarvis_name(csl_person_name(person)))
+    ]
+    return format_name_list(names)
+
+
+def supervision_name_list(entry):
+    names = []
+    for index, person in enumerate(entry["fields"].get("contributor", [])):
+        name = csl_person_name(person)
+        if not name:
+            continue
+        if is_phd_thesis(entry) and index == 0:
+            name = f"{name} (Main)"
+        names.append(name)
+    return format_name_list(names)
 
 
 def entry_year(entry):
@@ -207,6 +232,11 @@ def is_master_thesis(entry):
     return is_thesis(entry) and "dissertation" not in thesis_type and "phd" not in thesis_type
 
 
+def is_phd_thesis(entry):
+    thesis_type = entry["fields"].get("type", "").lower()
+    return is_thesis(entry) and ("dissertation" in thesis_type or "phd" in thesis_type)
+
+
 def publication_groups(path):
     entries = parse_reference_data(path)
     return [
@@ -252,12 +282,13 @@ def teaching_role_label(role):
     base_role = role.get("role") or "Teaching"
     other_organizers = [name for name in role.get("organizers", []) if not is_benjamin_jarvis(name)]
     user_is_organizer = any(is_benjamin_jarvis(name) for name in role.get("organizers", []))
+    organizer_list = format_name_list(other_organizers)
 
     if not other_organizers:
         return base_role
     if user_is_organizer:
-        return f"{base_role} (with {', '.join(other_organizers)})"
-    return f"{base_role} (coordinator: {', '.join(other_organizers)})"
+        return f"{base_role} (with {organizer_list})"
+    return f"{base_role} (coordinator: {organizer_list})"
 
 
 def normalize_teaching_record(item):
@@ -450,6 +481,35 @@ def publication_entries(entries):
     return publications
 
 
+def supervision_detail(entry):
+    fields = entry["fields"]
+    parts = [
+        fields.get("type") or ("Dissertation" if is_phd_thesis(entry) else "Master's thesis"),
+        fields.get("publisher", ""),
+        fields.get("location", ""),
+    ]
+    detail = ". ".join(clean_text(part) for part in parts if part)
+    supervisors = supervision_name_list(entry)
+    if supervisors:
+        supervision_line = f"Supervision: {clean_text(supervisors)}"
+        return f"{supervision_line}<br/>{detail}" if detail else supervision_line
+    return detail
+
+
+def supervision_cv_entries(entries):
+    rows = []
+    for entry in entries:
+        fields = entry["fields"]
+        student = asa_author_text(fields.get("author", []))
+        title = fields.get("title") or "Untitled thesis"
+        rows.append((
+            entry_year(entry),
+            f"{clean_text(student)}. {clean_text(title)}",
+            supervision_detail(entry),
+        ))
+    return rows
+
+
 def section(title, entries, styles):
     story = [paragraph(title, styles["Section"])]
     for date, heading, detail in entries:
@@ -591,9 +651,9 @@ def build():
         if doctoral_entries or masters_entries:
             story.append(paragraph("Supervision", styles["Section"]))
         if doctoral_entries:
-            story.extend(section("Doctoral Supervision", publication_entries(doctoral_entries), styles))
+            story.extend(section("Doctoral Supervision", supervision_cv_entries(doctoral_entries), styles))
         if masters_entries:
-            story.extend(section("Master's Supervision", publication_entries(masters_entries), styles))
+            story.extend(section("Master's Supervision", supervision_cv_entries(masters_entries), styles))
     story.extend(
         section(
             "Grants",
