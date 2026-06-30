@@ -225,6 +225,8 @@ h3 {
 .posts-section,
 .cv-page,
 .post-page {
+  width: 100%;
+  max-width: 100%;
   padding: clamp(64px, 9vw, 120px) clamp(18px, 5vw, 72px);
 }
 
@@ -318,6 +320,8 @@ h3 {
   flex: 0 0 auto;
   color: var(--teal-dark);
   font-weight: 800;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .section-links {
@@ -348,6 +352,7 @@ h3 {
   gap: clamp(18px, 3vw, 42px);
   padding: 28px 0;
   border-bottom: 1px solid var(--line);
+  min-width: 0;
 }
 
 .publication-item.has-image {
@@ -385,6 +390,22 @@ h3 {
 
 .publication-item p:not(.meta) {
   color: var(--ink-soft);
+}
+
+.publication-item > *,
+.teaching-course > *,
+.teaching-course-body,
+.cv-entry > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.publication-item a,
+.teaching-course a,
+.cv-entry a,
+.citation-line {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .citation-line {
@@ -561,6 +582,7 @@ h3 {
   grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
   gap: clamp(20px, 4vw, 58px);
   padding-top: clamp(24px, 3.5vw, 36px);
+  min-width: 0;
 }
 
 .teaching-course-meta {
@@ -622,6 +644,7 @@ h3 {
   align-items: baseline;
   padding: 3px 0;
   line-height: 1.35;
+  min-width: 0;
 }
 
 .role-term {
@@ -840,6 +863,7 @@ h3 {
   grid-template-columns: 120px minmax(0, 1fr);
   gap: 22px;
   padding: 18px 0;
+  min-width: 0;
 }
 
 .cv-entry time,

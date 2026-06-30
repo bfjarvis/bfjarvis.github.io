@@ -3,7 +3,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    css: ../styles.css?v=20260630-fold-cue
+    css: ../styles.css?v=20260630-wrap-link
     page-layout: article
     include-before-body:
       text: |
@@ -35,7 +35,7 @@ format:
           </div>
           <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
         </footer>
-        <script src="../script.js?v=20260630-teaching-projects"></script>
+        <script src="../script.js?v=20260630-wrap-link"></script>
 execute:
   echo: true
   warning: false

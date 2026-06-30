@@ -233,8 +233,8 @@ function citationFor(entry) {
     : !isChapter ? `${volumeIssue}${pages}` : "";
   const venueParts = [
     ...(isChapter ? [chapterParts.join(", ")] : [venueAndVolume]),
-    doiUrl && `<a href="${escapeHtml(doiUrl)}">${escapeHtml(doiUrl)}</a>`,
-    url && `<a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`,
+    doiUrl && `<a href="${escapeHtml(doiUrl)}">[Link]</a>`,
+    url && `<a href="${escapeHtml(url)}">[Link]</a>`,
   ].filter(Boolean);
   const fullCitation = `${escapeHtml(authorText)}. ${entryYear(entry)}. ${titleHtml}${venueParts.length ? ` ${venueParts.join(", ")}.` : ""}`;
 
