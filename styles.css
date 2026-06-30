@@ -13,7 +13,12 @@
   --site-hero-image: url("assets/research-header-painterly.png");
   --site-hero-position: center top;
   --header-height: 80px;
-  --home-hero-height: clamp(320px, 42svh, 500px);
+  --home-profile-space: clamp(300px, 32svh, 390px);
+  --home-hero-height: clamp(
+    320px,
+    calc(100svh - var(--header-height) - var(--home-profile-space)),
+    min(820px, calc(100vw * 941 / 1672))
+  );
   --page-title-size: clamp(2.45rem, 3.2vw + 1rem, 3.9rem);
   --section-title-size: clamp(1.35rem, 2.7vw, 2.9rem);
   --page-title-shadow:
@@ -256,24 +261,21 @@ h3 {
 }
 
 .scroll-cue {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
+  margin-inline: auto;
   margin-top: clamp(22px, 4vw, 44px);
   color: var(--ink);
   font-weight: 800;
   text-decoration: none;
 }
 
-.scroll-cue span:first-child {
-  display: inline-grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
+.scroll-cue span:last-child {
   color: var(--brick);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   line-height: 1;
 }
 

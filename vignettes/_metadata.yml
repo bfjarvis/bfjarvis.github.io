@@ -3,7 +3,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    css: ../styles.css?v=20260630-unified-heroes
+    css: ../styles.css?v=20260630-responsive-home-hero
     page-layout: article
     include-before-body:
       text: |
