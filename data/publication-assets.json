@@ -1,15 +1,15 @@
 {
-  "arvidssonIntersectionAnalyticalSociology2025a": {
+  "arvidssonIntersectionAnalyticalSociology2025": {
     "images": [
       {
-        "image": "assets/css_handbook_elgar.jpg",
+        "image": "assets/publications/css_handbook_elgar.jpg",
         "alt": "Book cover for Edward Elgar's Handbook of Computational Social Science.",
         "caption": "Edward Elgar's Handbook of Computatiotional Social Science."
       }
     ]
   },
   "jarvisAnalyticalSociologyAmidst2021": {
-    "image": "assets/css_handbook_routledge.jpg",
+    "image": "assets/publications/css_handbook_routledge.jpg",
     "alt": "Book cover for Routledge's Handbook of Computational Social Science, Volume 1.",
     "caption": "Routledge's Handbook of Computational Social Science, Volume 1."
   }
