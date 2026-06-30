@@ -71,11 +71,11 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260629-asa-citations">
+    <link rel="stylesheet" href="../styles.css?v=20260630-unified-heroes">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
-      <a class="site-mark" href="../" aria-label="Benjamin F. Jarvis home"><span>BFJ</span></a>
+      <a class="site-mark" href="../" aria-label="Benjamin F. Jarvis home"><span>Benjamin F. Jarvis</span></a>
       <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
         <span></span>
         <span></span>
@@ -92,10 +92,6 @@ def build():
     <main>
       <section class="cv-hero">
         <h1>Data vignettes & reproducible notes</h1>
-        <p>
-          Short empirical notes rendered from Quarto files written in RStudio,
-          Positron, or any editor that supports `.qmd`.
-        </p>
       </section>
 
       <section class="cv-page">
@@ -107,7 +103,7 @@ def build():
 
     <footer class="site-footer" aria-labelledby="footer-contact-title">
       <div>
-        <h2 id="footer-contact-title">For collaboration, teaching, and research conversations.</h2>
+        <h2 id="footer-contact-title">Contact, connect, collaborate.</h2>
       </div>
       <div class="contact-links">
         <a href="mailto:benjamin.jarvis@liu.se">benjamin.jarvis@liu.se</a>
@@ -119,7 +115,7 @@ def build():
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js"></script>
+    <script src="../script.js?v=20260630-json-only"></script>
   </body>
 </html>
 """,

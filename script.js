@@ -61,55 +61,6 @@ function formatCvDate(date = "") {
   return date.split(";").map((part) => escapeHtml(part.trim())).filter(Boolean).join("<br>");
 }
 
-function normalizeBibValue(value = "") {
-  return decodeLatex(value)
-    .trim()
-    .replace(/^["{]+|["},]+$/g, "")
-    .replace(/[{}]/g, "")
-    .replace(/\s+/g, " ")
-    .replace(/--/g, "-");
-}
-
-function decodeLatex(value = "") {
-  const replacements = {
-    '\\"a': "ä",
-    '\\"A': "Ä",
-    '\\"o': "ö",
-    '\\"O': "Ö",
-    '\\"u': "ü",
-    '\\"U': "Ü",
-    '\\"e': "ë",
-    '\\"E': "Ë",
-    '\\"i': "ï",
-    '\\"I': "Ï",
-    "\\'e": "é",
-    "\\'E": "É",
-    "\\`e": "è",
-    "\\`E": "È",
-    "\\aa": "å",
-    "\\AA": "Å",
-    "\\&": "&",
-    "\\,": " ",
-  };
-
-  let decoded = value;
-  Object.entries(replacements).forEach(([latex, plain]) => {
-    decoded = decoded.split(latex).join(plain);
-  });
-
-  return decoded
-    .replace(/\{\\?"([aeiouAEIOU])\}/g, (_, letter) => replacements[`\\"${letter}`] || letter)
-    .replace(/\\?"\{([aeiouAEIOU])\}/g, (_, letter) => replacements[`\\"${letter}`] || letter)
-    .replace(/\\([{}])/g, "$1")
-    .replace(/``|''/g, '"')
-    .replace(/\\[a-zA-Z]+\s?/g, "");
-}
-
-function truncateText(value = "", maxLength = 320) {
-  if (value.length <= maxLength) return value;
-  return `${value.slice(0, maxLength).replace(/\s+\S*$/, "")}...`;
-}
-
 function isFilePreview() {
   return window.location.protocol === "file:";
 }
@@ -124,48 +75,6 @@ function filePreviewMessage(kind) {
       </p>
     </article>
   `;
-}
-
-function parseBibTeX(source) {
-  const entries = [];
-  let index = 0;
-
-  while (index < source.length) {
-    const at = source.indexOf("@", index);
-    if (at === -1) break;
-
-    const open = source.indexOf("{", at);
-    if (open === -1) break;
-
-    const type = source.slice(at + 1, open).trim().toLowerCase();
-    let depth = 1;
-    let close = open + 1;
-
-    while (close < source.length && depth > 0) {
-      if (source[close] === "{") depth += 1;
-      if (source[close] === "}") depth -= 1;
-      close += 1;
-    }
-
-    const body = source.slice(open + 1, close - 1);
-    const comma = body.indexOf(",");
-    if (comma > -1) {
-      const key = body.slice(0, comma).trim();
-      const fieldText = body.slice(comma + 1);
-      const fields = parseBibFields(fieldText);
-
-      entries.push({ key, type, fields });
-    }
-
-    index = close;
-  }
-
-  return entries.sort((a, b) => sortDateValue(b) - sortDateValue(a));
-}
-
-function nameFromCslName(name = {}) {
-  if (name.literal) return name.literal;
-  return [name.given, name.family].filter(Boolean).join(" ");
 }
 
 function cslDateValue(date = {}) {
@@ -210,85 +119,9 @@ function normalizeCslItem(item = {}) {
 }
 
 function parseReferenceData(source = "") {
-  const trimmed = source.trim();
-  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
-    const data = JSON.parse(trimmed);
-    const items = Array.isArray(data) ? data : (data.items || []);
-    return items.map(normalizeCslItem).sort((a, b) => sortDateValue(b) - sortDateValue(a));
-  }
-
-  return parseBibTeX(source);
-}
-
-function parseBibFields(fieldText) {
-  const fields = {};
-  let cursor = 0;
-
-  while (cursor < fieldText.length) {
-    const match = fieldText.slice(cursor).match(/([a-zA-Z][\w-]*)\s*=/);
-    if (!match) break;
-
-    const key = match[1].toLowerCase();
-    cursor += match.index + match[0].length;
-
-    while (cursor < fieldText.length && /\s/.test(fieldText[cursor])) {
-      cursor += 1;
-    }
-
-    const delimiter = fieldText[cursor];
-    cursor += 1;
-
-    let value = "";
-    if (delimiter === "{") {
-      let depth = 1;
-      const start = cursor;
-      while (cursor < fieldText.length && depth > 0) {
-        if (fieldText[cursor] === "{") depth += 1;
-        if (fieldText[cursor] === "}") depth -= 1;
-        cursor += 1;
-      }
-      value = fieldText.slice(start, cursor - 1);
-    } else if (delimiter === '"') {
-      const start = cursor;
-      while (cursor < fieldText.length && fieldText[cursor] !== '"') {
-        cursor += 1;
-      }
-      value = fieldText.slice(start, cursor);
-      cursor += 1;
-    } else {
-      const start = cursor - 1;
-      while (cursor < fieldText.length && fieldText[cursor] !== ",") {
-        cursor += 1;
-      }
-      value = fieldText.slice(start, cursor);
-    }
-
-    fields[key] = normalizeBibValue(value);
-
-    while (cursor < fieldText.length && fieldText[cursor] !== ",") {
-      cursor += 1;
-    }
-    if (fieldText[cursor] === ",") {
-      cursor += 1;
-    }
-  }
-
-  return fields;
-}
-
-function splitAuthors(authorField = "") {
-  if (Array.isArray(authorField)) {
-    return authorField.map(nameFromCslName).filter(Boolean);
-  }
-
-  return authorField
-    .split(/\s+and\s+/i)
-    .map((author) => author.trim())
-    .filter(Boolean)
-    .map((author) => {
-      const [last, first] = author.split(",").map((part) => part?.trim());
-      return first ? `${first} ${last}` : author;
-    });
+  const data = JSON.parse(source.trim());
+  const items = Array.isArray(data) ? data : (data.items || []);
+  return items.map(normalizeCslItem).sort((a, b) => sortDateValue(b) - sortDateValue(a));
 }
 
 function asaAuthorName(name = {}, invert = false) {
@@ -312,7 +145,7 @@ function citationNames(authorField = "") {
     return joinNameList(authorField.map((author) => asaAuthorName(author)).filter(Boolean));
   }
 
-  return joinNameList(splitAuthors(authorField)) || "Author information forthcoming";
+  return String(authorField || "").trim() || "Author information forthcoming";
 }
 
 function entryYear(entry) {
@@ -447,8 +280,7 @@ function isWorkingPaper(entry) {
     entryType.includes("preprint") ||
     source.includes("preprint") ||
     source.includes("socarxiv") ||
-    source.includes("osf") ||
-    Boolean(entry.fields.eprint || entry.fields.archiveprefix)
+    source.includes("osf")
   );
 }
 
@@ -589,7 +421,7 @@ async function renderPublications() {
 
   try {
     targets.forEach((target) => {
-      const source = target.dataset.cslSource || target.dataset.bibSource || resolveAssetPath("data/publications.json");
+      const source = target.dataset.cslSource || resolveAssetPath("data/publications.json");
       const assetsSource = target.dataset.assetsSource
         || (source.startsWith("../")
           ? "../data/publication-assets.json?v=20260630-publication-data"

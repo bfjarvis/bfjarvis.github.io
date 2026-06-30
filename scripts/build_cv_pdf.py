@@ -25,42 +25,13 @@ def format_cv_date(text):
 
 
 def clean_text(text):
-    return decode_latex(
-        text.replace("&", "&amp;")
+    return (
+        str(text)
+        .replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
         .replace("--", "-")
     )
-
-
-def decode_latex(text):
-    replacements = {
-        r"\"a": "ä",
-        r"\"A": "Ä",
-        r"\"o": "ö",
-        r"\"O": "Ö",
-        r"\"u": "ü",
-        r"\"U": "Ü",
-        r"\"e": "ë",
-        r"\"E": "Ë",
-        r"\"i": "ï",
-        r"\"I": "Ï",
-        r"\'e": "é",
-        r"\'E": "É",
-        r"\`e": "è",
-        r"\`E": "È",
-        r"\aa": "å",
-        r"\AA": "Å",
-        r"\&": "&",
-        r"\,": " ",
-    }
-
-    decoded = text
-    for latex, plain in replacements.items():
-        decoded = decoded.replace(latex, plain)
-    decoded = re.sub(r"[{}]", "", decoded)
-    decoded = re.sub(r"\\[a-zA-Z]+\s?", "", decoded)
-    return decoded
 
 
 def slugify(text):
@@ -106,41 +77,6 @@ def parse_cv_markdown(path):
     return sections
 
 
-def parse_bibtex(path):
-    source = path.read_text(encoding="utf-8")
-    entries = []
-    index = 0
-
-    while index < len(source):
-        start = source.find("@", index)
-        if start == -1:
-            break
-
-        open_brace = source.find("{", start)
-        if open_brace == -1:
-            break
-
-        entry_type = source[start + 1 : open_brace].strip().lower()
-        depth = 1
-        close = open_brace + 1
-
-        while close < len(source) and depth:
-            if source[close] == "{":
-                depth += 1
-            elif source[close] == "}":
-                depth -= 1
-            close += 1
-
-        body = source[open_brace + 1 : close - 1]
-        _, _, field_text = body.partition(",")
-        fields = parse_bib_fields(field_text)
-        fields = {key: re.sub(r"\s+", " ", value) for key, value in fields.items()}
-        entries.append({"type": entry_type, "fields": fields})
-        index = close
-
-    return sorted(entries, key=sort_date_value, reverse=True)
-
-
 def csl_date_value(date):
     parts = (date or {}).get("date-parts", [[]])[0]
     return "-".join(str(part) for part in parts if part)
@@ -176,82 +112,9 @@ def normalize_csl_item(item):
 
 
 def parse_reference_data(path):
-    if path.suffix.lower() == ".json":
-        data = json.loads(path.read_text(encoding="utf-8"))
-        items = data if isinstance(data, list) else data.get("items", [])
-        return sorted((normalize_csl_item(item) for item in items), key=sort_date_value, reverse=True)
-
-    return parse_bibtex(path)
-
-
-def parse_bib_fields(field_text):
-    fields = {}
-    cursor = 0
-
-    while cursor < len(field_text):
-        match = re.search(r"([A-Za-z][\w-]*)\s*=", field_text[cursor:])
-        if not match:
-            break
-
-        key = match.group(1).lower()
-        cursor += match.end()
-
-        while cursor < len(field_text) and field_text[cursor].isspace():
-            cursor += 1
-
-        if cursor >= len(field_text):
-            break
-
-        delimiter = field_text[cursor]
-        cursor += 1
-
-        if delimiter == "{":
-            depth = 1
-            start = cursor
-            while cursor < len(field_text) and depth:
-                if field_text[cursor] == "{":
-                    depth += 1
-                elif field_text[cursor] == "}":
-                    depth -= 1
-                cursor += 1
-            value = field_text[start : cursor - 1]
-        elif delimiter == '"':
-            start = cursor
-            while cursor < len(field_text) and field_text[cursor] != '"':
-                cursor += 1
-            value = field_text[start:cursor]
-            cursor += 1
-        else:
-            start = cursor - 1
-            while cursor < len(field_text) and field_text[cursor] != ",":
-                cursor += 1
-            value = field_text[start:cursor]
-
-        fields[key] = value.strip().strip(",")
-
-        while cursor < len(field_text) and field_text[cursor] != ",":
-            cursor += 1
-        if cursor < len(field_text) and field_text[cursor] == ",":
-            cursor += 1
-
-    return fields
-
-
-def author_text(author_field):
-    if isinstance(author_field, list):
-        authors = []
-        for author in author_field:
-            if author.get("literal"):
-                authors.append(author["literal"])
-            else:
-                authors.append(" ".join(part for part in [author.get("given"), author.get("family")] if part))
-        return ", ".join(filter(None, authors)) or "Author information forthcoming"
-
-    authors = []
-    for author in re.split(r"\s+and\s+", author_field or ""):
-        parts = [part.strip() for part in author.split(",")]
-        authors.append(f"{parts[1]} {parts[0]}" if len(parts) > 1 else author.strip())
-    return ", ".join(filter(None, authors)) or "Author information forthcoming"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    items = data if isinstance(data, list) else data.get("items", [])
+    return sorted((normalize_csl_item(item) for item in items), key=sort_date_value, reverse=True)
 
 
 def asa_author_text(author_field):
@@ -274,7 +137,7 @@ def asa_author_text(author_field):
             authors.append(" ".join(part for part in [given, family] if part))
         return join_names(authors)
 
-    return join_names(author_text(author_field).split(", "))
+    return str(author_field or "").strip() or "Author information forthcoming"
 
 
 def entry_year(entry):
@@ -318,7 +181,6 @@ def is_working_paper(entry):
         or "preprint" in source
         or "socarxiv" in source
         or "osf" in source
-        or bool(fields.get("eprint") or fields.get("archiveprefix"))
     )
 
 

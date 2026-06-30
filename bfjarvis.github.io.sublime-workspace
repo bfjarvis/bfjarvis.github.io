@@ -3,200 +3,41 @@
 	{
 		"selected_items":
 		[
-			[
-				"alt",
-				"alternatives"
-			],
-			[
-				"Faculty",
-				"FacultyRank_RA"
-			],
-			[
-				"Facult",
-				"FacultyRank"
-			],
-			[
-				"F",
-				"FacultyID"
-			],
-			[
-				"level",
-				"levelsof_group"
-			],
-			[
-				"neigh",
-				"neigh_fips"
-			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "bfjarvis.github.io.sublime-project",
+			"settings":
+			{
+				"buffer_size": 47,
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+			]
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
 	[
-		[
-			[
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					""
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Traditional"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"PdfLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"XeLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"LuaLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Basic Builder"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Basic Builder - PdfLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Basic Builder - XeLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Basic Builder - LuaLaTeX"
-				],
-				[
-					"Packages/LaTeXTools/LaTeX.sublime-build",
-					"Script Builder"
-				]
-			],
-			[
-				"Packages/LaTeXTools/LaTeX.sublime-build",
-				""
-			]
-		],
-		[
-			[
-				[
-					"Packages/Pandoc/pandoc.sublime-build",
-					""
-				],
-				[
-					"Packages/Pandoc/pandoc.sublime-build",
-					"Run"
-				]
-			],
-			[
-				"Packages/Pandoc/pandoc.sublime-build",
-				"Run"
-			]
-		]
 	],
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 0.0,
 		"last_filter": "",
 		"selected_items":
 		[
-			[
-				"install ",
-				"Package Control: Install Package"
-			],
-			[
-				"package",
-				"Package Control: Upgrade Package"
-			],
-			[
-				"package contro",
-				"Install Package Control"
-			],
-			[
-				"packa",
-				"Preferences: Browse Packages"
-			],
-			[
-				"pac",
-				"Preferences: Package Control Settings – User"
-			],
-			[
-				"update",
-				"Help: Check for Updates"
-			],
-			[
-				"Package Control: ",
-				"Package Control: Upgrade/Overwrite All Packages"
-			],
-			[
-				"term",
-				"Terminus: Toggle Panel"
-			],
-			[
-				"pack",
-				"Package Control: Install Package"
-			],
-			[
-				"LSP",
-				"LSP: Enable Language Server Globally"
-			],
-			[
-				"R",
-				"Preferences: R-IDE Settings"
-			],
-			[
-				"install",
-				"Package Control: Install Package"
-			],
-			[
-				"r-box",
-				"Preferences: R-Box Settings"
-			],
-			[
-				"instal",
-				"Package Control: Install Package"
-			],
-			[
-				"pandoc",
-				"Pandoc"
-			],
-			[
-				"markdown",
-				"Set Syntax: Markdown Extended"
-			],
-			[
-				"set syntax mark",
-				"Set Syntax: Markdown Extended"
-			],
-			[
-				"late",
-				"Build With: LaTeX"
-			],
-			[
-				"latex",
-				"LaTeXTools: View PDF"
-			],
-			[
-				"Package Control:  ",
-				"Package Control: Install Package"
-			]
 		],
-		"width": 444.0
+		"width": 0.0
 	},
 	"console":
 	{
-		"height": 205.0,
+		"height": 0.0,
 		"history":
 		[
-			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
-			"ls"
 		]
 	},
 	"distraction_free":
@@ -208,117 +49,20 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/Users/bjarvis/Documents/Develop/web/bfjarvis.github.io"
+	],
 	"file_history":
 	[
-		"/Users/bjarvis/Documents/Develop/web/bfjarvis.github.io/data/publication-assets.json",
-		"/Users/bjarvis/Documents/Develop/web/bfjarvis.github.io/README.md",
-		"/Users/bjarvis/Documents/Develop/web/bfjarvis.github.io/index.html",
-		"/Users/bjarvis/Documents/Develop/web/bfjarvis.github.io/cv/cv.md",
-		"/Users/bjarvis/Downloads/study guide.url",
-		"/Users/bjarvis/.zshrc",
-		"/Users/bjarvis/.zprofile",
-		"/Users/bjarvis/Documents/Literature and Concept Mapping/docs/research-cartographer-design.md",
-		"/Users/bjarvis/.Renviron",
-		"/Users/bjarvis/.Rprofile",
-		"/Users/bjarvis/Downloads/tandf_hsbi1815_71.bib",
-		"/Users/bjarvis/Dropbox/Research Projects/HQSEG/Code/run_869939940_mover_attempts.csv",
-		"/Users/bjarvis/Dropbox/Research Projects/HQSEG/Code/run_390580724_mover_attempts.csv",
-		"/Users/bjarvis/Dropbox/Research Projects/HQSEG/Output/Simulations/run_884898286_competition_log.csv",
-		"/Users/bjarvis/Dropbox/Peer Review/Population Space and Place/Friend and Neighbor Confidants 20251106/8cc43674-efbd-445b-a735-678bd2b3209a.md",
-		"/Users/bjarvis/Documents/Research/PFFRS - Proximity to Family and Friends and Residential Segregation/Papers/Peer Effects/references.bib",
-		"/Users/bjarvis/Downloads/consultations.ics",
-		"/Users/bjarvis/.R/Makevars",
-		"/Users/bjarvis/.Rnd",
-		"/Users/bjarvis/.Rhistory",
-		"/Users/bjarvis/Downloads/respondent_1.json5",
-		"/Users/bjarvis/.profile",
-		"/Users/bjarvis/.bash_profile",
-		"/Users/bjarvis/Downloads/11220_198209.csv",
-		"/Users/bjarvis/.R/Makevars.bak",
-		"/Users/bjarvis/Desktop/Zotero_Exports/item.bib",
-		"/Users/bjarvis/Downloads/IASSeminarSeries.ics",
-		"/Users/bjarvis/Documents/Research/PFFRS - Proximity to Family and Friends and Residential Segregation/Code/SchoolQuery.sql",
-		"/Users/bjarvis/Documents/Research/PFFRS - Proximity to Family and Friends and Residential Segregation/Code/SchoolQuery.do",
-		"/Users/bjarvis/Desktop/Zotero_Exports/SegregationReadingList/SegregationReadingList.bib",
-		"/Users/bjarvis/Dropbox/Discrete Choice 2024/Assignments/Assignment 4/re-examination/Irushi Kuruppu/assignment.qmd",
-		"/Users/bjarvis/Dropbox/Discrete Choice 2024/Assignments/Assignment 4/re-examination/DCM2024_assignment_4.qmd",
-		"/Users/bjarvis/Dropbox/Discrete Choice/Data/Eurovision/About Dataset",
-		"/Users/bjarvis/Downloads/metadata.json",
-		"/Users/bjarvis/Documents/Teaching/Segregation Workshop/multigroup_measures.Rpres",
-		"/Users/bjarvis/Library/Application Support/Sublime Text 3/Packages/User/Package Control.sublime-settings",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Spring 2021/Lessons/Lesson 1 - Binary Data/header.tex",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Spring 2019/Archive/Lectures Spring 2018/OldLecture3/Lecture3.tex",
-		"/Users/bjarvis/Library/Logs/Homebrew/scantailor/01.cmake",
-		"/Users/bjarvis/Library/Logs/Homebrew/scantailor/02.make",
-		"/Users/bjarvis/Downloads/mypoisson2.ado",
-		"/Users/bjarvis/.bash-profile",
-		"/Users/bjarvis/.bashprofile",
-		"/private/var/folders/t5/w6p00r9118l6rtbthpcvyf180000gp/T/com.microsoft.Excel/Repair Result to Tables0.xml",
-		"/Users/bjarvis/Documents/Research/General Code/mfxclogit.do",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/EMPSTAT.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind2003_2008.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind1992_2002.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind1983_1991.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind1971_1982.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind1950.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/ind1990.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/occ2010.tab",
-		"/Users/bjarvis/Documents/Research/IDLM/code/data/CLASSWKR.tab",
-		"/var/folders/t5/w6p00r9118l6rtbthpcvyf180000gp/T/Rtmp3x75eV/paste.R",
-		"/Users/bjarvis/Documents/Teaching/Segregation Workshop/dissimilarity_exercises.Rpres",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Students/Spring 2019/51885-Final Assignment/yvool500/DCM.Rmd",
-		"/Users/bjarvis/Documents/Research/AMRS/Code/PropinquitySim.Rmd",
-		"/Users/bjarvis/Documents/Research/AMRS/Presentations/EmpiricalParadoxTuesdayMeeting/EmpiricalParadoxTuesday.md",
-		"/Users/bjarvis/Documents/Research/AMRS/Presentations/EmpiricalParadoxTuesdayMeeting/EmpiricalParadoxTuesday.tex",
-		"/usr/local/Cellar/gdal/2.4.1/share/gdal/gcs.csv",
-		"/Users/bjarvis/.base_profile",
-		"/Users/bjarvis/Library/Application Support/Sublime Text 3/Packages/User/Pandoc.sublime-settings",
-		"/Users/bjarvis/Library/Application Support/Sublime Text 3/Packages/User/CiteBibtex.sublime-settings",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Students/Spring 2018/Alex Gimenez/Lab2 - Alex Gimenez.R",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Lectures/Lecture2/Lecture2.tex",
-		"/Users/bjarvis/Documents/Data Sources/Moral Machine/Data/ShareResponses_head",
-		"/Users/bjarvis/Downloads/gmnl 2/R/gmnl.draws.R",
-		"/Users/bjarvis/Downloads/gmnl 2/R/gmnl.methods.R",
-		"/Users/bjarvis/Documents/Administrative/LiU Masters Program/Mentorship/2018 Cohort/compile.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_analysis_farmacres.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_label.ado",
-		"/Users/bjarvis/Documents/Research/GSMOB/Draft/3_Body.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_frmwrk.do",
-		"/Users/bjarvis/Library/Application Support/Stata/ado/personal/mfxclogit.ado",
-		"/Users/bjarvis/Documents/Research/AMRS/Code/amrs_postsim_stocksandflows.do",
-		"/Users/bjarvis/Documents/Research/AMRS - Assortative Matin and Residential Segregation/Code/amrs_postest_amplot.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_crdata_occstchoice_v2.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_analysis_occstchoice_frmo.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_analysis_statechoice.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_make_tagby.ado",
-		"/Users/bjarvis/Library/Application Support/Sublime Text 3/Packages/User/Stata Enhanced.sublime-settings",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_occgroup.ado",
-		"/Users/bjarvis/Documents/Research/GSMOB/.gitignore",
-		"/Users/bjarvis/Documents/Research/GSMOB/Draft/6_Appendix.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB/Draft/0_Master.tex",
-		"/Users/bjarvis/Library/Application Support/Sublime Text 3/Packages/Stata Enhanced/Stata Enhanced (OSX).sublime-settings",
-		"/Users/bjarvis/Library/Application Support/Stata/profile.do",
-		"/Users/bjarvis/Documents/Research/GSMOB/Draft/1_TitlePage.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB/Draft/0_Master.pdf",
-		"/Users/bjarvis/Documents/Research/GSMOB/Code/gsmob_crdata_farmsizes.R",
-		"/Users/bjarvis/Documents/Research/GSMOB/Data/gsmob_farmsize_input.csv",
-		"/Users/bjarvis/Documents/Research/GSMOB/Data/gsmob_farmsizes.csv",
-		"/Users/bjarvis/Documents/Research/GSMOB - Joint Geographic and Social Mobility/Draft/3_Body.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB - Joint Geographic and Social Mobility/Draft/2_Abstract.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB - Joint Geographic and Social Mobility/Papers/gsmob_PAA_v2.tex",
-		"/Users/bjarvis/Documents/Research/GSMOB - Joint Geographic and Social Mobility/.gitignore",
-		"/Users/bjarvis/Documents/Research/GSMOB - Joint Geographic and Social Mobility/Draft/1_TitlePage.tex",
-		"/Users/bjarvis/Documents/Research/BMCOM/.gitignore",
-		"/Users/bjarvis/Documents/Teaching/Discrete Choice Course/Assignments/Spring 2018/Assignment 4/Assignment4Key.log",
-		"/Users/bjarvis/Documents/Research/BMCOM/Code/bmcomment_schelling.do"
 	],
 	"find":
 	{
-		"height": 31.0
+		"height": 0.0
 	},
 	"find_in_files":
 	{
-		"height": 178.0,
+		"height": 0.0,
 		"where_history":
 		[
 		]
@@ -332,7 +76,7 @@
 		"highlight": true,
 		"in_selection": false,
 		"preserve_case": false,
-		"regex": true,
+		"regex": false,
 		"replace_history":
 		[
 		],
@@ -349,21 +93,48 @@
 		{
 			"sheets":
 			[
-			]
-		},
-		{
-			"sheets":
-			[
+				{
+					"buffer": 0,
+					"file": "bfjarvis.github.io.sublime-project",
+					"selected": true,
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 47,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								47,
+								47
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/zzz A File Icon/aliases/JSON (Sublime).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 31.0
+		"height": 0.0
 	},
 	"input":
 	{
-		"height": 126.0
+		"height": 0.0
 	},
 	"layout":
 	{
@@ -374,18 +145,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.5,
 			1.0
 		],
 		"rows":
@@ -395,24 +159,6 @@
 		]
 	},
 	"menu_visible": true,
-	"output.LSP Log Panel":
-	{
-		"height": 0.0,
-		"history":
-		[
-		]
-	},
-	"output.Terminus":
-	{
-		"height": 334.0
-	},
-	"output.diagnostics":
-	{
-		"height": 253.0,
-		"history":
-		[
-		]
-	},
 	"output.find_results":
 	{
 		"height": 0.0,
@@ -420,19 +166,11 @@
 		[
 		]
 	},
-	"output.latextools":
-	{
-		"height": 172.0
-	},
-	"output.mdpopups":
-	{
-		"height": 0.0
-	},
 	"pinned_build_system": "",
 	"project": "bfjarvis.github.io.sublime-project",
 	"replace":
 	{
-		"height": 58.0
+		"height": 0.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -446,32 +184,32 @@
 	},
 	"select_project":
 	{
-		"height": 500.0,
+		"height": 0.0,
 		"last_filter": "",
 		"selected_items":
 		[
 		],
-		"width": 380.0
+		"width": 0.0
 	},
 	"select_symbol":
 	{
-		"height": 120.0,
+		"height": 0.0,
 		"last_filter": "",
 		"selected_items":
 		[
 		],
-		"width": 592.0
+		"width": 0.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 		"lsp_show_inlay_hints": false
 	},
 	"show_minimap": true,
-	"show_open_files": true,
+	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 319.0,
+	"side_bar_width": 403.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
