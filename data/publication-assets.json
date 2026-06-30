@@ -1,16 +1,16 @@
 {
-  "jarvisKinPropinquityResidential2025": {
+  "arvidssonIntersectionAnalyticalSociology2025a": {
     "images": [
       {
-        "image": "assets/research-header-painterly.png",
-        "alt": "Research-derived spatial simulation image representing segregation dynamics.",
-        "caption": "Representative research image"
+        "image": "assets/css_handbook_elgar.jpg",
+        "alt": "Book cover for Edward Elgar's Handbook of Computational Social Science.",
+        "caption": "Edward Elgar's Handbook of Computatiotional Social Science."
       }
     ]
   },
-  "jarvisAssortativeMatingResidential2023": {
-    "image": "assets/research-header-painterly.png",
-    "alt": "Research-derived spatial simulation image representing residential segregation.",
-    "caption": "Representative research image"
+  "jarvisAnalyticalSociologyAmidst2021": {
+    "image": "assets/css_handbook_routledge.jpg",
+    "alt": "Book cover for Routledge's Handbook of Computational Social Science, Volume 1.",
+    "caption": "Routledge's Handbook of Computational Social Science, Volume 1."
   }
 }

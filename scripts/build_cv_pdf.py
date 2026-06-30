@@ -12,8 +12,8 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "cv" / "Benjamin-F-Jarvis-CV.pdf"
 CV_SOURCE = ROOT / "cv" / "cv.md"
-PUBLICATIONS_SOURCE = ROOT / "publications.json"
-SUPERVISION_SOURCE = ROOT / "supervision.json"
+PUBLICATIONS_SOURCE = ROOT / "data" / "publications.json"
+SUPERVISION_SOURCE = ROOT / "data" / "supervision.json"
 
 
 def paragraph(text, style):

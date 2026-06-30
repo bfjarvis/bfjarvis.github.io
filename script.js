@@ -540,7 +540,7 @@ function resolveAssetPath(path = "") {
   return document.querySelector('script[src^="../"]') ? `../${path}` : path;
 }
 
-function renderPublicationItem(entry, compact = false, publicationAssets = {}, source = "publications.json") {
+function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
   const citation = citationFor(entry);
   const asset = publicationAssets[entry.key];
   const images = publicationImagesFor(asset);
@@ -589,7 +589,7 @@ async function renderPublications() {
 
   try {
     targets.forEach((target) => {
-      const source = target.dataset.cslSource || target.dataset.bibSource || "publications.json";
+      const source = target.dataset.cslSource || target.dataset.bibSource || resolveAssetPath("data/publications.json");
       const assetsSource = target.dataset.assetsSource
         || (source.startsWith("../") ? "../data/publication-assets.json" : "data/publication-assets.json");
 
