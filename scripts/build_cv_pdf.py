@@ -14,6 +14,7 @@ OUTPUT = ROOT / "cv" / "Benjamin-F-Jarvis-CV.pdf"
 CV_SOURCE = ROOT / "cv" / "cv.md"
 PUBLICATIONS_SOURCE = ROOT / "data" / "publications.json"
 SUPERVISION_SOURCE = ROOT / "data" / "supervision.json"
+TEACHING_SOURCE = ROOT / "data" / "teaching-csl.json"
 
 
 def paragraph(text, style):
@@ -78,6 +79,8 @@ def parse_cv_markdown(path):
 
 
 def csl_date_value(date):
+    if (date or {}).get("literal"):
+        return str(date["literal"])
     parts = (date or {}).get("date-parts", [[]])[0]
     return "-".join(str(part) for part in parts if part)
 
@@ -217,6 +220,123 @@ def publication_groups(path):
         ("Invited and Other Talks", [entry for entry in entries if is_invited_talk(entry)]),
         ("Theses", [entry for entry in entries if is_thesis(entry)]),
     ]
+
+
+def csl_name(name):
+    if name.get("literal"):
+        return name["literal"]
+    return " ".join(part for part in [name.get("given", ""), name.get("family", "")] if part)
+
+
+def note_value(note, label):
+    prefix = f"{label}:"
+    for line in str(note or "").splitlines():
+        if line.startswith(prefix):
+            return line[len(prefix):].strip()
+    return ""
+
+
+def teaching_sort_value(term):
+    match = re.search(r"(Spring|Fall)?\s*((?:19|20)\d{2})", str(term), re.I)
+    if not match:
+        return 0
+    term_weight = 2 if (match.group(1) or "").lower() == "fall" else 1 if (match.group(1) or "").lower() == "spring" else 0
+    return int(match.group(2)) * 10 + term_weight
+
+
+def is_benjamin_jarvis(name):
+    return bool(re.search(r"benjamin\s+f\.?\s+jarvis|benjamin\s+jarvis", name, re.I))
+
+
+def teaching_role_label(role):
+    base_role = role.get("role") or "Teaching"
+    other_organizers = [name for name in role.get("organizers", []) if not is_benjamin_jarvis(name)]
+    user_is_organizer = any(is_benjamin_jarvis(name) for name in role.get("organizers", []))
+
+    if not other_organizers:
+        return base_role
+    if user_is_organizer:
+        return f"{base_role} (with {', '.join(other_organizers)})"
+    return f"{base_role} (coordinator: {', '.join(other_organizers)})"
+
+
+def normalize_teaching_record(item):
+    note = item.get("note", "")
+    return {
+        "id": item.get("citation-key") or item.get("id") or slugify(item.get("title", "teaching")),
+        "title": item.get("title") or "Untitled course",
+        "code": item.get("title-short", ""),
+        "program": item.get("collection-title", ""),
+        "institution": item.get("event-title", ""),
+        "term": csl_date_value(item.get("issued")) or "",
+        "role": note_value(note, "Role") or item.get("genre") or "Teaching",
+        "organizers": [csl_name(name) for name in item.get("organizer", []) if csl_name(name)],
+        "abstract": item.get("abstract", ""),
+    }
+
+
+def group_teaching_records(path):
+    data = json.loads(path.read_text(encoding="utf-8"))
+    items = data if isinstance(data, list) else data.get("items", [])
+    groups = {}
+
+    for item in items:
+        record = normalize_teaching_record(item)
+        key = record["code"] or slugify(record["title"])
+        if key not in groups:
+            groups[key] = {
+                "title": record["title"],
+                "code": record["code"],
+                "program": record["program"],
+                "institution": record["institution"],
+                "roles": [],
+            }
+
+        group = groups[key]
+        group["program"] = group["program"] or record["program"]
+        group["institution"] = group["institution"] or record["institution"]
+        group["roles"].append(record)
+
+    grouped = []
+    for group in groups.values():
+        group["roles"].sort(key=lambda role: teaching_sort_value(role["term"]), reverse=True)
+        group["latest_value"] = teaching_sort_value(group["roles"][0]["term"] if group["roles"] else "")
+        group["kind"] = (
+            "program"
+            if any(re.search(r"program|programme", role["role"], re.I) for role in group["roles"])
+            or (not group["code"] and re.search(r"program|programme", group["title"], re.I))
+            else "course"
+        )
+        grouped.append(group)
+
+    return sorted(grouped, key=lambda group: (-group["latest_value"], group["title"]))
+
+
+def teaching_date_range(roles):
+    years = []
+    for role in roles:
+        match = re.search(r"(?:19|20)\d{2}", str(role.get("term", "")))
+        if match:
+            years.append(int(match.group(0)))
+    if not years:
+        return ""
+    if min(years) == max(years):
+        return str(max(years))
+    return f"{min(years)}-{max(years)}"
+
+
+def teaching_entries(groups):
+    entries = []
+    for group in groups:
+        meta = " | ".join(part for part in [group.get("program", ""), group.get("institution", "")] if part)
+        role_history = "; ".join(
+            f"{role['term']}: {teaching_role_label(role)}"
+            for role in group["roles"]
+            if role.get("term")
+        )
+        detail = ". ".join(clean_text(part) for part in [meta, role_history] if part)
+        entries.append((teaching_date_range(group["roles"]), clean_text(group["title"]), detail))
+    return entries
 
 
 def presentation_venue(entry):
@@ -481,13 +601,22 @@ def build():
             styles,
         )
     )
-    story.extend(
-        section(
-            "Teaching",
-            [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("teaching", [])],
-            styles,
+    if TEACHING_SOURCE.exists():
+        teaching_groups = group_teaching_records(TEACHING_SOURCE)
+        course_groups = [group for group in teaching_groups if group["kind"] == "course"]
+        program_groups = [group for group in teaching_groups if group["kind"] == "program"]
+        if course_groups:
+            story.extend(section("Teaching - Courses", teaching_entries(course_groups), styles))
+        if program_groups:
+            story.extend(section("Teaching - Programs", teaching_entries(program_groups), styles))
+    else:
+        story.extend(
+            section(
+                "Teaching",
+                [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("teaching", [])],
+                styles,
+            )
         )
-    )
     story.extend(
         section(
             "Service",
