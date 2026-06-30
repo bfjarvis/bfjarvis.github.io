@@ -591,7 +591,9 @@ async function renderPublications() {
     targets.forEach((target) => {
       const source = target.dataset.cslSource || target.dataset.bibSource || resolveAssetPath("data/publications.json");
       const assetsSource = target.dataset.assetsSource
-        || (source.startsWith("../") ? "../data/publication-assets.json" : "data/publication-assets.json");
+        || (source.startsWith("../")
+          ? "../data/publication-assets.json?v=20260630-publication-data"
+          : "data/publication-assets.json?v=20260630-publication-data");
 
       Promise.all([
         fetch(source).then((response) => response.text()),
