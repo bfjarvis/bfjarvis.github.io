@@ -78,6 +78,7 @@ function filePreviewMessage(kind) {
 }
 
 function cslDateValue(date = {}) {
+  if (date.literal) return date.literal;
   const parts = date["date-parts"]?.[0] || [];
   if (!parts.length) return "";
   return parts.map(String).join("-");
@@ -582,18 +583,151 @@ function renderGrantItem(grant, compact = false) {
   `;
 }
 
-function renderTeachingItem(item) {
-  const title = escapeHtml(item.title || "Untitled teaching item");
-  const titleHtml = item.page
-    ? `<a href="${escapeHtml(item.page)}">${title}</a>`
-    : title;
-  const meta = [item.level, item.role, item.status].filter(Boolean).map(escapeHtml).join(" · ");
+function cslName(name = {}) {
+  if (name.literal) return name.literal;
+  return [name.given, name.family].filter(Boolean).join(" ");
+}
+
+function noteValue(note = "", label = "") {
+  const prefix = `${label}:`;
+  const line = note.split(/\r?\n/).find((part) => part.startsWith(prefix));
+  return line ? line.slice(prefix.length).trim() : "";
+}
+
+function teachingSortValue(term = "") {
+  const match = String(term).match(/(Spring|Fall)?\s*((?:19|20)\d{2})/i);
+  if (!match) return 0;
+  const year = Number(match[2]);
+  const termWeight = match[1]?.toLowerCase() === "fall" ? 2 : match[1]?.toLowerCase() === "spring" ? 1 : 0;
+  return year * 10 + termWeight;
+}
+
+function teachingSummary(text = "") {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= 240) return clean;
+  return `${clean.slice(0, 237).replace(/\s+\S*$/, "")}...`;
+}
+
+function normalizeTeachingRecord(item = {}) {
+  const note = item.note || "";
+  return {
+    id: item["citation-key"] || item.id || slugify(item.title || "teaching"),
+    title: item.title || "Untitled course",
+    code: item["title-short"] || "",
+    program: item["collection-title"] || "",
+    institution: item["event-title"] || "",
+    term: cslDateValue(item.issued) || "",
+    role: noteValue(note, "Role") || item.genre || "Teaching",
+    preciseDates: noteValue(note, "Precise date(s)"),
+    credits: noteValue(note, "Credits"),
+    students: noteValue(note, "Students"),
+    hours: noteValue(note, "Teaching hours"),
+    organizers: (item.organizer || []).map(cslName).filter(Boolean),
+    presenters: (item.presenter || []).map(cslName).filter(Boolean),
+    abstract: item.abstract || "",
+    url: item.URL || "",
+  };
+}
+
+function groupTeachingRecords(items = []) {
+  const groups = new Map();
+
+  items.map(normalizeTeachingRecord).forEach((record) => {
+    const key = record.code || slugify(record.title);
+    if (!groups.has(key)) {
+      groups.set(key, {
+        key,
+        title: record.title,
+        code: record.code,
+        program: record.program,
+        institution: record.institution,
+        abstract: record.abstract,
+        url: record.url,
+        roles: [],
+      });
+    }
+
+    const group = groups.get(key);
+    group.program ||= record.program;
+    group.institution ||= record.institution;
+    group.url ||= record.url;
+    if (record.abstract.length > group.abstract.length) group.abstract = record.abstract;
+    group.roles.push(record);
+  });
+
+  return Array.from(groups.values()).map((group) => {
+    group.roles.sort((a, b) => teachingSortValue(b.term) - teachingSortValue(a.term));
+    group.latest = group.roles[0]?.term || "";
+    group.latestValue = teachingSortValue(group.latest);
+    group.kind = group.roles.some((role) => /program|programme/i.test(role.role))
+      || (!group.code && /program|programme/i.test(group.title))
+      ? "program"
+      : "course";
+    return group;
+  }).sort((a, b) => b.latestValue - a.latestValue || a.title.localeCompare(b.title));
+}
+
+function isBenjaminJarvis(name = "") {
+  return /benjamin\s+f\.?\s+jarvis/i.test(name) || /benjamin\s+jarvis/i.test(name);
+}
+
+function teachingRoleLabel(role) {
+  const baseRole = role.role || "Teaching";
+  const otherOrganizers = role.organizers.filter((name) => !isBenjaminJarvis(name));
+  const userIsOrganizer = role.organizers.some(isBenjaminJarvis);
+
+  if (!otherOrganizers.length) return baseRole;
+  if (userIsOrganizer) return `${baseRole} (With ${otherOrganizers.join(", ")})`;
+  return `${baseRole} (Coordinator: ${otherOrganizers.join(", ")})`;
+}
+
+function renderTeachingRole(role) {
+  const label = teachingRoleLabel(role);
 
   return `
-    <article class="teaching-card">
-      <p class="meta">${meta}</p>
-      <h3>${titleHtml}</h3>
-      <p>${escapeHtml(item.summary || "")}</p>
+    <li>
+      <span class="role-term">${escapeHtml(role.term || "Date forthcoming")}</span>
+      <span class="role-title">${escapeHtml(label)}</span>
+    </li>
+  `;
+}
+
+function renderTeachingCourse(course, compact = false) {
+  const meta = [course.program, course.institution].filter(Boolean).map(escapeHtml).join(" · ");
+  const roleSummary = course.roles
+    .map((role) => `${role.term} (${role.role})`)
+    .filter(Boolean)
+    .join("; ");
+
+  if (compact) {
+    return `
+      <article class="teaching-card">
+        <p class="meta">${escapeHtml(course.latest || "")}</p>
+        <h3>${escapeHtml(course.title)}</h3>
+        ${course.abstract ? `<p>${escapeHtml(teachingSummary(course.abstract))}</p>` : ""}
+        ${roleSummary ? `<p class="teaching-role-summary">${escapeHtml(roleSummary)}</p>` : ""}
+      </article>
+    `;
+  }
+
+  return `
+    <article class="teaching-course" id="${escapeHtml(course.key)}">
+      <aside class="teaching-course-meta">
+        ${meta ? `<p>${meta}</p>` : ""}
+      </aside>
+      <div class="teaching-course-body">
+        <header>
+          <h3>${escapeHtml(course.title)}</h3>
+          ${course.url ? `<p><a class="text-link" href="${escapeHtml(course.url)}">${escapeHtml(course.url)}</a></p>` : ""}
+        </header>
+        <p>${escapeHtml(course.abstract || "Course description forthcoming.")}</p>
+        <div class="teaching-subsection">
+          <h4>Roles</h4>
+          <ul class="role-list">
+            ${course.roles.map(renderTeachingRole).join("")}
+          </ul>
+        </div>
+      </div>
     </article>
   `;
 }
@@ -605,8 +739,8 @@ async function renderGrants() {
   if (isFilePreview()) {
     targets.forEach((target) => {
       target.innerHTML = target.classList.contains("timeline")
-        ? "<article><span>Local preview</span><h3>Grant data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load grants from <code>data/grants.json</code>.</p></article>"
-        : filePreviewMessage("Grants and projects");
+        ? "<article><span>Local preview</span><h3>Project data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load projects from <code>data/grants.json</code>.</p></article>"
+        : filePreviewMessage("Projects");
     });
     return;
   }
@@ -619,7 +753,7 @@ async function renderGrants() {
         const selected = grants.filter((grant) => mode === "all" || grant.status === mode);
 
         if (!selected.length) {
-          target.innerHTML = "<p>No grants or projects found for this section.</p>";
+          target.innerHTML = "<p>No projects found for this section.</p>";
           return;
         }
 
@@ -628,7 +762,7 @@ async function renderGrants() {
           .join("");
       })
       .catch(() => {
-        target.innerHTML = "<p>Grant list could not be loaded.</p>";
+        target.innerHTML = "<p>Project list could not be loaded.</p>";
       });
   });
 }
@@ -639,25 +773,30 @@ async function renderTeaching() {
 
   if (isFilePreview()) {
     targets.forEach((target) => {
-      target.innerHTML = '<article class="teaching-card"><h3>Teaching data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load teaching from <code>data/teaching.json</code>.</p></article>';
+      target.innerHTML = '<article class="teaching-card"><h3>Teaching data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load teaching from <code>data/teaching-csl.json</code>.</p></article>';
     });
     return;
   }
 
   targets.forEach((target) => {
-    fetch(target.dataset.teachingSource || "data/teaching.json")
+    fetch(target.dataset.teachingSource || "data/teaching-csl.json")
       .then((response) => response.json())
       .then((items) => {
+        const courses = groupTeachingRecords(items);
+        const kind = target.dataset.teachingKind;
+        const teachingItems = kind ? courses.filter((course) => course.kind === kind) : courses;
         const selected = target.dataset.teaching === "selected"
-          ? items.filter((item) => item.selected).slice(0, 3)
-          : items;
+          ? teachingItems.slice(0, 3)
+          : teachingItems;
 
         if (!selected.length) {
           target.innerHTML = '<article class="teaching-card"><p>No teaching entries found.</p></article>';
           return;
         }
 
-        target.innerHTML = selected.map(renderTeachingItem).join("");
+        target.innerHTML = selected
+          .map((course) => renderTeachingCourse(course, target.dataset.teaching === "selected"))
+          .join("");
       })
       .catch(() => {
         target.innerHTML = '<article class="teaching-card"><p>Teaching list could not be loaded.</p></article>';

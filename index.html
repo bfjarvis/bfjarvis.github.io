@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Academic website for Benjamin F. Jarvis: publications, grants, teaching, CV, and research notes on social stratification and segregation."
+      content="Academic website for Benjamin F. Jarvis: publications, projects, teaching, CV, and research notes on social stratification and segregation."
     >
     <title>Benjamin F. Jarvis | Academic</title>
     <link rel="preload" as="image" href="assets/research-header-painterly.png">
-    <link rel="stylesheet" href="styles.css?v=20260630-responsive-home-hero">
+    <link rel="stylesheet" href="styles.css?v=20260630-fold-cue">
   </head>
   <body>
     <header class="site-header" data-nav>
@@ -22,7 +22,7 @@
       </button>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="publications/">Publications</a>
-        <a href="grants/">Grants</a>
+        <a href="grants/">Projects</a>
         <a href="teaching/">Teaching</a>
         <a href="vignettes/">Vignettes</a>
         <a href="cv/">CV</a>
@@ -113,10 +113,10 @@
 
       <section class="split-section" id="grants" aria-labelledby="grants-title">
         <div>
-          <h2 id="grants-title">Grants & Projects</h2>
+          <h2 id="grants-title">Projects</h2>
           <p>
             Ongoing funded work, collaborative projects, research infrastructure, and an
-            archive of completed grants.
+            archive of completed projects and grants.
           </p>
         </div>
         <div class="timeline" data-grants="ongoing" data-grants-source="data/grants.json">
@@ -136,16 +136,16 @@
             <p>Use this for emerging proposals or research themes you want colleagues to spot.</p>
           </article>
         </div>
-        <p class="section-more"><a class="text-link" href="grants/">See more grants and projects</a></p>
+        <p class="section-more"><a class="text-link" href="grants/">See more projects</a></p>
       </section>
 
       <section class="content-band quiet" id="teaching" aria-labelledby="teaching-title">
         <div class="section-heading">
           <div>
-            <h2 id="teaching-title">Courses</h2>
+            <h2 id="teaching-title">Teaching</h2>
           </div>
         </div>
-        <div class="teaching-grid home-list" data-teaching="selected" data-teaching-source="data/teaching.json">
+        <div class="teaching-grid home-list" data-teaching="selected" data-teaching-source="data/teaching-csl.json">
           <article class="teaching-card">
             <h3>Statistical Analysis for Social Scientists</h3>
             <p>
@@ -209,6 +209,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="script.js?v=20260630-json-only"></script>
+    <script src="script.js?v=20260630-teaching-projects"></script>
   </body>
 </html>

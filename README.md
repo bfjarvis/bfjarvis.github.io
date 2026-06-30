@@ -7,13 +7,13 @@ Personal GitHub Pages site for Benjamin F. Jarvis.
 - `index.html` - homepage with publications, supervision, grants, teaching, posts, and contact sections.
 - `data/grants.json` - structured source for ongoing and completed grants/projects.
 - `data/publication-assets.json` - maps Zotero citation keys to representative publication images.
-- `data/teaching.json` - structured source for courses, supervision, and selected teaching areas.
+- `data/teaching-csl.json` - CSL JSON source for courses and programme teaching records.
 - `data/publications.json` - Better CSL JSON source for publications, presentations, talks, and theses.
 - `data/supervision.json` - Better CSL JSON source for supervised MSc and PhD theses.
 - `cv/cv.md` - editable Markdown source for the non-publication CV sections.
 - `cv/index.html` - HTML curriculum vitae page. It renders `cv/cv.md`, `data/publications.json`, and `data/supervision.json` in the browser.
 - `grants/` - grant and project index plus project detail pages for ongoing work.
-- `teaching/` - teaching index page fed by `data/teaching.json`.
+- `teaching/` - teaching index page fed by `data/teaching-csl.json`.
 - `cv/Benjamin-F-Jarvis-CV.pdf` - generated PDF CV.
 - `posts/statistical-vignettes.html` - starter post for statistical analysis vignettes.
 - `vignettes/` - Quarto `.qmd` source files and rendered vignette pages.
@@ -83,9 +83,10 @@ inside `data/publications.json`.
 
 ## Updating Teaching
 
-Edit `data/teaching.json` for courses and recurring teaching areas.
-Entries marked `"selected": true` appear on the homepage. The full list appears on
-`teaching/index.html`.
+Export course records from Zotero as CSL JSON and save them to
+`data/teaching-csl.json`.
+The most recent grouped course records appear on the homepage. The full grouped
+list appears on `teaching/index.html`.
 
 If a course or supervision area needs more space, add a page under `teaching/` and
 put its relative URL in that entry's `page` field. Otherwise, leave `page` blank.

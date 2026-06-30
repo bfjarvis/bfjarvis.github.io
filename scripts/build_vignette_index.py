@@ -71,7 +71,7 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260630-responsive-home-hero">
+    <link rel="stylesheet" href="../styles.css?v=20260630-fold-cue">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -82,7 +82,7 @@ def build():
       </button>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="../publications/">Publications</a>
-        <a href="../grants/">Grants</a>
+        <a href="../grants/">Projects</a>
         <a href="../teaching/">Teaching</a>
         <a href="../vignettes/">Vignettes</a>
         <a href="../cv/">CV</a>
@@ -115,7 +115,7 @@ def build():
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js?v=20260630-json-only"></script>
+    <script src="../script.js?v=20260630-teaching-projects"></script>
   </body>
 </html>
 """,
