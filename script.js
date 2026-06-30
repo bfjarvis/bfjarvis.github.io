@@ -570,7 +570,7 @@ function renderPublicationItem(entry, compact = false, publicationAssets = {}) {
       <div>
         <p class="citation-line">${citation.fullCitation}</p>
         ${citation.extra ? `<p>${escapeHtml(citation.extra)}</p>` : ""}
-        ${citation.abstract ? `<p>${escapeHtml(truncateText(citation.abstract))}</p>` : ""}
+        ${citation.abstract ? `<p>${escapeHtml(citation.abstract)}</p>` : ""}
       </div>
     </article>
   `;

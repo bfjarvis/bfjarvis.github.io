@@ -347,19 +347,19 @@ h3 {
 
 .publication-item {
   display: grid;
-  grid-template-columns: minmax(140px, 0.26fr) minmax(0, 1fr);
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
   gap: clamp(18px, 3vw, 42px);
   padding: 28px 0;
   border-bottom: 1px solid var(--line);
 }
 
 .publication-item.has-image {
-  grid-template-columns: minmax(140px, 0.26fr) minmax(0, 1fr);
+  grid-template-columns: minmax(170px, 240px) minmax(0, 1fr);
 }
 
 .publication-media {
   display: block;
-  width: 100%;
+  width: min(100%, 230px);
   margin: 16px 0 0;
   padding: 0;
   border: 0;
@@ -372,8 +372,8 @@ h3 {
 .publication-media img {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   border: 1px solid var(--line);
   border-radius: 8px;
 }
