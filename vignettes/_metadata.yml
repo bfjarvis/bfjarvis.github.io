@@ -3,7 +3,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    css: ../styles.css?v=20260701-grant-groups
+    css: ../styles.css?v=20260701-grant-history
     page-layout: article
     include-before-body:
       text: |
@@ -35,7 +35,7 @@ format:
           </div>
           <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
         </footer>
-        <script src="../script.js?v=20260701-grant-groups"></script>
+        <script src="../script.js?v=20260701-grant-history"></script>
 execute:
   echo: true
   warning: false

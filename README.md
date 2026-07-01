@@ -82,12 +82,13 @@ The Projects page groups records by Zotero's `Short Title` / CSL `title-short` f
 Use the same short title for repeated submissions that share a common project thread,
 even when the full submitted title changes across applications.
 
-The site splits grouped project threads into Ongoing, Closed, and Rejected sections.
+The site splits grouped project threads into Ongoing, Under Review, Completed, and Rejected sections.
 Within each thread, it lists the submission history, including date, decision, funder,
 registration number, full submitted title, main applicant, co-applicants, and other
-contributors. Ongoing groups are those with an open, registered, submitted, pending,
-or decision-missing record. Closed groups are those with a granted or administratively
-closed record. Remaining groups are treated as rejected applications.
+contributors. Ongoing groups are those with an `Open` status. Under Review groups are
+submitted or registered records without a decision. Completed groups are those with a
+granted or administratively closed record. Remaining groups are treated as rejected
+applications.
 
 The `data/grants-zotero-import.json` file is only a seed file for Zotero import,
 created from `Grants.xlsx`; it is not used by the website.
@@ -99,13 +100,14 @@ Suggested Zotero conventions for grants/projects:
 - Use the project title as `Title`.
 - Use the project leader or principal investigator as `Author`.
 - Use the funder as `Institution` or `Publisher`, depending on the Zotero UI/export.
+- Use `Series Title` for the specific funder call when the agency has multiple calls.
 - Use the registration or decision number as `Report Number`.
 - Use the application or award year as `Date`.
-- Put decision state and project status in `Extra` or `Notes` using stable labels such as `Decision: Granted` and `Status: Open`.
+- Put decision state, project status, and budget in `Extra` or `Notes` using stable labels such as `Decision: Granted`, `Status: Open`, and `Budget: 4,000,000 SEK`.
 - Put a public project page, funder page, or repository in `URL` when one exists.
 
-The homepage shows a compact preview of the most recent ongoing project threads. The
-full Projects page shows ongoing, closed, and rejected groups.
+The homepage shows a compact preview of the most recent ongoing project threads only.
+The full Projects page shows ongoing, under review, completed, and rejected groups.
 
 ## Updating Teaching
 

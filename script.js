@@ -622,8 +622,20 @@ function grantDecision(item = {}) {
   return noteValue(item.note || "", "Decision");
 }
 
-function grantType(item = {}) {
-  return noteValue(item.note || "", "Grant type") || item.genre || "Grant";
+function grantBudget(item = {}) {
+  return noteValue(item.note || "", "Budget");
+}
+
+function grantSeriesTitle(item = {}) {
+  return item["collection-title"] || item["series-title"] || item.series || item.seriesTitle || "";
+}
+
+function grantDecisionLabel(item = {}) {
+  const decision = grantDecision(item);
+  if (!decision) return "Under Review";
+  if (/granted/i.test(decision)) return "Accepted";
+  if (/rejected|not accepted/i.test(decision)) return "Rejected";
+  return decision;
 }
 
 function grantGroupKey(item = {}) {
@@ -634,11 +646,14 @@ function grantLifecycle(items = []) {
   const decisions = items.map(grantDecision).join(" | ").toLowerCase();
   const statuses = items.map((item) => String(item.status || "")).join(" | ").toLowerCase();
 
-  if (/\bopen\b|finally registered|submitted|registered|pending/.test(statuses) || items.some((item) => !grantDecision(item))) {
+  if (/\bopen\b/.test(statuses)) {
     return "ongoing";
   }
+  if (/finally registered|submitted|registered|pending|under review/.test(statuses) || items.some((item) => !grantDecision(item))) {
+    return "under-review";
+  }
   if (/granted|needs audit closed/.test(decisions)) {
-    return "closed";
+    return "completed";
   }
   return "rejected";
 }
@@ -646,7 +661,8 @@ function grantLifecycle(items = []) {
 function grantLifecycleLabel(lifecycle = "") {
   return {
     ongoing: "Ongoing",
-    closed: "Closed",
+    "under-review": "Under Review",
+    completed: "Completed",
     rejected: "Rejected",
   }[lifecycle] || "Project";
 }
@@ -682,31 +698,35 @@ function renderGrantApplicants(item = {}) {
   const applicants = item.author || [];
   const contributors = item.contributor || [];
   const mainApplicant = cslName(applicants[0]);
-  const coApplicants = formatNameList(applicants.slice(1).map(cslName).filter(Boolean));
-  const contributorList = formatNameList(contributors.map(cslName).filter(Boolean));
+  const otherParticipants = formatNameList([
+    ...applicants.slice(1).map(cslName),
+    ...contributors.map(cslName),
+  ].filter(Boolean));
   const parts = [];
 
   if (mainApplicant) parts.push(`Main applicant: ${mainApplicant}`);
-  if (coApplicants) parts.push(`Co-applicants: ${coApplicants}`);
-  if (contributorList) parts.push(`Contributors: ${contributorList}`);
+  if (otherParticipants) parts.push(`Co-applicants and contributors: ${otherParticipants}`);
   return parts.map(escapeHtml).join("<br>");
 }
 
 function renderGrantHistoryItem(item = {}) {
-  const decision = grantDecision(item) || "Decision pending";
-  const meta = [
-    cslDateYear(item),
-    decision,
+  const budget = grantBudget(item);
+  const funderCall = [
     item.publisher,
-    item.number,
-    grantType(item),
+    grantSeriesTitle(item),
   ].filter(Boolean).map(escapeHtml).join(" · ");
 
   return `
     <li class="grant-history-item">
-      <p class="meta">${meta}</p>
-      <h4>${escapeHtml(item.title || "Untitled application")}</h4>
-      <p>${renderGrantApplicants(item)}</p>
+      <span class="grant-history-year">${escapeHtml(cslDateYear(item))}</span>
+      <span class="grant-history-number">${escapeHtml(item.number || "")}</span>
+      <span class="grant-history-decision">${escapeHtml(grantDecisionLabel(item))}</span>
+      <div class="grant-history-info">
+        <h4>${escapeHtml(item.title || "Untitled application")}</h4>
+        <p>${renderGrantApplicants(item)}</p>
+        ${budget ? `<p>Budget: ${escapeHtml(budget)}</p>` : ""}
+        ${funderCall ? `<p>${funderCall}</p>` : ""}
+      </div>
     </li>
   `;
 }
