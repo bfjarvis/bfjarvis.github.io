@@ -3,7 +3,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    css: ../styles.css?v=20260630-supervision-lines
+    css: ../styles.css?v=20260701-scroll-cue
     page-layout: article
     include-before-body:
       text: |
