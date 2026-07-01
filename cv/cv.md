@@ -32,64 +32,6 @@ University of California, Los Angeles.
 
 Yale University.
 
-## Grants
-
-### 2023 | Neighborhood and School Segregation across Educational Careers
-
-Principal Investigator. Vetenskapsrådet, Dnr 2023-00933. Award amount: 17,124,250 SEK.
-
-### 2022 | How Do Perceptions of the City Inform Neighbourhood Selection and Housing Search?
-
-Participating Researcher. Vetenskapsrådet, Dnr 2022-05205. Award amount: 6,721,356 SEK.
-
-### 2022 | The Role of Media in School and Neighborhood Reputation Formation
-
-Participating Researcher. Vetenskapsrådet, Dnr 2022-05251. Award amount: 5,094,136 SEK.
-
-### 2021 | Ett bostadslandskap i förvandling
-
-Principal Investigator. Formas, Dnr 2021-00534. Project on how housing construction and condominium conversion affect residential segregation processes. Award amount: 3,994,588 SEK.
-
-### 2018 | Mining for Meaning: The Dynamics of Public Discourse on Migration
-
-Participating Researcher. Vetenskapsrådet, Dnr 2018-05170. Award amount: 17,216,881 SEK.
-
-### 2018 | Segregeringseffekter av marknads- och icke-marknadsbaserade mekanismer för bostadsfördelning
-
-Principal Investigator. Formas, Dnr 2018-00269. Award amount: 8,807,105 SEK.
-
-### 2016 | Social Ties and Residential Segregation
-
-Principal Investigator. Vetenskapsrådet, Dnr 2016-01987. Award amount: 4,050,000 SEK.
-
-### 2015 | Knut och Alice Wallenbergs Stiftelse Travel Grant
-
-Travel grant. Award amount: 14,000 SEK.
-
-### 2014-2015 | UCLA Dissertation Year Fellowship
-
-Competitive doctoral fellowship.
-
-### 2012-2013 | California Center for Population Research NICHD Traineeship
-
-Graduate traineeship.
-
-### 2011-2012 | California Center for Population Research NICHD Traineeship
-
-Graduate traineeship.
-
-### 2010-2011 | UCLA Graduate Research Mentorship
-
-Graduate research fellowship.
-
-### 2010 | UCLA Graduate Research Summer Mentorship
-
-Graduate research fellowship.
-
-### 2010 | National Science Foundation Graduate Research Fellowship
-
-Honorable Mention.
-
 ## Teaching
 
 ### Fall 2016; Fall 2024; Fall 2025 | Residential Segregation: Measurement and Analysis

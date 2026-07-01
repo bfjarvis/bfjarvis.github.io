@@ -15,6 +15,7 @@ CV_SOURCE = ROOT / "cv" / "cv.md"
 PUBLICATIONS_SOURCE = ROOT / "data" / "publications.json"
 SUPERVISION_SOURCE = ROOT / "data" / "supervision.json"
 TEACHING_SOURCE = ROOT / "data" / "teaching-csl.json"
+GRANTS_SOURCE = ROOT / "data" / "grants.json"
 
 
 def paragraph(text, style):
@@ -111,6 +112,9 @@ def normalize_csl_item(item):
         "annotation": item.get("note", ""),
         "type": item.get("genre") or item.get("type", ""),
         "source": item.get("source", ""),
+        "shorttitle": item.get("title-short", ""),
+        "collectiontitle": item.get("collection-title", ""),
+        "status": item.get("status", ""),
     }
     return {"type": item.get("type", ""), "fields": fields}
 
@@ -367,6 +371,159 @@ def teaching_entries(groups):
         )
         detail = ". ".join(clean_text(part) for part in [meta, role_history] if part)
         entries.append((teaching_date_range(group["roles"]), clean_text(group["title"]), detail))
+    return entries
+
+
+def grant_decision(entry):
+    return note_value(entry["fields"].get("note", ""), "Decision")
+
+
+def grant_budget(entry):
+    return note_value(entry["fields"].get("note", ""), "Budget")
+
+
+def grant_series_title(entry):
+    return entry["fields"].get("collectiontitle", "")
+
+
+def grant_decision_label(entry):
+    decision = grant_decision(entry)
+    if not decision:
+        return "Pending"
+    if re.search(r"granted|needs audit closed", decision, re.I):
+        return "Accepted"
+    if re.search(r"rejected|not accepted", decision, re.I):
+        return "Rejected"
+    return decision
+
+
+def is_accepted_grant(entry):
+    return bool(re.search(r"granted|needs audit closed", grant_decision(entry), re.I))
+
+
+def grant_group_key(entry):
+    fields = entry["fields"]
+    return fields.get("shorttitle") or fields.get("title") or "Untitled project"
+
+
+def grant_number_sort_value(entry):
+    raw = str(entry["fields"].get("number", ""))
+    numbers = re.findall(r"\d+", raw)
+    return int("".join(numbers)) if numbers else sort_date_value(entry)
+
+
+def grant_lifecycle(entries):
+    decisions = " | ".join(grant_decision(entry) for entry in entries).lower()
+    statuses = " | ".join(str(entry["fields"].get("status", "")) for entry in entries).lower()
+
+    if re.search(r"\bopen\b", statuses):
+        return "ongoing"
+    if re.search(r"finally registered|submitted|registered|pending|under review", statuses) or any(not grant_decision(entry) for entry in entries):
+        return "under-review"
+    if re.search(r"granted|needs audit closed", decisions):
+        return "completed"
+    return "rejected"
+
+
+def sort_grant_records(entries):
+    return sorted(
+        entries,
+        key=lambda entry: (
+            0 if is_accepted_grant(entry) else 1,
+            -grant_number_sort_value(entry),
+            entry["fields"].get("title", ""),
+        ),
+    )
+
+
+def display_grant_record(entries):
+    accepted = sorted([entry for entry in entries if is_accepted_grant(entry)], key=grant_number_sort_value, reverse=True)
+    if accepted:
+        return accepted[0]
+    return sorted(entries, key=grant_number_sort_value, reverse=True)[0] if entries else None
+
+
+def group_grants(path):
+    entries = parse_reference_data(path)
+    groups = {}
+    for entry in entries:
+        groups.setdefault(grant_group_key(entry), []).append(entry)
+
+    grouped = []
+    for title, records in groups.items():
+        records = sort_grant_records(records)
+        latest = sorted(records, key=grant_number_sort_value, reverse=True)[0]
+        grouped.append({
+            "title": title,
+            "records": records,
+            "display": display_grant_record(records),
+            "latest": latest,
+            "latest_year": sort_date_value(latest),
+            "lifecycle": grant_lifecycle(records),
+        })
+    return sorted(grouped, key=lambda group: (-group["latest_year"], group["title"]))
+
+
+def grant_participant_names(entry):
+    fields = entry["fields"]
+    applicants = fields.get("author", [])
+    contributors = fields.get("contributor", [])
+    main = csl_person_name(applicants[0]) if applicants else ""
+    others = [csl_person_name(person) for person in applicants[1:]] + [csl_person_name(person) for person in contributors]
+    names = []
+    if main:
+        names.append(f"{main} (Main applicant)")
+    names.extend(name for name in others if name)
+    return format_name_list(names)
+
+
+def grant_funder_call(entry):
+    fields = entry["fields"]
+    return " | ".join(part for part in [fields.get("publisher", ""), grant_series_title(entry)] if part)
+
+
+def grant_number_budget(entry):
+    fields = entry["fields"]
+    parts = []
+    if fields.get("number"):
+        parts.append(f"Project Number: {fields['number']}")
+    if grant_budget(entry):
+        parts.append(f"Budget: {grant_budget(entry)}")
+    return ", ".join(parts)
+
+
+def grant_history_text(records):
+    rows = []
+    for entry in records:
+        row = " - ".join(part for part in [entry_year(entry), grant_decision_label(entry), grant_funder_call(entry)] if part)
+        if row:
+            rows.append(row)
+    return "; ".join(rows)
+
+
+def grant_display_year(group):
+    return entry_year(group.get("display") or group.get("latest") or {"fields": {}})
+
+
+def grant_cv_entries(groups):
+    entries = []
+    for group in groups:
+        display = group.get("display") or group.get("latest")
+        if not display:
+            continue
+        fields = display["fields"]
+        detail_parts = [
+            grant_funder_call(display),
+            grant_participant_names(display),
+            grant_number_budget(display),
+            fields.get("abstract", ""),
+            f"Application History: {grant_history_text(group['records'])}" if group.get("records") else "",
+        ]
+        entries.append((
+            grant_display_year(group),
+            clean_text(fields.get("title") or group.get("title") or "Untitled project"),
+            "<br/>".join(clean_text(part) for part in detail_parts if part),
+        ))
     return entries
 
 
@@ -654,13 +811,18 @@ def build():
             story.extend(section("Doctoral Supervision", supervision_cv_entries(doctoral_entries), styles))
         if masters_entries:
             story.extend(section("Master's Supervision", supervision_cv_entries(masters_entries), styles))
-    story.extend(
-        section(
-            "Grants",
-            [(entry["date"], entry["heading"], " ".join(entry["detail"])) for entry in cv_sections.get("grants", [])],
-            styles,
-        )
-    )
+    if GRANTS_SOURCE.exists():
+        grant_groups = group_grants(GRANTS_SOURCE)
+        story.append(paragraph("Grants", styles["Section"]))
+        for lifecycle, label in [
+            ("ongoing", "Ongoing"),
+            ("under-review", "Under Review"),
+            ("completed", "Completed"),
+            ("rejected", "Rejected"),
+        ]:
+            lifecycle_groups = [group for group in grant_groups if group["lifecycle"] == lifecycle]
+            if lifecycle_groups:
+                story.extend(section(label, grant_cv_entries(lifecycle_groups), styles))
     if TEACHING_SOURCE.exists():
         teaching_groups = group_teaching_records(TEACHING_SOURCE)
         course_groups = [group for group in teaching_groups if group["kind"] == "course"]

@@ -632,10 +632,14 @@ function grantSeriesTitle(item = {}) {
 
 function grantDecisionLabel(item = {}) {
   const decision = grantDecision(item);
-  if (!decision) return "Under Review";
-  if (/granted/i.test(decision)) return "Accepted";
+  if (!decision) return "Pending";
+  if (/granted|needs audit closed/i.test(decision)) return "Accepted";
   if (/rejected|not accepted/i.test(decision)) return "Rejected";
   return decision;
+}
+
+function isAcceptedGrant(item = {}) {
+  return /granted|needs audit closed/i.test(grantDecision(item));
 }
 
 function grantGroupKey(item = {}) {
@@ -671,6 +675,24 @@ function grantSortValue(item = {}) {
   return Number(cslDateYear(item).replace(/\D/g, "")) || 0;
 }
 
+function grantNumberSortValue(item = {}) {
+  const raw = String(item.number || "");
+  const numbers = raw.match(/\d+/g);
+  return numbers ? Number(numbers.join("")) : grantSortValue(item);
+}
+
+function sortGrantRecords(records = []) {
+  return [...records].sort((a, b) => {
+    if (isAcceptedGrant(a) !== isAcceptedGrant(b)) return isAcceptedGrant(a) ? -1 : 1;
+    return grantNumberSortValue(b) - grantNumberSortValue(a) || String(a.title || "").localeCompare(b.title || "");
+  });
+}
+
+function displayGrantRecord(records = []) {
+  const accepted = records.filter(isAcceptedGrant).sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a));
+  return accepted[0] || [...records].sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))[0] || {};
+}
+
 function groupGrants(grants = []) {
   const groups = new Map();
   grants.forEach((grant) => {
@@ -686,64 +708,81 @@ function groupGrants(grants = []) {
   });
 
   return Array.from(groups.values()).map((group) => {
-    group.records.sort((a, b) => grantSortValue(b) - grantSortValue(a) || String(a.title || "").localeCompare(b.title || ""));
+    group.records = sortGrantRecords(group.records);
     group.lifecycle = grantLifecycle(group.records);
-    group.latest = group.records[0];
+    group.display = displayGrantRecord(group.records);
+    group.latest = [...group.records].sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))[0];
     group.latestYear = grantSortValue(group.latest);
     return group;
   }).sort((a, b) => b.latestYear - a.latestYear || a.title.localeCompare(b.title));
 }
 
-function renderGrantApplicants(item = {}) {
+function grantParticipantNames(item = {}) {
   const applicants = item.author || [];
   const contributors = item.contributor || [];
   const mainApplicant = cslName(applicants[0]);
-  const otherParticipants = formatNameList([
+  const otherParticipants = [
     ...applicants.slice(1).map(cslName),
     ...contributors.map(cslName),
-  ].filter(Boolean));
+  ].filter(Boolean);
+  const names = [];
+
+  if (mainApplicant) names.push(`${mainApplicant} (Main applicant)`);
+  names.push(...otherParticipants);
+  return formatNameList(names);
+}
+
+function renderGrantApplicants(item = {}) {
+  const names = grantParticipantNames(item);
+  return names ? escapeHtml(names) : "";
+}
+
+function renderGrantNumberBudget(item = {}) {
+  const parts = [];
+  const budget = grantBudget(item);
+
+  if (item.number) parts.push(`Project Number: ${item.number}`);
+  if (budget) parts.push(`Budget: ${budget}`);
+  return parts.map(escapeHtml).join(", ");
+}
+
+function grantFunderCall(item = {}) {
   const parts = [];
 
-  if (mainApplicant) parts.push(`Main applicant: ${mainApplicant}`);
-  if (otherParticipants) parts.push(`Co-applicants and contributors: ${otherParticipants}`);
-  return parts.map(escapeHtml).join("<br>");
+  if (item.publisher) parts.push(item.publisher);
+  if (grantSeriesTitle(item)) parts.push(grantSeriesTitle(item));
+  return parts.map(escapeHtml).join(" · ");
 }
 
 function renderGrantHistoryItem(item = {}) {
-  const budget = grantBudget(item);
-  const funderCall = [
-    item.publisher,
-    grantSeriesTitle(item),
-  ].filter(Boolean).map(escapeHtml).join(" · ");
-
   return `
     <li class="grant-history-item">
       <span class="grant-history-year">${escapeHtml(cslDateYear(item))}</span>
-      <span class="grant-history-number">${escapeHtml(item.number || "")}</span>
       <span class="grant-history-decision">${escapeHtml(grantDecisionLabel(item))}</span>
-      <div class="grant-history-info">
-        <h4>${escapeHtml(item.title || "Untitled application")}</h4>
-        <p>${renderGrantApplicants(item)}</p>
-        ${budget ? `<p>Budget: ${escapeHtml(budget)}</p>` : ""}
-        ${funderCall ? `<p>${funderCall}</p>` : ""}
-      </div>
+      <span class="grant-history-funder">${grantFunderCall(item)}</span>
     </li>
   `;
 }
 
 function renderGrantGroup(group, compact = false) {
-  const latest = group.latest || {};
-  const years = group.records.map(cslDateYear).filter(Boolean);
+  const display = group.display || group.latest || {};
+  const years = [...group.records]
+    .sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))
+    .map(cslDateYear)
+    .filter(Boolean);
   const yearRange = years.length ? `${years[years.length - 1]}${years[0] !== years[years.length - 1] ? `-${years[0]}` : ""}` : "";
-  const latestDecision = grantDecision(latest) || "Decision pending";
-  const latestMeta = [grantLifecycleLabel(group.lifecycle), yearRange, latest.publisher].filter(Boolean).map(escapeHtml).join(" · ");
+  const latestMeta = [grantLifecycleLabel(group.lifecycle), yearRange, display.publisher].filter(Boolean).map(escapeHtml).join(" · ");
+  const funderCall = grantFunderCall(display);
+  const numberBudget = renderGrantNumberBudget(display);
+  const participants = renderGrantApplicants(display);
+  const abstract = display.abstract || "";
 
   if (compact) {
     return `
       <article>
         <span>${latestMeta}</span>
-        <h3>${escapeHtml(group.title)}</h3>
-        <p>${escapeHtml(latest.title || "")}${latestDecision ? ` (${escapeHtml(latestDecision)})` : ""}</p>
+        <h3>${escapeHtml(display.title || group.title)}</h3>
+        ${participants ? `<p>${participants}</p>` : ""}
       </article>
     `;
   }
@@ -751,13 +790,56 @@ function renderGrantGroup(group, compact = false) {
   return `
     <article class="grant-card">
       <div>
-        <p class="meta">${latestMeta}</p>
-        <h3>${escapeHtml(group.title)}</h3>
+        ${funderCall ? `<p class="meta grant-eyebrow">${funderCall}</p>` : ""}
+        <h3>${escapeHtml(display.title || group.title)}</h3>
+        ${participants ? `<p class="grant-participants">${participants}</p>` : ""}
+        ${numberBudget ? `<p class="grant-number-budget">${numberBudget}</p>` : ""}
+        ${abstract ? `<p class="grant-description">${escapeHtml(abstract)}</p>` : ""}
+        <h4 class="grant-history-title">Application History</h4>
         <ol class="grant-history">
           ${group.records.map(renderGrantHistoryItem).join("")}
         </ol>
       </div>
     </article>
+  `;
+}
+
+function grantDisplayYear(group = {}) {
+  return cslDateYear(group.display || group.latest || {});
+}
+
+function renderCvGrantHistoryItem(item = {}) {
+  return `
+    <li class="grant-history-item">
+      <span class="grant-history-year">${escapeHtml(cslDateYear(item))}</span>
+      <span class="grant-history-decision">${escapeHtml(grantDecisionLabel(item))}</span>
+      <span class="grant-history-funder">${grantFunderCall(item)}</span>
+    </li>
+  `;
+}
+
+function renderCvGrantEntry(group = {}) {
+  const display = group.display || group.latest || {};
+  const funderCall = grantFunderCall(display);
+  const participants = renderGrantApplicants(display);
+  const numberBudget = renderGrantNumberBudget(display);
+  const abstract = display.abstract || "";
+
+  return `
+    <div class="cv-entry cv-grant-entry">
+      <span class="date">${escapeHtml(grantDisplayYear(group))}</span>
+      <div>
+        ${funderCall ? `<p class="meta grant-eyebrow">${funderCall}</p>` : ""}
+        <h3>${escapeHtml(display.title || group.title)}</h3>
+        ${participants ? `<p class="grant-participants">${participants}</p>` : ""}
+        ${numberBudget ? `<p class="grant-number-budget">${numberBudget}</p>` : ""}
+        ${abstract ? `<p class="grant-description">${escapeHtml(abstract)}</p>` : ""}
+        <h4 class="grant-history-title">Application History</h4>
+        <ol class="grant-history cv-grant-history">
+          ${group.records.map(renderCvGrantHistoryItem).join("")}
+        </ol>
+      </div>
+    </div>
   `;
 }
 
@@ -990,6 +1072,36 @@ async function renderCvTeaching() {
   }
 }
 
+async function renderCvGrants() {
+  const target = document.querySelector("[data-cv-grants-source]");
+  if (!target) return;
+
+  if (isFilePreview()) {
+    target.innerHTML = '<h2>Grants</h2><p>Grant data needs a local server.</p>';
+    return;
+  }
+
+  try {
+    const response = await fetch(target.dataset.cvGrantsSource);
+    const groups = groupGrants(await response.json());
+    const sections = [
+      ["ongoing", "Ongoing"],
+      ["under-review", "Under Review"],
+      ["completed", "Completed"],
+      ["rejected", "Rejected"],
+    ].map(([lifecycle, label]) => {
+      const entries = groups.filter((group) => group.lifecycle === lifecycle);
+      return entries.length
+        ? `<h3 class="cv-subheading">${label}</h3>${entries.map(renderCvGrantEntry).join("")}`
+        : "";
+    }).filter(Boolean);
+
+    target.innerHTML = `<h2>Grants</h2>${sections.join("") || "<p>No grant entries found.</p>"}`;
+  } catch {
+    target.innerHTML = "<h2>Grants</h2><p>Grant list could not be loaded.</p>";
+  }
+}
+
 async function renderTeaching() {
   const targets = document.querySelectorAll("[data-teaching]");
   if (!targets.length) return;
@@ -1107,3 +1219,4 @@ renderCvMarkdown();
 renderGrants();
 renderTeaching();
 renderCvTeaching();
+renderCvGrants();

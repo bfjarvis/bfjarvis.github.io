@@ -302,6 +302,14 @@ h3 {
   background: #f2f4f5;
 }
 
+#grants.split-section {
+  display: block;
+}
+
+#grants .timeline {
+  margin-top: 34px;
+}
+
 .posts-section {
   background: #eef4f9;
 }
@@ -566,48 +574,59 @@ h3 {
 
 .grant-history {
   display: grid;
-  gap: 16px;
-  margin: 18px 0 0;
+  gap: 5px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .grant-history-item {
   display: grid;
-  grid-template-columns: minmax(54px, 0.12fr) minmax(86px, 0.16fr) minmax(92px, 0.16fr) minmax(0, 1fr);
+  grid-template-columns: minmax(54px, 0.14fr) minmax(86px, 0.18fr) minmax(0, 1fr);
   gap: clamp(10px, 2vw, 22px);
   align-items: start;
 }
 
 .grant-history-year,
-.grant-history-number,
-.grant-history-decision {
+.grant-history-decision,
+.grant-history-funder {
   color: var(--brick);
   font-size: 0.86rem;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.18;
 }
 
-.grant-history-info {
-  min-width: 0;
-}
-
-.grant-history-info p {
-  margin: 0;
-}
-
-.grant-history-item h4 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  line-height: 1.35;
-}
-
-.grant-history-info p + p {
-  margin-top: 3px;
-}
-
-.grant-history-info p {
+.grant-history-funder {
   color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.grant-eyebrow {
+  margin-bottom: 8px;
+}
+
+.grant-participants,
+.grant-number-budget,
+.grant-description {
+  max-width: 980px;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.grant-number-budget {
+  margin-top: 4px;
+}
+
+.grant-description {
+  margin-top: 14px;
+}
+
+.grant-history-title {
+  margin: 16px 0 5px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .teaching-grid,
@@ -920,6 +939,14 @@ h3 {
 
 .cv-entry .supervision-line {
   margin-top: -4px;
+}
+
+.cv-grant-entry .grant-history-title {
+  margin-top: 12px;
+}
+
+.cv-grant-history {
+  max-width: 760px;
 }
 
 .post-page {

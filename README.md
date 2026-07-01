@@ -90,6 +90,11 @@ submitted or registered records without a decision. Completed groups are those w
 granted or administratively closed record. Remaining groups are treated as rejected
 applications.
 
+For each grouped project thread, the displayed project title and participant list come
+from the accepted version when one exists. If no version has been accepted, the site uses
+the most recent version by report/project number. The history table then provides a
+compact year/status/funder-call trail for the related submissions.
+
 The `data/grants-zotero-import.json` file is only a seed file for Zotero import,
 created from `Grants.xlsx`; it is not used by the website.
 

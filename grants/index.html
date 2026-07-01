@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Ongoing and completed research projects by Benjamin F. Jarvis.">
     <title>Projects | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260701-grant-history">
+    <link rel="stylesheet" href="../styles.css?v=20260701-cv-grants">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -28,36 +28,40 @@
         <h1>Projects</h1>
       </section>
 
-      <section class="cv-page">
-        <div class="vignette-index">
-          <div class="section-heading">
-            <div>
-              <h2>Ongoing Projects</h2>
-            </div>
+      <section class="content-band">
+        <div class="section-heading">
+          <div>
+            <h2>Ongoing Projects</h2>
           </div>
-          <div class="grant-list" data-grants="ongoing" data-grants-source="../data/grants.json"></div>
-
-          <div class="section-heading grant-section-heading">
-            <div>
-              <h2>Under Review</h2>
-            </div>
-          </div>
-          <div class="grant-list" data-grants="under-review" data-grants-source="../data/grants.json"></div>
-
-          <div class="section-heading grant-section-heading">
-            <div>
-              <h2>Completed Projects</h2>
-            </div>
-          </div>
-          <div class="grant-list" data-grants="completed" data-grants-source="../data/grants.json"></div>
-
-          <div class="section-heading grant-section-heading">
-            <div>
-              <h2>Rejected Applications</h2>
-            </div>
-          </div>
-          <div class="grant-list" data-grants="rejected" data-grants-source="../data/grants.json"></div>
         </div>
+        <div class="grant-list" data-grants="ongoing" data-grants-source="../data/grants.json"></div>
+      </section>
+
+      <section class="content-band quiet">
+        <div class="section-heading">
+          <div>
+            <h2>Under Review</h2>
+          </div>
+        </div>
+        <div class="grant-list" data-grants="under-review" data-grants-source="../data/grants.json"></div>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <div>
+            <h2>Completed Projects</h2>
+          </div>
+        </div>
+        <div class="grant-list" data-grants="completed" data-grants-source="../data/grants.json"></div>
+      </section>
+
+      <section class="content-band quiet">
+        <div class="section-heading">
+          <div>
+            <h2>Rejected Applications</h2>
+          </div>
+        </div>
+        <div class="grant-list" data-grants="rejected" data-grants-source="../data/grants.json"></div>
       </section>
     </main>
 
@@ -75,6 +79,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js?v=20260701-grant-history"></script>
+    <script src="../script.js?v=20260701-cv-grants"></script>
   </body>
 </html>
