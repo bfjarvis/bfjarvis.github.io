@@ -71,7 +71,7 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
     <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260701-scroll-cue">
+    <link rel="stylesheet" href="../styles.css?v=20260701-mobile-toggle">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
