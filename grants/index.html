@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Ongoing and completed research projects by Benjamin F. Jarvis.">
     <title>Projects | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260701-mobile-toggle">
+    <link rel="stylesheet" href="../styles.css?v=20260701-grant-groups">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -39,10 +39,17 @@
 
           <div class="section-heading grant-section-heading">
             <div>
-              <h2>Completed Projects</h2>
+              <h2>Closed Projects</h2>
             </div>
           </div>
-          <div class="grant-list" data-grants="completed" data-grants-source="../data/grants.json"></div>
+          <div class="grant-list" data-grants="closed" data-grants-source="../data/grants.json"></div>
+
+          <div class="section-heading grant-section-heading">
+            <div>
+              <h2>Rejected Applications</h2>
+            </div>
+          </div>
+          <div class="grant-list" data-grants="rejected" data-grants-source="../data/grants.json"></div>
         </div>
       </section>
     </main>
@@ -61,6 +68,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js?v=20260630-supervision-lines"></script>
+    <script src="../script.js?v=20260701-grant-groups"></script>
   </body>
 </html>

@@ -548,9 +548,6 @@ h3 {
 }
 
 .grant-card {
-  display: grid;
-  grid-template-columns: minmax(160px, 0.28fr) minmax(0, 1fr);
-  gap: clamp(18px, 3vw, 34px);
   padding: 24px 0;
   border-top: 1px solid var(--line);
 }
@@ -565,6 +562,36 @@ h3 {
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--line);
+}
+
+.grant-history {
+  display: grid;
+  gap: 16px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grant-history-item {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.2fr) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 28px);
+}
+
+.grant-history-item .meta {
+  margin: 0;
+}
+
+.grant-history-item h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.grant-history-item p:last-child {
+  grid-column: 2;
+  margin-bottom: 0;
+  color: var(--ink-soft);
 }
 
 .teaching-grid,
@@ -1067,6 +1094,15 @@ h3 {
   .publication-item.has-image,
   .grant-card {
     grid-template-columns: 1fr;
+  }
+
+  .grant-history-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .grant-history-item p:last-child {
+    grid-column: 1;
   }
 
   .teaching-course {

@@ -603,41 +603,6 @@ document.addEventListener("click", (event) => {
   }
 });
 
-function grantStatusLabel(status = "") {
-  return status === "completed" ? "Completed" : "Ongoing";
-}
-
-function renderGrantItem(grant, compact = false) {
-  const title = escapeHtml(grant.title || "Untitled grant");
-  const page = compact ? grant.page : grant.page?.replace(/^grants\//, "");
-  const titleHtml = grant.page
-    ? `<a href="${escapeHtml(page)}">${title}</a>`
-    : title;
-  const meta = [grant.dates, grant.funder, grant.role].filter(Boolean).map(escapeHtml).join(" · ");
-
-  if (compact) {
-    return `
-      <article>
-        <span>${escapeHtml(grantStatusLabel(grant.status))} · ${escapeHtml(grant.dates || "")}</span>
-        <h3>${titleHtml}</h3>
-        <p>${escapeHtml(grant.summary || "")}</p>
-      </article>
-    `;
-  }
-
-  return `
-    <article class="grant-card">
-      ${grant.image ? `<img src="../${escapeHtml(grant.image)}" alt="">` : ""}
-      <div>
-        <p class="meta">${escapeHtml(grantStatusLabel(grant.status))}${meta ? ` · ${meta}` : ""}</p>
-        <h3>${titleHtml}</h3>
-        <p>${escapeHtml(grant.summary || "")}</p>
-        ${grant.amount ? `<p><strong>Amount:</strong> ${escapeHtml(grant.amount)}</p>` : ""}
-      </div>
-    </article>
-  `;
-}
-
 function cslName(name = {}) {
   if (name.literal) return name.literal;
   return [name.given, name.family].filter(Boolean).join(" ");
@@ -647,6 +612,133 @@ function noteValue(note = "", label = "") {
   const prefix = `${label}:`;
   const line = note.split(/\r?\n/).find((part) => part.startsWith(prefix));
   return line ? line.slice(prefix.length).trim() : "";
+}
+
+function cslDateYear(item = {}) {
+  return cslDateValue(item.issued).slice(0, 4) || "Year";
+}
+
+function grantDecision(item = {}) {
+  return noteValue(item.note || "", "Decision");
+}
+
+function grantType(item = {}) {
+  return noteValue(item.note || "", "Grant type") || item.genre || "Grant";
+}
+
+function grantGroupKey(item = {}) {
+  return item["title-short"] || item.shortTitle || item.title || "Untitled project";
+}
+
+function grantLifecycle(items = []) {
+  const decisions = items.map(grantDecision).join(" | ").toLowerCase();
+  const statuses = items.map((item) => String(item.status || "")).join(" | ").toLowerCase();
+
+  if (/\bopen\b|finally registered|submitted|registered|pending/.test(statuses) || items.some((item) => !grantDecision(item))) {
+    return "ongoing";
+  }
+  if (/granted|needs audit closed/.test(decisions)) {
+    return "closed";
+  }
+  return "rejected";
+}
+
+function grantLifecycleLabel(lifecycle = "") {
+  return {
+    ongoing: "Ongoing",
+    closed: "Closed",
+    rejected: "Rejected",
+  }[lifecycle] || "Project";
+}
+
+function grantSortValue(item = {}) {
+  return Number(cslDateYear(item).replace(/\D/g, "")) || 0;
+}
+
+function groupGrants(grants = []) {
+  const groups = new Map();
+  grants.forEach((grant) => {
+    const key = grantGroupKey(grant);
+    if (!groups.has(key)) {
+      groups.set(key, {
+        key,
+        title: key,
+        records: [],
+      });
+    }
+    groups.get(key).records.push(grant);
+  });
+
+  return Array.from(groups.values()).map((group) => {
+    group.records.sort((a, b) => grantSortValue(b) - grantSortValue(a) || String(a.title || "").localeCompare(b.title || ""));
+    group.lifecycle = grantLifecycle(group.records);
+    group.latest = group.records[0];
+    group.latestYear = grantSortValue(group.latest);
+    return group;
+  }).sort((a, b) => b.latestYear - a.latestYear || a.title.localeCompare(b.title));
+}
+
+function renderGrantApplicants(item = {}) {
+  const applicants = item.author || [];
+  const contributors = item.contributor || [];
+  const mainApplicant = cslName(applicants[0]);
+  const coApplicants = formatNameList(applicants.slice(1).map(cslName).filter(Boolean));
+  const contributorList = formatNameList(contributors.map(cslName).filter(Boolean));
+  const parts = [];
+
+  if (mainApplicant) parts.push(`Main applicant: ${mainApplicant}`);
+  if (coApplicants) parts.push(`Co-applicants: ${coApplicants}`);
+  if (contributorList) parts.push(`Contributors: ${contributorList}`);
+  return parts.map(escapeHtml).join("<br>");
+}
+
+function renderGrantHistoryItem(item = {}) {
+  const decision = grantDecision(item) || "Decision pending";
+  const meta = [
+    cslDateYear(item),
+    decision,
+    item.publisher,
+    item.number,
+    grantType(item),
+  ].filter(Boolean).map(escapeHtml).join(" · ");
+
+  return `
+    <li class="grant-history-item">
+      <p class="meta">${meta}</p>
+      <h4>${escapeHtml(item.title || "Untitled application")}</h4>
+      <p>${renderGrantApplicants(item)}</p>
+    </li>
+  `;
+}
+
+function renderGrantGroup(group, compact = false) {
+  const latest = group.latest || {};
+  const years = group.records.map(cslDateYear).filter(Boolean);
+  const yearRange = years.length ? `${years[years.length - 1]}${years[0] !== years[years.length - 1] ? `-${years[0]}` : ""}` : "";
+  const latestDecision = grantDecision(latest) || "Decision pending";
+  const latestMeta = [grantLifecycleLabel(group.lifecycle), yearRange, latest.publisher].filter(Boolean).map(escapeHtml).join(" · ");
+
+  if (compact) {
+    return `
+      <article>
+        <span>${latestMeta}</span>
+        <h3>${escapeHtml(group.title)}</h3>
+        <p>${escapeHtml(latest.title || "")}${latestDecision ? ` (${escapeHtml(latestDecision)})` : ""}</p>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="grant-card">
+      <div>
+        <p class="meta">${latestMeta}</p>
+        <h3>${escapeHtml(group.title)}</h3>
+        <ol class="grant-history">
+          ${group.records.map(renderGrantHistoryItem).join("")}
+        </ol>
+      </div>
+    </article>
+  `;
 }
 
 function teachingSortValue(term = "") {
@@ -833,15 +925,18 @@ async function renderGrants() {
       .then((response) => response.json())
       .then((grants) => {
         const mode = target.dataset.grants;
-        const selected = grants.filter((grant) => mode === "all" || grant.status === mode);
+        const grouped = groupGrants(grants);
+        const selected = grouped.filter((group) => mode === "all" || group.lifecycle === mode);
 
         if (!selected.length) {
           target.innerHTML = "<p>No projects found for this section.</p>";
           return;
         }
 
-        target.innerHTML = selected
-          .map((grant) => renderGrantItem(grant, target.classList.contains("timeline")))
+        const visible = target.classList.contains("timeline") ? selected.slice(0, 4) : selected;
+
+        target.innerHTML = visible
+          .map((group) => renderGrantGroup(group, target.classList.contains("timeline")))
           .join("");
       })
       .catch(() => {

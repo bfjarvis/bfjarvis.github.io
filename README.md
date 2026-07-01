@@ -6,6 +6,7 @@ Personal GitHub Pages site for Benjamin F. Jarvis.
 
 - `index.html` - homepage with publications, supervision, grants, teaching, posts, and contact sections.
 - `data/grants.json` - structured source for ongoing and completed grants/projects.
+- `data/grants-zotero-import.json` - temporary CSL JSON seed made from the historical grants spreadsheet for importing into Zotero.
 - `data/publication-assets.json` - maps Zotero citation keys to representative publication images.
 - `data/teaching-csl.json` - CSL JSON source for courses and programme teaching records.
 - `data/publications.json` - Better CSL JSON source for publications, presentations, talks, and theses.
@@ -76,10 +77,35 @@ hero section, for example:
 
 ## Updating Grants and Projects
 
-Edit `data/grants.json` for ongoing and completed grants/projects. Ongoing grants can
-link to project pages in `grants/`, which can gather aims, collaborators, outputs,
-publication links, and Quarto vignettes. This is usually cleaner than encoding grants
-inside `data/publications.json`.
+Export cleaned grant/project records from Zotero as CSL JSON to `data/grants.json`.
+The Projects page groups records by Zotero's `Short Title` / CSL `title-short` field.
+Use the same short title for repeated submissions that share a common project thread,
+even when the full submitted title changes across applications.
+
+The site splits grouped project threads into Ongoing, Closed, and Rejected sections.
+Within each thread, it lists the submission history, including date, decision, funder,
+registration number, full submitted title, main applicant, co-applicants, and other
+contributors. Ongoing groups are those with an open, registered, submitted, pending,
+or decision-missing record. Closed groups are those with a granted or administratively
+closed record. Remaining groups are treated as rejected applications.
+
+The `data/grants-zotero-import.json` file is only a seed file for Zotero import,
+created from `Grants.xlsx`; it is not used by the website.
+
+Suggested Zotero conventions for grants/projects:
+
+- Use Zotero item type `Report`.
+- Set `Report Type` / CSL `genre` to `Grant`.
+- Use the project title as `Title`.
+- Use the project leader or principal investigator as `Author`.
+- Use the funder as `Institution` or `Publisher`, depending on the Zotero UI/export.
+- Use the registration or decision number as `Report Number`.
+- Use the application or award year as `Date`.
+- Put decision state and project status in `Extra` or `Notes` using stable labels such as `Decision: Granted` and `Status: Open`.
+- Put a public project page, funder page, or repository in `URL` when one exists.
+
+The homepage shows a compact preview of the most recent ongoing project threads. The
+full Projects page shows ongoing, closed, and rejected groups.
 
 ## Updating Teaching
 
@@ -97,10 +123,25 @@ Export supervised MSc and PhD theses from Zotero as Better CSL JSON to `data/sup
 The CV includes a separate Supervision section, split into doctoral and master's
 supervision.
 
-Keep supervisor and co-supervisor details in Zotero's Extra or Notes field. Better CSL
-JSON exports those notes as `note`, which the site displays under each supervised thesis.
+Suggested Zotero conventions for supervision:
+
+- Use one Zotero item per thesis.
+- Use the student as `Author`.
+- Use the thesis title as `Title`.
+- Use `Thesis` as the item type when possible.
+- Use `Type` / CSL `genre` to distinguish `PhD dissertation`, `Doctoral dissertation`, or `Master's thesis`.
+- Use Linkoping University as the university/institution and Norrkoping as the place when appropriate.
+- Put all supervisors in Zotero's `Contributor` field, including Benjamin F. Jarvis.
+- For doctoral dissertations, list the main supervisor first. The website and PDF CV label the first doctoral contributor with `(Main)`.
+- For master's theses, contributor order is used as given, but no `(Main)` label is added.
+
 MSc theses and dissertations can remain together in Zotero; the site uses the CSL
-genre to split dissertation or PhD records from master's thesis records.
+genre/type to split dissertation or PhD records from master's thesis records. The
+browser CV and the PDF CV both render a separate supervision line, for example:
+
+```text
+Supervision: Maria Branden (Main), Benjamin F. Jarvis, and Sarah Valdez.
+```
 
 ## Updating the CV
 
