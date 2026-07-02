@@ -672,7 +672,12 @@ function grantLifecycleLabel(lifecycle = "") {
 }
 
 function grantSortValue(item = {}) {
-  return Number(cslDateYear(item).replace(/\D/g, "")) || 0;
+  const parts = item.issued?.["date-parts"]?.[0] || [];
+  if (parts.length) {
+    const [year = 0, month = 0, day = 0] = parts.map((part) => Number(part) || 0);
+    return year * 10000 + month * 100 + day;
+  }
+  return (Number(cslDateYear(item).replace(/\D/g, "")) || 0) * 10000;
 }
 
 function grantNumberSortValue(item = {}) {
@@ -689,8 +694,8 @@ function sortGrantRecords(records = []) {
 }
 
 function displayGrantRecord(records = []) {
-  const accepted = records.filter(isAcceptedGrant).sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a));
-  return accepted[0] || [...records].sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))[0] || {};
+  const accepted = records.filter(isAcceptedGrant).sort((a, b) => grantSortValue(b) - grantSortValue(a));
+  return accepted[0] || [...records].sort((a, b) => grantSortValue(b) - grantSortValue(a))[0] || {};
 }
 
 function groupGrants(grants = []) {
@@ -711,7 +716,7 @@ function groupGrants(grants = []) {
     group.records = sortGrantRecords(group.records);
     group.lifecycle = grantLifecycle(group.records);
     group.display = displayGrantRecord(group.records);
-    group.latest = [...group.records].sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))[0];
+    group.latest = [...group.records].sort((a, b) => grantSortValue(b) - grantSortValue(a))[0];
     group.latestYear = grantSortValue(group.latest);
     return group;
   }).sort((a, b) => b.latestYear - a.latestYear || a.title.localeCompare(b.title));
@@ -766,12 +771,7 @@ function renderGrantHistoryItem(item = {}) {
 
 function renderGrantGroup(group, compact = false) {
   const display = group.display || group.latest || {};
-  const years = [...group.records]
-    .sort((a, b) => grantNumberSortValue(b) - grantNumberSortValue(a))
-    .map(cslDateYear)
-    .filter(Boolean);
-  const yearRange = years.length ? `${years[years.length - 1]}${years[0] !== years[years.length - 1] ? `-${years[0]}` : ""}` : "";
-  const latestMeta = [grantLifecycleLabel(group.lifecycle), yearRange, display.publisher].filter(Boolean).map(escapeHtml).join(" · ");
+  const latestMeta = [grantLifecycleLabel(group.lifecycle), cslDateYear(display), display.publisher].filter(Boolean).map(escapeHtml).join(" · ");
   const funderCall = grantFunderCall(display);
   const numberBudget = renderGrantNumberBudget(display);
   const participants = renderGrantApplicants(display);
@@ -782,7 +782,7 @@ function renderGrantGroup(group, compact = false) {
       <article>
         <span>${latestMeta}</span>
         <h3>${escapeHtml(display.title || group.title)}</h3>
-        ${participants ? `<p>${participants}</p>` : ""}
+        ${abstract ? `<p>${escapeHtml(abstract)}</p>` : participants ? `<p>${participants}</p>` : ""}
       </article>
     `;
   }

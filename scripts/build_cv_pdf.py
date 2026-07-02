@@ -180,10 +180,10 @@ def entry_year(entry):
 
 def sort_date_value(entry):
     raw = entry["fields"].get("date") or entry["fields"].get("year") or ""
-    match = re.search(r"(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?", str(raw))
+    match = re.search(r"(\d{4})(?:-(\d{1,2}))?(?:-(\d{1,2}))?", str(raw))
     if not match:
         return 0
-    return int(f"{match.group(1)}{match.group(2) or '00'}{match.group(3) or '00'}")
+    return int(f"{match.group(1)}{(match.group(2) or '0').zfill(2)}{(match.group(3) or '0').zfill(2)}")
 
 
 def first_field(fields, names):
@@ -437,10 +437,10 @@ def sort_grant_records(entries):
 
 
 def display_grant_record(entries):
-    accepted = sorted([entry for entry in entries if is_accepted_grant(entry)], key=grant_number_sort_value, reverse=True)
+    accepted = sorted([entry for entry in entries if is_accepted_grant(entry)], key=sort_date_value, reverse=True)
     if accepted:
         return accepted[0]
-    return sorted(entries, key=grant_number_sort_value, reverse=True)[0] if entries else None
+    return sorted(entries, key=sort_date_value, reverse=True)[0] if entries else None
 
 
 def group_grants(path):
@@ -452,7 +452,7 @@ def group_grants(path):
     grouped = []
     for title, records in groups.items():
         records = sort_grant_records(records)
-        latest = sorted(records, key=grant_number_sort_value, reverse=True)[0]
+        latest = sorted(records, key=sort_date_value, reverse=True)[0]
         grouped.append({
             "title": title,
             "records": records,
