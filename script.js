@@ -85,6 +85,13 @@ function cslDateValue(date = {}) {
 }
 
 function cslSeasonLabel(season) {
+  if (typeof season === "string") {
+    const normalized = season.toLowerCase();
+    if (normalized.includes("spring")) return "Spring";
+    if (normalized.includes("summer")) return "Summer";
+    if (normalized.includes("fall") || normalized.includes("autumn")) return "Fall";
+    if (normalized.includes("winter")) return "Winter";
+  }
   return {
     1: "Spring",
     2: "Summer",
@@ -93,12 +100,45 @@ function cslSeasonLabel(season) {
   }[Number(season)] || "";
 }
 
+function teachingTermFromMonth(month) {
+  const value = Number(month);
+  if (!value) return "";
+  return value <= 6 ? "Spring" : "Fall";
+}
+
+function teachingTermFromLiteral(value = "") {
+  const year = String(value).match(/(?:19|20)\d{2}/)?.[0] || "";
+  if (!year) return "";
+  const monthNames = {
+    january: 1,
+    february: 2,
+    march: 3,
+    april: 4,
+    may: 5,
+    june: 6,
+    july: 7,
+    august: 8,
+    september: 9,
+    october: 10,
+    november: 11,
+    december: 12,
+  };
+  const lower = String(value).toLowerCase();
+  const monthName = Object.keys(monthNames).find((name) => lower.includes(name));
+  const term = monthName ? teachingTermFromMonth(monthNames[monthName]) : "";
+  return term ? `${term} ${year}` : year;
+}
+
 function teachingDateValue(date = {}) {
-  if (date.literal) return date.literal;
+  if (date.literal) return teachingTermFromLiteral(date.literal) || date.literal;
   const parts = date["date-parts"]?.[0] || [];
   if (!parts.length) return "";
   const season = cslSeasonLabel(date.season);
   if (season && parts.length === 1) return `${season} ${parts[0]}`;
+  if (parts.length > 1) {
+    const term = teachingTermFromMonth(parts[1]);
+    return term ? `${term} ${parts[0]}` : String(parts[0]);
+  }
   return parts.map(String).join("-");
 }
 

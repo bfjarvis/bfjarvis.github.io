@@ -788,6 +788,15 @@ h3 {
   color: var(--ink-soft);
 }
 
+.teaching-grid.home-list > article {
+  gap: clamp(8px, 2vw, 28px);
+  padding: 16px 0;
+}
+
+.teaching-grid.home-list > article h3 {
+  margin-bottom: 4px;
+}
+
 .home-list > article.post-card.featured .meta {
   color: var(--brick);
 }

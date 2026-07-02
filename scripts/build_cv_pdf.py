@@ -92,6 +92,16 @@ def csl_date_value(date):
 
 
 def csl_season_label(season):
+    if isinstance(season, str):
+        normalized = season.lower()
+        if "spring" in normalized:
+            return "Spring"
+        if "summer" in normalized:
+            return "Summer"
+        if "fall" in normalized or "autumn" in normalized:
+            return "Fall"
+        if "winter" in normalized:
+            return "Winter"
     try:
         season_number = int(season or 0)
     except (TypeError, ValueError):
@@ -104,15 +114,53 @@ def csl_season_label(season):
     }.get(season_number, "")
 
 
+def teaching_term_from_month(month):
+    try:
+        month_number = int(month or 0)
+    except (TypeError, ValueError):
+        return ""
+    if not month_number:
+        return ""
+    return "Spring" if month_number <= 6 else "Fall"
+
+
+def teaching_term_from_literal(value):
+    year_match = re.search(r"(?:19|20)\d{2}", str(value or ""))
+    if not year_match:
+        return ""
+    year = year_match.group(0)
+    month_names = {
+        "january": 1,
+        "february": 2,
+        "march": 3,
+        "april": 4,
+        "may": 5,
+        "june": 6,
+        "july": 7,
+        "august": 8,
+        "september": 9,
+        "october": 10,
+        "november": 11,
+        "december": 12,
+    }
+    lower = str(value or "").lower()
+    month = next((number for name, number in month_names.items() if name in lower), 0)
+    term = teaching_term_from_month(month)
+    return f"{term} {year}" if term else year
+
+
 def teaching_date_value(date):
     if (date or {}).get("literal"):
-        return str(date["literal"])
+        return teaching_term_from_literal(date["literal"]) or str(date["literal"])
     parts = (date or {}).get("date-parts", [[]])[0]
     if not parts:
         return ""
     season = csl_season_label((date or {}).get("season"))
     if season and len(parts) == 1:
         return f"{season} {parts[0]}"
+    if len(parts) > 1:
+        term = teaching_term_from_month(parts[1])
+        return f"{term} {parts[0]}" if term else str(parts[0])
     return "-".join(str(part) for part in parts if part)
 
 
