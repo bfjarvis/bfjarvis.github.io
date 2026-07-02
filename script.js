@@ -1012,8 +1012,11 @@ function renderTeachingRole(role) {
   `;
 }
 
-function teachingLatestYear(course = {}) {
-  return String(course.latest || "").match(/(?:19|20)\d{2}/)?.[0] || course.latest || "";
+function teachingCompactMeta(course = {}) {
+  const latestRole = course.roles?.[0] || {};
+  const term = latestRole.term || course.latest || "";
+  const role = latestRole.role || "";
+  return [term, role].filter(Boolean).map(escapeHtml).join("<br>");
 }
 
 function renderTeachingCourse(course, compact = false) {
@@ -1022,7 +1025,7 @@ function renderTeachingCourse(course, compact = false) {
   if (compact) {
     return `
       <article class="teaching-card">
-        <p class="meta">${escapeHtml(teachingLatestYear(course))}</p>
+        <p class="meta">${teachingCompactMeta(course)}</p>
         <h3>${escapeHtml(course.title)}</h3>
         ${course.abstract ? `<p>${escapeHtml(course.abstract)}</p>` : ""}
       </article>
