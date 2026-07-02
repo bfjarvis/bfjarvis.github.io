@@ -91,6 +91,31 @@ def csl_date_value(date):
     return "-".join(str(part) for part in parts if part)
 
 
+def csl_season_label(season):
+    try:
+        season_number = int(season or 0)
+    except (TypeError, ValueError):
+        return str(season or "")
+    return {
+        1: "Spring",
+        2: "Summer",
+        3: "Fall",
+        4: "Winter",
+    }.get(season_number, "")
+
+
+def teaching_date_value(date):
+    if (date or {}).get("literal"):
+        return str(date["literal"])
+    parts = (date or {}).get("date-parts", [[]])[0]
+    if not parts:
+        return ""
+    season = csl_season_label((date or {}).get("season"))
+    if season and len(parts) == 1:
+        return f"{season} {parts[0]}"
+    return "-".join(str(part) for part in parts if part)
+
+
 def normalize_csl_item(item):
     issued = csl_date_value(item.get("issued"))
     fields = {
@@ -301,15 +326,41 @@ def teaching_role_label(role):
 
 def normalize_teaching_record(item):
     note = item.get("note", "")
+    is_standard_teaching = item.get("type") == "standard"
+    organizers = item.get("author", []) if is_standard_teaching else item.get("organizer", []) + item.get("chair", [])
+    contributors = (
+        item.get("contributor", []) + item.get("presenter", [])
+        if is_standard_teaching
+        else item.get("author", []) + item.get("presenter", []) + item.get("contributor", [])
+    )
+    organizer_names = [csl_name(name) for name in organizers if csl_name(name)]
+    contributor_names = [csl_name(name) for name in contributors if csl_name(name)]
+    teaching_type = item.get("genre") or "Teaching"
+    user_is_organizer = any(is_benjamin_jarvis(name) for name in organizer_names)
+    user_is_contributor = any(is_benjamin_jarvis(name) for name in contributor_names)
+    record_id = item.get("citation-key") or item.get("id") or slugify(item.get("title", "teaching"))
+    if user_is_contributor and not user_is_organizer:
+        inferred_role = "Guest Lecturer"
+    elif user_is_organizer and re.search(r"development-director", record_id, re.I):
+        inferred_role = "Program Development Director"
+    elif user_is_organizer and re.search(r"program|programme", f"{teaching_type} {item.get('title', '')}", re.I):
+        inferred_role = "Program Director"
+    elif user_is_organizer:
+        inferred_role = "Course Coordinator"
+    else:
+        inferred_role = teaching_type
+
     return {
-        "id": item.get("citation-key") or item.get("id") or slugify(item.get("title", "teaching")),
+        "id": record_id,
         "title": item.get("title") or "Untitled course",
-        "code": item.get("title-short", ""),
-        "program": item.get("collection-title", ""),
-        "institution": item.get("event-title", ""),
-        "term": csl_date_value(item.get("issued")) or "",
-        "role": note_value(note, "Role") or item.get("genre") or "Teaching",
-        "organizers": [csl_name(name) for name in item.get("organizer", []) if csl_name(name)],
+        "code": item.get("number") or item.get("title-short", ""),
+        "program": item.get("authority") or item.get("event-title", ""),
+        "institution": item.get("publisher") or item.get("collection-title", ""),
+        "location": item.get("publisher-place") or item.get("event-place", ""),
+        "term": teaching_date_value(item.get("issued")) or "",
+        "role": note_value(note, "Role") or inferred_role,
+        "organizers": organizer_names,
+        "presenters": contributor_names,
         "abstract": item.get("abstract", ""),
     }
 

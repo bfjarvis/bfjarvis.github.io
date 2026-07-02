@@ -121,6 +121,19 @@ Export course records from Zotero as CSL JSON and save them to
 The most recent grouped course records appear on the homepage. The full grouped
 list appears on `teaching/index.html`.
 
+Suggested Zotero conventions for teaching:
+
+- Use Zotero item type `Standard` so teaching records can be excluded from publication searches.
+- Use `Type` / CSL `genre` for `University Course` or `University Program`.
+- Use `Title` for the course or programme name.
+- Use `Short Title` / CSL `number` for the course code when one exists.
+- Use `Meeting` / CSL `authority` for the programme, department, or teaching unit.
+- Use `Series` / CSL `publisher` for the university or educational institution.
+- Use `Location` / CSL `publisher-place` for the geographic location of teaching.
+- Use `Chair/Organizer` / CSL `author` for course directors or coordinators.
+- Use `Presenter` / CSL `contributor` for guest lecturers, including Benjamin F. Jarvis when relevant.
+- Put teaching metadata in `Extra` or `Notes` using stable labels such as `Hours: 14`, `Credits: 7.5`, and `Students: 27`.
+
 If a course or supervision area needs more space, add a page under `teaching/` and
 put its relative URL in that entry's `page` field. Otherwise, leave `page` blank.
 

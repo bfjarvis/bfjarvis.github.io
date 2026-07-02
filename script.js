@@ -84,6 +84,24 @@ function cslDateValue(date = {}) {
   return parts.map(String).join("-");
 }
 
+function cslSeasonLabel(season) {
+  return {
+    1: "Spring",
+    2: "Summer",
+    3: "Fall",
+    4: "Winter",
+  }[Number(season)] || "";
+}
+
+function teachingDateValue(date = {}) {
+  if (date.literal) return date.literal;
+  const parts = date["date-parts"]?.[0] || [];
+  if (!parts.length) return "";
+  const season = cslSeasonLabel(date.season);
+  if (season && parts.length === 1) return `${season} ${parts[0]}`;
+  return parts.map(String).join("-");
+}
+
 function normalizeCslItem(item = {}) {
   const fields = {
     title: item.title || "",
@@ -851,20 +869,44 @@ function teachingSortValue(term = "") {
 
 function normalizeTeachingRecord(item = {}) {
   const note = item.note || "";
+  const isStandardTeaching = item.type === "standard";
+  const organizers = isStandardTeaching
+    ? (item.author || [])
+    : [...(item.organizer || []), ...(item.chair || [])];
+  const contributors = isStandardTeaching
+    ? [...(item.contributor || []), ...(item.presenter || [])]
+    : [...(item.author || []), ...(item.presenter || []), ...(item.contributor || [])];
+  const organizerNames = organizers.map(cslName).filter(Boolean);
+  const contributorNames = contributors.map(cslName).filter(Boolean);
+  const teachingType = item.genre || "Teaching";
+  const userIsOrganizer = organizerNames.some(isBenjaminJarvisName);
+  const userIsContributor = contributorNames.some(isBenjaminJarvisName);
+  const recordId = item["citation-key"] || item.id || slugify(item.title || "teaching");
+  const inferredRole = userIsContributor && !userIsOrganizer
+    ? "Guest Lecturer"
+    : userIsOrganizer && /development-director/i.test(recordId)
+      ? "Program Development Director"
+    : userIsOrganizer && /program|programme/i.test(`${teachingType} ${item.title || ""}`)
+      ? "Program Director"
+      : userIsOrganizer
+        ? "Course Coordinator"
+        : teachingType;
+
   return {
-    id: item["citation-key"] || item.id || slugify(item.title || "teaching"),
+    id: recordId,
     title: item.title || "Untitled course",
-    code: item["title-short"] || "",
-    program: item["collection-title"] || "",
-    institution: item["event-title"] || "",
-    term: cslDateValue(item.issued) || "",
-    role: noteValue(note, "Role") || item.genre || "Teaching",
+    code: item.number || item["title-short"] || "",
+    program: item.authority || item["event-title"] || "",
+    institution: item.publisher || item["collection-title"] || "",
+    location: item["publisher-place"] || item["event-place"] || "",
+    term: teachingDateValue(item.issued) || "",
+    role: noteValue(note, "Role") || inferredRole,
     preciseDates: noteValue(note, "Precise date(s)"),
     credits: noteValue(note, "Credits"),
     students: noteValue(note, "Students"),
-    hours: noteValue(note, "Teaching hours"),
-    organizers: (item.organizer || []).map(cslName).filter(Boolean),
-    presenters: (item.presenter || []).map(cslName).filter(Boolean),
+    hours: noteValue(note, "Hours") || noteValue(note, "Teaching hours"),
+    organizers: organizerNames,
+    presenters: contributorNames,
     abstract: item.abstract || "",
     url: item.URL || "",
   };

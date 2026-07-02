@@ -1,642 +1,113 @@
 [
-  {
-    "id": "709a07-vt-2024-guest-lecturer",
-    "citation-key": "709a07-vt-2024-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "709A07 - Research Methods in Strategic Urban and Regional Planning",
-    "title-short": "709A07",
-    "organizer": [
-      {
-        "given": "Marko",
-        "family": "Marila"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2024"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Strategic Urban and Regional Planning",
-    "URL": "https://studieinfo.liu.se/en/kurs/709A07/vt-2024",
-    "abstract": "The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.",
-    "note": "Role: Guest Lecturer\nPrecise date(s): 2024-05-22\nCredits: 7.5\nStudents: 30\nTeaching hours: 8\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "709a07-vt-2025-guest-lecturer",
-    "citation-key": "709a07-vt-2025-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "709A07 - Research Methods in Strategic Urban and Regional Planning",
-    "title-short": "709A07",
-    "organizer": [
-      {
-        "given": "Karin",
-        "family": "Edberg"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2025"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Strategic Urban and Regional Planning",
-    "URL": "https://studieinfo.liu.se/en/kurs/709A07/vt-2025",
-    "abstract": "The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.",
-    "note": "Role: Guest Lecturer\nPrecise date(s): May 23 and 25, 2025\nCredits: 7.5\nStudents: 15\nTeaching hours: 14\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "709a07-vt-2026-guest-lecturer",
-    "citation-key": "709a07-vt-2026-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "709A07 - Research Methods in Strategic Urban and Regional Planning",
-    "title-short": "709A07",
-    "organizer": [
-      {
-        "given": "Karin",
-        "family": "Edberg"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2026"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Strategic Urban and Regional Planning",
-    "URL": "https://studieinfo.liu.se/en/kurs/709A07/vt-2026",
-    "abstract": "The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.",
-    "note": "Role: Guest Lecturer\nPrecise date(s): May 22 and 25, 2026\nCredits: 7.5\nStudents: 27\nTeaching hours: 14\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "sos9232-vt-2017-guest-lecturer",
-    "citation-key": "sos9232-vt-2017-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "SOS9232 – Residential Segregation: Measurement and Mechanisms",
-    "title-short": "SOS9232",
-    "organizer": [
-      {
-        "given": "Sarah",
-        "family": "Valdez"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2017"
-    },
-    "event-title": "Department of Sociology and Human Geography, University of Oslo",
-    "URL": "https://www.uio.no/studier/emner/sv/iss/SOS9232/index.html",
-    "abstract": "Residential segregation is a common concern among social scientists because it signals social distance between groups based on characteristics such as race/ethnicity, socioeconomic standing, or immigrant status. Furthermore, segregation has been shown to lead to unequal outcomes in terms of education, income, and health in a variety of settings cross-nationally and over time. This course covers the foundational literatures on residential segregation, explains the most commonly used segregation measures, and introduces students to current, advanced measures in the field. Students will be given a brief primer on calculating segregation indices in R. Though the course focuses on residential segregation, the indices can be applied to schools, workplaces, and other organizational or geographic units. We will also review the mechanisms and processes that generate segregation and discuss ways these can be modeled to bridge the micro-macro divide.",
-    "note": "Role: Guest Lecturer\nPrecise date(s): June 6-9, 2017\nCredits: 6\nStudents: ~30\nTeaching hours: 64\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a02-ht-2016-course-coordinator",
-    "citation-key": "771a02-ht-2016-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A02 - Residential Segregation: Measurement and Analysis",
-    "title-short": "771A02",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      },
-      {
-        "given": "Sarah",
-        "family": "Valdez"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2016"
-    },
-    "event-title": "Linköping University, Institute for Analytical Sociology",
-    "URL": "https://studieinfo.liu.se/en/kurs/771A02/ht-2016",
-    "abstract": "This course introduces current literature on residential segregation with a focus on ethnic and socio-economic segregation in Europe and the United States. The course begins by conceptualizing neighborhoods, a fundamental social unit in many segregation studies. The course then introduces measures of segregation, examining the varied dimensions of segregation captured by these measures. The course then examines mechanisms and processes that can generate and perpetuate segregation. It considers statistical and simulation techniques to analyze the relative contributions of mechanisms and processes that generate residential segregation.",
-    "note": "Role: Course Coordinator\nCredits: 7.5\nStudents: 7\nTeaching hours: 80\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a06-vt-2018-course-coordinator",
-    "citation-key": "771a06-vt-2018-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A06 - Discrete Choice Modelling with Applications",
-    "title-short": "771A06",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2018"
-    },
-    "event-title": "Linköping University, Institute for Analytical Sociology",
-    "URL": "https://studieinfo.liu.se/en/kurs/771A06/vt-2018",
-    "abstract": "Discrete choice modeling has been central in economics, marketing, and transportation research for decades, and is increasingly used in political science and sociology. Discrete choice models have been used to understand how individuals and households choose in different situations. This course will provide an overview of these applications using real-world examples.   \nFocus will be on practical aspects of modeling. The multinomial conditional logistic regression model will feature prominently. More advanced models for handling panel data, dealing with unobserved heterogeneity, and identifying latent groups will also be considered. Applications to counterfactual prediction and agent-based simulation will be highlighted.",
-    "note": "Role: Course Coordinator\nCredits: 7.5\nTeaching hours: 160\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2019-course-coordinator",
-    "citation-key": "771a19-vt-2019-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2019"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "URL": "https://studieinfo.liu.se/en/kurs/771A19/vt-2019",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Course Coordinator\nCredits: 7.5\nTeaching hours: 160\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2021-course-coordinator",
-    "citation-key": "771a19-vt-2021-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2021"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Course Coordinator\nCredits: 7.5\nTeaching hours: 120\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2022-guest-lecturer",
-    "citation-key": "771a19-vt-2022-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Richard",
-        "family": "Öhrval"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2022"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 70\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2023-guest-lecturer",
-    "citation-key": "771a19-vt-2023-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Richard",
-        "family": "Öhrval"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2023"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 70\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2024-guest-lecturer",
-    "citation-key": "771a19-vt-2024-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Richard",
-        "family": "Öhrval"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2024"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 70\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a19-vt-2025-guest-lecturer",
-    "citation-key": "771a19-vt-2025-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A19 - Discrete Choice Modelling",
-    "title-short": "771A19",
-    "organizer": [
-      {
-        "given": "Richard",
-        "family": "Öhrval"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2025"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 70\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "master-s-programme-in-computational-social-science-ht-2017-development-director",
-    "citation-key": "master-s-programme-in-computational-social-science-ht-2017-development-director",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "Master's Programme in Computational Social Science",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2017"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "note": "Role: Development Director\nTeaching hours: 106\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "master-s-programme-in-computational-social-science-2018-program-director",
-    "citation-key": "master-s-programme-in-computational-social-science-2018-program-director",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "Master's Programme in Computational Social Science",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "2018"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "note": "Role: Program Director\nTeaching hours: 425\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "master-s-programme-in-computational-social-science-2019-program-director",
-    "citation-key": "master-s-programme-in-computational-social-science-2019-program-director",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "Master's Programme in Computational Social Science",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "2019"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "note": "Role: Program Director\nTeaching hours: 425\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "master-s-programme-in-computational-social-science-2025-program-director",
-    "citation-key": "master-s-programme-in-computational-social-science-2025-program-director",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "Master's Programme in Computational Social Science",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "2025"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "note": "Role: Program Director\nTeaching hours: 425\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "master-s-programme-in-computational-social-science-ht-2026-program-director",
-    "citation-key": "master-s-programme-in-computational-social-science-ht-2026-program-director",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "Master's Programme in Computational Social Science",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2026"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "note": "Role: Program Director\nTeaching hours: 213\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2019-course-coordinator",
-    "citation-key": "771a27-ht-2019-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      },
-      {
-        "given": "Maria",
-        "family": "Brandén"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2019"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Course Coordinator\nCredits: 7.5\nTeaching hours: 30\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2020-guest-lecturer",
-    "citation-key": "771a27-ht-2020-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Rosenqvist"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2020"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2021-guest-lecturer",
-    "citation-key": "771a27-ht-2021-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Rosenqvist"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2021"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2022-guest-lecturer",
-    "citation-key": "771a27-ht-2022-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Rosenqvist"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2022"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2023-guest-lecturer",
-    "citation-key": "771a27-ht-2023-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Liss"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2023"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2024-guest-lecturer",
-    "citation-key": "771a27-ht-2024-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Liss"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2024"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a27-ht-2025-guest-lecturer",
-    "citation-key": "771a27-ht-2025-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A27 - Inequality and Segregation: Theory and Measurement",
-    "title-short": "771A27",
-    "organizer": [
-      {
-        "given": "Erik",
-        "family": "Liss"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2025"
-    },
-    "event-title": "Linköping University",
-    "collection-title": "Master's Programme in Computational Social Science",
-    "abstract": "This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 15\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "ias-stata-workshop-vt-2017-course-coordinator",
-    "citation-key": "ias-stata-workshop-vt-2017-course-coordinator",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "IAS Stata Workshop",
-    "organizer": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Spring 2017"
-    },
-    "event-title": "Linköping University, Institute for Analytical Sociology",
-    "abstract": "This workshop offers a \"starter pack\" for those interested in gaining more control over their Stata workflows and in developing more sophisticated data analyses. It first discusses some of the elements of reporducible research, with an emphasis on the importance of script files. It then provides an overview of  the Stata statistical programming environment: its memory structure, file formats, and some syntax basics. It then dives into Stata macros, which are key means for storing temporary information and extracting information returned by other Stata functions. Finally, loops and control-flow functionality are presented.",
-    "note": "Role: Course Coordinator\nTeaching hours: 12\nSource: Teaching Log.xlsx, Teaching sheet"
-  },
-  {
-    "id": "771a03-ht-2016-guest-lecturer",
-    "citation-key": "771a03-ht-2016-guest-lecturer",
-    "type": "speech",
-    "genre": "University Course",
-    "title": "771A03 - Introduction to Analytical Sociology",
-    "title-short": "771A03",
-    "organizer": [
-      {
-        "given": "Peter",
-        "family": "Hedström"
-      },
-      {
-        "given": "Petri",
-        "family": "Ylikoski"
-      }
-    ],
-    "presenter": [
-      {
-        "given": "Benjamin F.",
-        "family": "Jarvis"
-      }
-    ],
-    "issued": {
-      "literal": "Fall 2016"
-    },
-    "event-title": "Linköping University, Institute for Analytical Sociology",
-    "URL": "https://studieinfo.liu.se/en/kurs/771A03/ht-2016",
-    "abstract": "The course begins with an introduction to the basic principles of analytical sociology. The course examines different types of action theories and various problems that arise when seeking to link micro-level behavior with macro-level outcomes. The course covers in detail how computer-based simulations in combination with different historical, qualitative, and quantitative data may help to improve our understanding of the driving forces behind important social processes.",
-    "note": "Role: Guest Lecturer\nCredits: 7.5\nTeaching hours: 8\nSource: Teaching Log.xlsx, Teaching sheet"
-  }
+  {"id":"edbergResearchMethodsStrategic2025","abstract":"The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.","author":[
+  {"family":"Edberg","given":"Karin"}
+],"authority":"Master's Programme in Strategic Urban and Regional Planning","citation-key":"edbergResearchMethodsStrategic2025","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"date-parts":[["2025",5]]},"note":"Credits: 7.5\nStudents: 15\nHours: 14","number":"709A07","publisher":"Linköping University","publisher-place":"Linköping","title":"Research Methods in Strategic Urban and Regional Planning","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/709A07/vt-2025"},
+  {"id":"edbergResearchMethodsStrategicMay22and252026","abstract":"The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.","author":[
+  {"family":"Edberg","given":"Karin"}
+],"authority":"Master's Programme in Strategic Urban and Regional Planning","citation-key":"edbergResearchMethodsStrategicMay22and252026","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"literal":"May 22 and 25, 2026"},"note":"Credits: 7.5\nStudents: 27\nHours: 14","number":"709A07","publisher":"Linköping University","publisher-place":"Linköping","title":"Research Methods in Strategic Urban and Regional Planning","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/709A07/vt-2026"},
+  {"id":"hedstromIntroductionAnalyticalSociology2016","abstract":"The course begins with an introduction to the basic principles of analytical sociology. The course examines different types of action theories and various problems that arise when seeking to link micro-level behavior with macro-level outcomes. The course covers in detail how computer-based simulations in combination with different historical, qualitative, and quantitative data may help to improve our understanding of the driving forces behind important social processes.","author":[
+  {"family":"Hedström","given":"Peter"},
+  {"family":"Ylikoski","given":"Petri"}
+],"authority":"The Institute for Analytical Sociology","citation-key":"hedstromIntroductionAnalyticalSociology2016","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2016]]},"note":"Credits: 7.5\nHours: 8","number":"771A03","publisher":"Linköping University","publisher-place":"Norrköping","title":"Introduction to Analytical Sociology","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/771A03/ht-2016"},
+  {"id":"jarvisDiscreteChoiceModelling2018","abstract":"Discrete choice modeling has been central in economics, marketing, and transportation research for decades, and is increasingly used in political science and sociology. Discrete choice models have been used to understand how individuals and households choose in different situations. This course will provide an overview of these applications using real-world examples.   \nFocus will be on practical aspects of modeling. The multinomial conditional logistic regression model will feature prominently. More advanced models for handling panel data, dealing with unobserved heterogeneity, and identifying latent groups will also be considered. Applications to counterfactual prediction and agent-based simulation will be highlighted.","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"The Institute for Analytical Sociology","citation-key":"jarvisDiscreteChoiceModelling2018","genre":"University Course","issued":{"season":3,"date-parts":[[2018]]},"note":"Credits: 7.5\nHours: 160","number":"771A06","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling with Applications","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/771A06/vt-2018"},
+  {"id":"jarvisDiscreteChoiceModelling2019","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisDiscreteChoiceModelling2019","genre":"University Course","issued":{"season":1,"date-parts":[[2019]]},"note":"Credits: 7.5\nHours: 160","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/771A19/vt-2019"},
+  {"id":"jarvisDiscreteChoiceModelling2021","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisDiscreteChoiceModelling2021","genre":"University Course","issued":{"season":1,"date-parts":[[2021]]},"note":"Credits: 7.5\nHours: 120","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard"},
+  {"id":"jarvisIASStataWorkshop2017","abstract":"This workshop offers a \"starter pack\" for those interested in gaining more control over their Stata workflows and in developing more sophisticated data analyses. It first discusses some of the elements of reporducible research, with an emphasis on the importance of script files. It then provides an overview of  the Stata statistical programming environment: its memory structure, file formats, and some syntax basics. It then dives into Stata macros, which are key means for storing temporary information and extracting information returned by other Stata functions. Finally, loops and control-flow functionality are presented.","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"The Institute for Analytical Sociology","citation-key":"jarvisIASStataWorkshop2017","genre":"University Course","issued":{"season":1,"date-parts":[[2017]]},"note":"Hours: 12\nStudents: ~10","publisher":"Linköping University","publisher-place":"Norrköping","title":"IAS Stata Workshop","type":"standard"},
+  {"id":"jarvisInequalitySegregationTheory2019","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Jarvis","given":"Benjamin F."},
+  {"family":"Brandén","given":"Maria"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisInequalitySegregationTheory2019","genre":"University Course","issued":{"season":3,"date-parts":[[2019]]},"note":"Credits: 7.5\nHours: 30","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"jarvisMastersProgrammeComputational2017","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisMastersProgrammeComputational2017","genre":"University Program","issued":{"season":3,"date-parts":[[2017]]},"note":"Hours: 106\nCredits: 120","number":"F7MCD","publisher":"Linköping University","publisher-place":"Norrköping","title":"Master's Programme in Computational Social Science","type":"standard"},
+  {"id":"jarvisMastersProgrammeComputational2018","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisMastersProgrammeComputational2018","genre":"University Program","issued":{"date-parts":[["2018"]]},"note":"Hours: 425\nCredits: 120","number":"F7MCD","publisher":"Linköping University","publisher-place":"Norrköping","title":"Master's Programme in Computational Social Science","type":"standard"},
+  {"id":"jarvisMastersProgrammeComputational2019","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisMastersProgrammeComputational2019","genre":"University Program","issued":{"date-parts":[["2019"]]},"note":"Credits: 120\nHours: 425","number":"F7MCD","publisher":"Linköping University","publisher-place":"Norrköping","title":"Master's Programme in Computational Social Science","type":"standard"},
+  {"id":"jarvisMastersProgrammeComputational2025","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisMastersProgrammeComputational2025","genre":"University Program","issued":{"date-parts":[["2025"]]},"note":"Credits: 120\nHours: 425","number":"F7MCD","publisher":"Linköping University","publisher-place":"Norrköping","title":"Master's Programme in Computational Social Science","type":"standard"},
+  {"id":"jarvisMastersProgrammeComputational2026","author":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"jarvisMastersProgrammeComputational2026","genre":"University Program","issued":{"date-parts":[["2026"]]},"note":"Credits: 120\nHours: 213","number":"F7MCD","publisher":"Linköping University","publisher-place":"Norrköping","title":"Master's Programme in Computational Social Science","type":"standard"},
+  {"id":"jarvisResidentialSegregationMeasurement2016","abstract":"This course introduces current literature on residential segregation with a focus on ethnic and socio-economic segregation in Europe and the United States. The course begins by conceptualizing neighborhoods, a fundamental social unit in many segregation studies. The course then introduces measures of segregation, examining the varied dimensions of segregation captured by these measures. The course then examines mechanisms and processes that can generate and perpetuate segregation. It considers statistical and simulation techniques to analyze the relative contributions of mechanisms and processes that generate residential segregation.","author":[
+  {"family":"Jarvis","given":"Benjamin F."},
+  {"family":"Valdez","given":"Sarah"}
+],"authority":"The Institute for Analytical Sociology","citation-key":"jarvisResidentialSegregationMeasurement2016","genre":"University Course","issued":{"season":3,"date-parts":[[2016]]},"note":"Credits: 7.5\nStudents: 7\nHours: 80","number":"771A02","publisher":"Linköping University","publisher-place":"Norrköping","title":"Residential Segregation: Measurement and Analysis","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/771A02/ht-2016"},
+  {"id":"lissInequalitySegregationTheory2023","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Liss","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"lissInequalitySegregationTheory2023","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2023]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"lissInequalitySegregationTheory2024","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Liss","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"lissInequalitySegregationTheory2024","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2024]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"lissInequalitySegregationTheory2025","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Liss","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"lissInequalitySegregationTheory2025","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2025]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"marilaResearchMethodsStrategic2024","abstract":"The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.","author":[
+  {"family":"Marila","given":"Marko"}
+],"authority":"Master's Programme in Strategic Urban and Regional Planning","citation-key":"marilaResearchMethodsStrategic2024","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"date-parts":[["2024",5,22]]},"note":"Credits: 7.5\nStudents: 30\nHours: 8","number":"709A07","publisher":"Linköping University","publisher-place":"Linköping","title":"Research Methods in Strategic Urban and Regional Planning","type":"standard","URL":"https://studieinfo.liu.se/en/kurs/709A07/vt-2024"},
+  {"id":"ohrvalDiscreteChoiceModelling2022","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Öhrval","given":"Richard"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"ohrvalDiscreteChoiceModelling2022","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":1,"date-parts":[[2022]]},"note":"Credits: 7.5\nHours: 70","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard"},
+  {"id":"ohrvalDiscreteChoiceModelling2023","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Öhrval","given":"Richard"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"ohrvalDiscreteChoiceModelling2023","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":1,"date-parts":[[2023]]},"note":"Credits: 7.5\nHours: 70","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard"},
+  {"id":"ohrvalDiscreteChoiceModelling2024","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Öhrval","given":"Richard"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"ohrvalDiscreteChoiceModelling2024","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":1,"date-parts":[[2024]]},"note":"Credits: 7.5\nHours: 70","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard"},
+  {"id":"ohrvalDiscreteChoiceModelling2025","abstract":"This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.","author":[
+  {"family":"Öhrval","given":"Richard"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"ohrvalDiscreteChoiceModelling2025","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":1,"date-parts":[[2025]]},"note":"Credits: 7.5\nHours: 70","number":"771A19","publisher":"Linköping University","publisher-place":"Norrköping","title":"Discrete Choice Modelling","type":"standard"},
+  {"id":"rosenqvistInequalitySegregationTheory2020","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Rosenqvist","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"rosenqvistInequalitySegregationTheory2020","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2020]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"rosenqvistInequalitySegregationTheory2021","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Rosenqvist","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"rosenqvistInequalitySegregationTheory2021","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2021]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"rosenqvistInequalitySegregationTheory2022","abstract":"This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.","author":[
+  {"family":"Rosenqvist","given":"Erik"}
+],"authority":"Master's Programme in Computational Social Science","citation-key":"rosenqvistInequalitySegregationTheory2022","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"season":3,"date-parts":[[2022]]},"note":"Credits: 7.5\nHours: 15","number":"771A27","publisher":"Linköping University","publisher-place":"Norrköping","title":"Inequality and Segregation: Theory and Measurement","type":"standard"},
+  {"id":"valdezResidentialSegregationMeasurement2017","abstract":"Residential segregation is a common concern among social scientists because it signals social distance between groups based on characteristics such as race/ethnicity, socioeconomic standing, or immigrant status. Furthermore, segregation has been shown to lead to unequal outcomes in terms of education, income, and health in a variety of settings cross-nationally and over time. This course covers the foundational literatures on residential segregation, explains the most commonly used segregation measures, and introduces students to current, advanced measures in the field. Students will be given a brief primer on calculating segregation indices in R. Though the course focuses on residential segregation, the indices can be applied to schools, workplaces, and other organizational or geographic units. We will also review the mechanisms and processes that generate segregation and discuss ways these can be modeled to bridge the micro-macro divide.","author":[
+  {"family":"Valdez","given":"Sarah"}
+],"authority":"Department of Sociology and Human Geography","citation-key":"valdezResidentialSegregationMeasurement2017","contributor":[
+  {"family":"Jarvis","given":"Benjamin F."}
+],"genre":"University Course","issued":{"date-parts":[["2017",6,6]]},"note":"Credits: 6\nStudents: ~30\nHours: 64","number":"SOS9232","publisher":"University of Oslo","publisher-place":"Oslo","title":"Residential Segregation: Measurement and Mechanisms","type":"standard","URL":"https://www.uio.no/studier/emner/sv/iss/SOS9232/index.html"}
 ]
