@@ -823,7 +823,6 @@ function renderCvGrantEntry(group = {}) {
   const funderCall = grantFunderCall(display);
   const participants = renderGrantApplicants(display);
   const numberBudget = renderGrantNumberBudget(display);
-  const abstract = display.abstract || "";
 
   return `
     <div class="cv-entry cv-grant-entry">
@@ -833,7 +832,6 @@ function renderCvGrantEntry(group = {}) {
         <h3>${escapeHtml(display.title || group.title)}</h3>
         ${participants ? `<p class="grant-participants">${participants}</p>` : ""}
         ${numberBudget ? `<p class="grant-number-budget">${numberBudget}</p>` : ""}
-        ${abstract ? `<p class="grant-description">${escapeHtml(abstract)}</p>` : ""}
         <h4 class="grant-history-title">Application History</h4>
         <ol class="grant-history cv-grant-history">
           ${group.records.map(renderCvGrantHistoryItem).join("")}
@@ -968,8 +966,8 @@ function renderTeachingCourse(course, compact = false) {
         </header>
         <p>${escapeHtml(course.abstract || "Course description forthcoming.")}</p>
         <div class="teaching-subsection">
-          <h4>Roles</h4>
-          <ul class="role-list">
+          <h4>Teaching History</h4>
+          <ul class="role-list teaching-history">
             ${course.roles.map(renderTeachingRole).join("")}
           </ul>
         </div>
@@ -992,18 +990,17 @@ function teachingDateRange(roles = []) {
 
 function renderCvTeachingEntry(course) {
   const meta = [course.program, course.institution].filter(Boolean).map(escapeHtml).join(" | ");
-  const roleHistory = course.roles
-    .filter((role) => role.term)
-    .map((role) => `${escapeHtml(role.term)}: ${escapeHtml(teachingRoleLabel(role))}`)
-    .join("; ");
-  const detail = [meta, roleHistory].filter(Boolean).join(". ");
 
   return `
     <div class="cv-entry">
       <span class="date">${escapeHtml(teachingDateRange(course.roles))}</span>
       <div>
         <h3>${escapeHtml(course.title)}</h3>
-        ${detail ? `<p>${detail}</p>` : ""}
+        ${meta ? `<p>${meta}</p>` : ""}
+        <h4 class="grant-history-title">Teaching History</h4>
+        <ul class="role-list teaching-history cv-teaching-history">
+          ${course.roles.map(renderTeachingRole).join("")}
+        </ul>
       </div>
     </div>
   `;

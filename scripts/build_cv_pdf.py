@@ -36,6 +36,10 @@ def clean_text(text):
     )
 
 
+def clean_rich_text(text):
+    return clean_text(text).replace("&lt;br/&gt;", "<br/>")
+
+
 def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower().replace("&", "and")).strip("-")
 
@@ -291,8 +295,8 @@ def teaching_role_label(role):
     if not other_organizers:
         return base_role
     if user_is_organizer:
-        return f"{base_role} (with {organizer_list})"
-    return f"{base_role} (coordinator: {organizer_list})"
+        return f"{base_role} (With {organizer_list})"
+    return f"{base_role} (Coordinator: {organizer_list})"
 
 
 def normalize_teaching_record(item):
@@ -364,12 +368,15 @@ def teaching_entries(groups):
     entries = []
     for group in groups:
         meta = " | ".join(part for part in [group.get("program", ""), group.get("institution", "")] if part)
-        role_history = "; ".join(
-            f"{role['term']}: {teaching_role_label(role)}"
+        role_history = "<br/>".join(
+            " | ".join(part for part in [role.get("term", ""), teaching_role_label(role)] if part)
             for role in group["roles"]
             if role.get("term")
         )
-        detail = ". ".join(clean_text(part) for part in [meta, role_history] if part)
+        detail = "<br/>".join(clean_rich_text(part) for part in [
+            meta,
+            f"Teaching History:<br/>{role_history}" if role_history else "",
+        ] if part)
         entries.append((teaching_date_range(group["roles"]), clean_text(group["title"]), detail))
     return entries
 
@@ -495,10 +502,10 @@ def grant_number_budget(entry):
 def grant_history_text(records):
     rows = []
     for entry in records:
-        row = " - ".join(part for part in [entry_year(entry), grant_decision_label(entry), grant_funder_call(entry)] if part)
+        row = " | ".join(part for part in [entry_year(entry), grant_decision_label(entry), grant_funder_call(entry)] if part)
         if row:
             rows.append(row)
-    return "; ".join(rows)
+    return "<br/>".join(rows)
 
 
 def grant_display_year(group):
@@ -516,13 +523,12 @@ def grant_cv_entries(groups):
             grant_funder_call(display),
             grant_participant_names(display),
             grant_number_budget(display),
-            fields.get("abstract", ""),
-            f"Application History: {grant_history_text(group['records'])}" if group.get("records") else "",
+            f"Application History:<br/>{grant_history_text(group['records'])}" if group.get("records") else "",
         ]
         entries.append((
             grant_display_year(group),
             clean_text(fields.get("title") or group.get("title") or "Untitled project"),
-            "<br/>".join(clean_text(part) for part in detail_parts if part),
+            "<br/>".join(clean_rich_text(part) for part in detail_parts if part),
         ))
     return entries
 
