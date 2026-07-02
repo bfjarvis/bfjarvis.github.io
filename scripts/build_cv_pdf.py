@@ -41,6 +41,16 @@ def clean_rich_text(text):
     return clean_text(text).replace("&lt;br/&gt;", "<br/>")
 
 
+def entry_body_flowable(heading, detail, styles):
+    if not detail:
+        return paragraph(heading, styles["Body"])
+    return paragraph(
+        f'<font name="Helvetica-Bold" size="8.2" color="#1d2224">{heading}</font>'
+        f'<br/><font name="Helvetica" size="7.8" color="#475054">{detail}</font>',
+        styles["EntryCombined"],
+    )
+
+
 def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower().replace("&", "and")).strip("-")
 
@@ -772,17 +782,15 @@ def supervision_cv_entries(entries):
     return rows
 
 
-def section(title, entries, styles):
-    story = [paragraph(title, styles["Section"])]
+def section(title, entries, styles, level="section"):
+    heading_style = styles["Subsection"] if level == "subsection" else styles["Section"]
+    story = [paragraph(title, heading_style)]
     for date, heading, detail in entries:
         table = Table(
             [
                 [
                     paragraph(format_cv_date(date), styles["Date"]),
-                    [
-                        paragraph(heading, styles["EntryHeading"] if detail else styles["Body"]),
-                        paragraph(detail, styles["Body"]) if detail else Spacer(1, 0),
-                    ],
+                    entry_body_flowable(heading, detail, styles),
                 ]
             ],
             colWidths=[0.82 * inch, 6.04 * inch],
@@ -793,8 +801,8 @@ def section(title, entries, styles):
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                    ("TOPPADDING", (0, 0), (-1, -1), 1.4),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3.8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 1.0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 5.0),
                 ]
             )
         )
@@ -850,6 +858,17 @@ def build():
             spaceBefore=4,
             spaceAfter=2,
         ),
+        "Subsection": ParagraphStyle(
+            "Subsection",
+            parent=base["Heading3"],
+            fontName="Helvetica-Bold",
+            fontSize=8.1,
+            leading=9.2,
+            textColor=colors.HexColor("#475054"),
+            leftIndent=0.12 * inch,
+            spaceBefore=5,
+            spaceAfter=2.2,
+        ),
         "Date": ParagraphStyle(
             "Date",
             parent=base["BodyText"],
@@ -865,14 +884,22 @@ def build():
             fontSize=8.2,
             leading=9.7,
             textColor=colors.HexColor("#1d2224"),
-            spaceAfter=0.5,
+            spaceAfter=0,
         ),
         "Body": ParagraphStyle(
             "Body",
             parent=base["BodyText"],
             fontName="Helvetica",
             fontSize=7.8,
-            leading=9.3,
+            leading=9.0,
+            textColor=colors.HexColor("#475054"),
+        ),
+        "EntryCombined": ParagraphStyle(
+            "EntryCombined",
+            parent=base["BodyText"],
+            fontName="Helvetica",
+            fontSize=7.8,
+            leading=8.7,
             textColor=colors.HexColor("#475054"),
         ),
     }
@@ -913,9 +940,9 @@ def build():
         if doctoral_entries or masters_entries:
             story.append(paragraph("Supervision", styles["Section"]))
         if doctoral_entries:
-            story.extend(section("Doctoral Supervision", supervision_cv_entries(doctoral_entries), styles))
+            story.extend(section("Doctoral Supervision", supervision_cv_entries(doctoral_entries), styles, level="subsection"))
         if masters_entries:
-            story.extend(section("Master's Supervision", supervision_cv_entries(masters_entries), styles))
+            story.extend(section("Master's Supervision", supervision_cv_entries(masters_entries), styles, level="subsection"))
     if GRANTS_SOURCE.exists():
         grant_groups = group_grants(GRANTS_SOURCE)
         story.append(paragraph("Grants", styles["Section"]))
@@ -927,15 +954,17 @@ def build():
         ]:
             lifecycle_groups = [group for group in grant_groups if group["lifecycle"] == lifecycle]
             if lifecycle_groups:
-                story.extend(section(label, grant_cv_entries(lifecycle_groups), styles))
+                story.extend(section(label, grant_cv_entries(lifecycle_groups), styles, level="subsection"))
     if TEACHING_SOURCE.exists():
         teaching_groups = group_teaching_records(TEACHING_SOURCE)
         course_groups = [group for group in teaching_groups if group["kind"] == "course"]
         program_groups = [group for group in teaching_groups if group["kind"] == "program"]
+        if course_groups or program_groups:
+            story.append(paragraph("Teaching", styles["Section"]))
         if course_groups:
-            story.extend(section("Teaching - Courses", teaching_entries(course_groups), styles))
+            story.extend(section("Courses", teaching_entries(course_groups), styles, level="subsection"))
         if program_groups:
-            story.extend(section("Teaching - Programs", teaching_entries(program_groups), styles))
+            story.extend(section("Programs", teaching_entries(program_groups), styles, level="subsection"))
     else:
         story.extend(
             section(
