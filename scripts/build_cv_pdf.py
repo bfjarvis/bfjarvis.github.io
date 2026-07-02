@@ -14,8 +14,9 @@ OUTPUT = ROOT / "cv" / "Benjamin-F-Jarvis-CV.pdf"
 CV_SOURCE = ROOT / "cv" / "cv.md"
 PUBLICATIONS_SOURCE = ROOT / "data" / "publications.json"
 SUPERVISION_SOURCE = ROOT / "data" / "supervision.json"
-TEACHING_SOURCE = ROOT / "data" / "teaching-csl.json"
+TEACHING_SOURCE = ROOT / "data" / "teaching.json"
 GRANTS_SOURCE = ROOT / "data" / "grants.json"
+PDF_SEPARATOR = " — "
 
 
 def paragraph(text, style):
@@ -256,7 +257,6 @@ def publication_groups(path):
             [entry for entry in entries if is_conference_presentation(entry) and not is_invited_talk(entry)],
         ),
         ("Invited and Other Talks", [entry for entry in entries if is_invited_talk(entry)]),
-        ("Theses", [entry for entry in entries if is_thesis(entry)]),
     ]
 
 
@@ -367,9 +367,9 @@ def teaching_date_range(roles):
 def teaching_entries(groups):
     entries = []
     for group in groups:
-        meta = " | ".join(part for part in [group.get("program", ""), group.get("institution", "")] if part)
+        meta = PDF_SEPARATOR.join(part for part in [group.get("program", ""), group.get("institution", "")] if part)
         role_history = "<br/>".join(
-            " | ".join(part for part in [role.get("term", ""), teaching_role_label(role)] if part)
+            PDF_SEPARATOR.join(part for part in [role.get("term", ""), teaching_role_label(role)] if part)
             for role in group["roles"]
             if role.get("term")
         )
@@ -479,14 +479,14 @@ def grant_participant_names(entry):
     others = [csl_person_name(person) for person in applicants[1:]] + [csl_person_name(person) for person in contributors]
     names = []
     if main:
-        names.append(f"{main} (Main applicant)")
+        names.append(f"{main} (PI)")
     names.extend(name for name in others if name)
     return format_name_list(names)
 
 
 def grant_funder_call(entry):
     fields = entry["fields"]
-    return " | ".join(part for part in [fields.get("publisher", ""), grant_series_title(entry)] if part)
+    return PDF_SEPARATOR.join(part for part in [fields.get("publisher", ""), grant_series_title(entry)] if part)
 
 
 def grant_number_budget(entry):
@@ -502,7 +502,7 @@ def grant_number_budget(entry):
 def grant_history_text(records):
     rows = []
     for entry in records:
-        row = " | ".join(part for part in [entry_year(entry), grant_decision_label(entry), grant_funder_call(entry)] if part)
+        row = PDF_SEPARATOR.join(part for part in [entry_year(entry), grant_decision_label(entry), grant_funder_call(entry)] if part)
         if row:
             rows.append(row)
     return "<br/>".join(rows)

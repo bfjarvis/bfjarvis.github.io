@@ -721,10 +721,6 @@ h3 {
   color: var(--ink);
 }
 
-.teaching-role-summary {
-  color: var(--ink-soft);
-}
-
 .teaching-card,
 .post-card {
   min-height: 100%;

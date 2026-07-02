@@ -722,7 +722,7 @@ function groupGrants(grants = []) {
   }).sort((a, b) => b.latestYear - a.latestYear || a.title.localeCompare(b.title));
 }
 
-function grantParticipantNames(item = {}) {
+function grantParticipantNames(item = {}, mainLabel = "PI") {
   const applicants = item.author || [];
   const contributors = item.contributor || [];
   const mainApplicant = cslName(applicants[0]);
@@ -732,13 +732,13 @@ function grantParticipantNames(item = {}) {
   ].filter(Boolean);
   const names = [];
 
-  if (mainApplicant) names.push(`${mainApplicant} (Main applicant)`);
+  if (mainApplicant) names.push(`${mainApplicant} (${mainLabel})`);
   names.push(...otherParticipants);
   return formatNameList(names);
 }
 
-function renderGrantApplicants(item = {}) {
-  const names = grantParticipantNames(item);
+function renderGrantApplicants(item = {}, mainLabel = "PI") {
+  const names = grantParticipantNames(item, mainLabel);
   return names ? escapeHtml(names) : "";
 }
 
@@ -821,7 +821,7 @@ function renderCvGrantHistoryItem(item = {}) {
 function renderCvGrantEntry(group = {}) {
   const display = group.display || group.latest || {};
   const funderCall = grantFunderCall(display);
-  const participants = renderGrantApplicants(display);
+  const participants = renderGrantApplicants(display, "PI");
   const numberBudget = renderGrantNumberBudget(display);
 
   return `
@@ -847,12 +847,6 @@ function teachingSortValue(term = "") {
   const year = Number(match[2]);
   const termWeight = match[1]?.toLowerCase() === "fall" ? 2 : match[1]?.toLowerCase() === "spring" ? 1 : 0;
   return year * 10 + termWeight;
-}
-
-function teachingSummary(text = "") {
-  const clean = text.replace(/\s+/g, " ").trim();
-  if (clean.length <= 240) return clean;
-  return `${clean.slice(0, 237).replace(/\s+\S*$/, "")}...`;
 }
 
 function normalizeTeachingRecord(item = {}) {
@@ -936,20 +930,19 @@ function renderTeachingRole(role) {
   `;
 }
 
+function teachingLatestYear(course = {}) {
+  return String(course.latest || "").match(/(?:19|20)\d{2}/)?.[0] || course.latest || "";
+}
+
 function renderTeachingCourse(course, compact = false) {
   const meta = [course.program, course.institution].filter(Boolean).map(escapeHtml).join(" · ");
-  const roleSummary = course.roles
-    .map((role) => `${role.term} (${role.role})`)
-    .filter(Boolean)
-    .join("; ");
 
   if (compact) {
     return `
       <article class="teaching-card">
-        <p class="meta">${escapeHtml(course.latest || "")}</p>
+        <p class="meta">${escapeHtml(teachingLatestYear(course))}</p>
         <h3>${escapeHtml(course.title)}</h3>
-        ${course.abstract ? `<p>${escapeHtml(teachingSummary(course.abstract))}</p>` : ""}
-        ${roleSummary ? `<p class="teaching-role-summary">${escapeHtml(roleSummary)}</p>` : ""}
+        ${course.abstract ? `<p>${escapeHtml(course.abstract)}</p>` : ""}
       </article>
     `;
   }
@@ -1105,13 +1098,13 @@ async function renderTeaching() {
 
   if (isFilePreview()) {
     targets.forEach((target) => {
-      target.innerHTML = '<article class="teaching-card"><h3>Teaching data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load teaching from <code>data/teaching-csl.json</code>.</p></article>';
+      target.innerHTML = '<article class="teaching-card"><h3>Teaching data needs a local server</h3><p>Run <code>python3 -m http.server 8001</code> and open <code>http://localhost:8001/</code> to load teaching from <code>data/teaching.json</code>.</p></article>';
     });
     return;
   }
 
   targets.forEach((target) => {
-    fetch(target.dataset.teachingSource || "data/teaching-csl.json")
+    fetch(target.dataset.teachingSource || "data/teaching.json")
       .then((response) => response.json())
       .then((items) => {
         const courses = groupTeachingRecords(items);
