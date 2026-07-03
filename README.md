@@ -175,10 +175,17 @@ python3 scripts/build_cv_pdf.py
 ## Publishing Blog Posts
 
 Blog source lives in the sibling repository `../research-notes`, not in this
-public website repo. Add or edit `.qmd` files there, render locally if desired,
-then commit and push `research-notes`. Its GitHub Actions workflow renders lean
-post fragments, updates `blog/posts.json`, and copies the website-owned
-`blog/post-template.html` shell into each public post directory.
+public website repo. Add or edit `.qmd` files there, then run the local publish
+script from `research-notes`:
+
+```bash
+python3 scripts/publish_local.py
+```
+
+That script renders lean post fragments, updates this repo's `blog/posts.json`,
+and copies the website-owned `blog/post-template.html` shell into each public
+post directory. Commit the resulting public output in this repo when the preview
+looks right.
 
 The website menu label remains `Blog`; the source repo name is only part of the
 authoring workflow.
