@@ -1,6 +1,6 @@
 ---
-title: "Example Segregation Vignette"
-description: "A compact Quarto vignette showing the structure for a research note that combines prose, R code, output, and interpretation."
+title: "Example Segregation Note"
+description: "A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation."
 date: 2026-06-27
 categories: [segregation, reproducible analysis, quarto]
 author: "Benjamin F. Jarvis"
@@ -11,8 +11,8 @@ format:
 
 ## Question
 
-This starter vignette shows the publication pattern for short empirical notes. A real
-vignette should begin with a substantive question about segregation, mobility, or
+This starter blog note shows the publication pattern for short empirical notes. A real
+blog post should begin with a substantive question about segregation, mobility, or
 stratification, then keep the statistical machinery close enough for readers to audit.
 
 ## Data and Measurement

@@ -965,32 +965,32 @@ h3 {
   background: var(--paper);
 }
 
-.vignette-index {
+.blog-index {
   max-width: 1040px;
   margin: 0 auto;
 }
 
-.vignette-list {
+.blog-list {
   display: grid;
   gap: 18px;
   margin-top: 32px;
 }
 
-.vignette-item {
+.blog-item {
   padding: 24px 0;
   border-top: 1px solid var(--line);
 }
 
-.vignette-item:last-child {
+.blog-item:last-child {
   border-bottom: 1px solid var(--line);
 }
 
-.vignette-item h2 {
+.blog-item h2 {
   margin-bottom: 10px;
   font-size: clamp(1.35rem, 2.4vw, 2.25rem);
 }
 
-.vignette-actions {
+.blog-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
@@ -998,24 +998,24 @@ h3 {
   font-weight: 800;
 }
 
-.quarto-vignette {
+.quarto-blog {
   max-width: 920px;
   margin: 0 auto;
   padding: 120px clamp(18px, 5vw, 72px) 72px;
 }
 
-.quarto-vignette h1,
-.quarto-vignette h2,
-.quarto-vignette h3 {
+.quarto-blog h1,
+.quarto-blog h2,
+.quarto-blog h3 {
   font-family: Georgia, "Times New Roman", serif;
 }
 
-.quarto-vignette h1 {
+.quarto-blog h1 {
   max-width: 860px;
   font-size: clamp(2rem, 4.8vw, 4rem);
 }
 
-.quarto-vignette pre {
+.quarto-blog pre {
   overflow-x: auto;
   padding: 18px;
   border-radius: 8px;

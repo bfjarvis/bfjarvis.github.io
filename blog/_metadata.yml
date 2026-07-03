@@ -3,7 +3,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    css: ../styles.css?v=20260701-cv-grants
+    css: ../styles.css?v=20260703-blog
     page-layout: article
     include-before-body:
       text: |
@@ -14,11 +14,11 @@ format:
             <a href="../publications/">Publications</a>
             <a href="../grants/">Projects</a>
             <a href="../teaching/">Teaching</a>
-            <a href="../vignettes/">Vignettes</a>
+            <a href="../blog/">Blog</a>
             <a href="../cv/">CV</a>
           </nav>
         </header>
-        <main class="quarto-vignette">
+        <main class="quarto-blog">
     include-after-body:
       text: |
         </main>
@@ -35,7 +35,7 @@ format:
           </div>
           <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
         </footer>
-        <script src="../script.js?v=20260701-cv-grants"></script>
+        <script src="../script.js?v=20260703-blog"></script>
 execute:
   echo: true
   warning: false

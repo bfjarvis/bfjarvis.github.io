@@ -1,6 +1,6 @@
 ---
-title: "Vignette title"
-description: "One sentence summary for the vignette index."
+title: "Blog post title"
+description: "One sentence summary for the blog index."
 date: today
 categories: [segregation, methods]
 author: "Benjamin F. Jarvis"
@@ -11,7 +11,7 @@ format:
 
 ## Question
 
-What substantive question does this vignette answer?
+What substantive question does this blog post answer?
 
 ## Data and Measurement
 

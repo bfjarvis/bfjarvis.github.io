@@ -16,15 +16,15 @@ Personal GitHub Pages site for Benjamin F. Jarvis.
 - `grants/` - grant and project index plus project detail pages for ongoing work.
 - `teaching/` - teaching index page fed by `data/teaching.json`.
 - `cv/Benjamin-F-Jarvis-CV.pdf` - generated PDF CV.
-- `posts/statistical-vignettes.html` - starter post for statistical analysis vignettes.
-- `vignettes/` - Quarto `.qmd` source files and rendered vignette pages.
+- `posts/statistical-notes.html` - starter post for statistical analysis notes.
+- `blog/` - Quarto `.qmd` source files and rendered blog pages.
 - `assets/research-header-painterly.png` - research-derived homepage hero image.
 - `assets/research-header-raw.png` - original research-derived header image.
 - `assets/research-header-adjusted.png` - adjusted alternate header image.
 - `assets/hero-social-statistics.png` - earlier generated hero image, retained as an alternate.
 - `scripts/build_cv_pdf.py` - rebuilds the PDF CV from `cv/cv.md`, `data/publications.json`, and `data/supervision.json`.
-- `scripts/import_vignette.sh` - imports a `.qmd` vignette from this repo or another research repo.
-- `scripts/render_vignettes.sh` - renders Quarto vignettes and rebuilds the vignette index.
+- `scripts/import_blog_post.sh` - imports a `.qmd` blog post from this repo or another research repo.
+- `scripts/render_blog.sh` - renders blog posts and rebuilds the blog index.
 - `docs/publishing-workflow.md` - recommended workflow for connecting research repos to the website.
 
 GitHub Pages can serve this directly from the repository root with no build step.
@@ -172,23 +172,23 @@ Then rebuild the PDF with:
 python3 scripts/build_cv_pdf.py
 ```
 
-## Publishing Quarto Vignettes
+## Publishing Blog Posts
 
-1. Copy `vignettes/_template.qmd` to a new filename such as
-   `vignettes/segregation-measurement-note.qmd`.
+1. Copy `blog/_template.qmd` to a new filename such as
+   `blog/segregation-measurement-note.qmd`.
 2. Edit the `.qmd` in RStudio, Positron, or another Quarto-aware editor.
-3. Render and rebuild the vignette index:
+3. Render and rebuild the blog index:
 
 ```bash
-scripts/render_vignettes.sh
+scripts/render_blog.sh
 ```
 
-The script renders every non-template `.qmd` file in `vignettes/` and then updates
-`vignettes/index.html`. If a vignette has not been rendered yet, the index links to
+The script renders every non-template `.qmd` file in `blog/` and then updates
+`blog/index.html`. If a blog post has not been rendered yet, the index links to
 the source `.qmd` file instead of a missing HTML page.
 
-To import a vignette from another research repository:
+To import a blog post from another research repository:
 
 ```bash
-scripts/import_vignette.sh ../project-repo/vignettes/my-note.qmd my-note
+scripts/import_blog_post.sh ../project-repo/blog/my-note.qmd my-note
 ```

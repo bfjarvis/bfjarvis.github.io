@@ -536,8 +536,8 @@ async function renderPublications() {
       const source = target.dataset.cslSource || resolveAssetPath("data/publications.json");
       const assetsSource = target.dataset.assetsSource
         || (source.startsWith("../")
-          ? "../data/publication-assets.json?v=20260630-publication-data"
-          : "data/publication-assets.json?v=20260630-publication-data");
+          ? "../data/publication-assets.json"
+          : "data/publication-assets.json");
 
       Promise.all([
         fetch(source).then((response) => response.text()),

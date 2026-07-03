@@ -9,7 +9,7 @@
     >
     <title>Benjamin F. Jarvis | Analytical Sociologist</title>
     <link rel="preload" as="image" href="assets/research-header-painterly.png">
-    <link rel="stylesheet" href="styles.css?v=20260702-teaching-landing-meta">
+    <link rel="stylesheet" href="styles.css?v=20260703-blog">
   </head>
   <body>
     <header class="site-header" data-nav>
@@ -24,7 +24,7 @@
         <a href="publications/">Publications</a>
         <a href="grants/">Projects</a>
         <a href="teaching/">Teaching</a>
-        <a href="vignettes/">Vignettes</a>
+        <a href="blog/">Blog</a>
         <a href="cv/">CV</a>
       </nav>
     </header>
@@ -65,16 +65,7 @@
             <h2 id="works-progress-title">Works in Progress</h2>
           </div>
         </div>
-        <div class="publication-list" data-publications="works-progress" data-csl-source="data/publications.json?v=20260630-publication-data">
-          <article class="publication-item">
-            <p class="meta">Working Paper · Year</p>
-            <h3>Working paper title on statistical measurement or spatial inequality</h3>
-            <p>
-              Current manuscripts, revise-and-resubmits, and preprints appear here before
-              they become formal publications.
-            </p>
-          </article>
-        </div>
+        <div class="publication-list" data-publications="works-progress" data-csl-source="data/publications.json"></div>
         <p class="section-more"><a class="text-link" href="publications/#working-papers">See more works in progress</a></p>
       </section>
 
@@ -84,22 +75,7 @@
             <h2 id="publications-title">Selected Publications</h2>
           </div>
         </div>
-        <div class="publication-list" data-publications="selected" data-csl-source="data/publications.json?v=20260630-publication-data">
-          <article class="publication-item">
-            <p class="meta">Journal Article · Year</p>
-            <p class="citation-line">
-              Author, First. Year. "Publication title on segregation, stratification, or social inequality."
-              <em>Journal Name</em> Volume(Issue):pages.
-            </p>
-          </article>
-          <article class="publication-item">
-            <p class="meta">Book Chapter · Year</p>
-            <p class="citation-line">
-              Author, First. Year. "Chapter title connecting substantive theory and empirical strategy."
-              Pp. pages in <em>Book Title</em>.
-            </p>
-          </article>
-        </div>
+        <div class="publication-list" data-publications="selected" data-csl-source="data/publications.json"></div>
         <p class="section-more"><a class="text-link" href="publications/">See more publications</a></p>
       </section>
 
@@ -111,23 +87,7 @@
             The full project page includes closed projects and rejected applications.
           </p>
         </div>
-        <div class="timeline" data-grants="ongoing" data-grants-source="data/grants.json">
-          <article>
-            <span>Year-Year</span>
-            <h3>Ongoing project title</h3>
-            <p>PI, co-applicants, funder, and current application status.</p>
-          </article>
-          <article>
-            <span>Year-Year</span>
-            <h3>Current collaborative research initiative</h3>
-            <p>Recent ongoing grants and registered applications appear here.</p>
-          </article>
-          <article>
-            <span>Submitted</span>
-            <h3>Registered proposal</h3>
-            <p>The project archive continues on the full Projects page.</p>
-          </article>
-        </div>
+        <div class="timeline" data-grants="ongoing" data-grants-source="data/grants.json"></div>
         <p class="section-more"><a class="text-link" href="grants/">See more projects</a></p>
       </section>
 
@@ -137,43 +97,28 @@
             <h2 id="teaching-title">Teaching</h2>
           </div>
         </div>
-        <div class="teaching-grid home-list" data-teaching="selected" data-teaching-source="data/teaching.json">
-          <article class="teaching-card">
-            <h3>Statistical Analysis for Social Scientists</h3>
-            <p>
-              Applied regression, uncertainty, model criticism, reproducible workflows, and
-              interpretation for substantive social science questions.
-            </p>
-          </article>
-          <article class="teaching-card">
-            <h3>Social Stratification & Inequality</h3>
-            <p>
-              Theories and evidence on class, education, neighborhoods, mobility, and the
-              institutional production of inequality.
-            </p>
-          </article>
-        </div>
+        <div class="teaching-grid home-list" data-teaching="selected" data-teaching-source="data/teaching.json"></div>
         <p class="section-more"><a class="text-link" href="teaching/">See more teaching</a></p>
       </section>
 
       <section class="posts-section" id="posts" aria-labelledby="posts-title">
         <div class="section-heading">
           <div>
-            <h2 id="posts-title">Vignettes & Notes</h2>
+            <h2 id="posts-title">Blog</h2>
           </div>
         </div>
         <div class="post-grid home-list">
           <article class="post-card featured">
             <p class="meta">Quarto workflow</p>
-            <h3><a href="vignettes/">Publish analysis vignettes from RStudio or Positron</a></h3>
+            <h3><a href="blog/">Publish analysis notes from RStudio or Positron</a></h3>
             <p>
               Draft `.qmd` files locally, render them with Quarto, and publish clean HTML
-              vignettes alongside the rest of the site.
+              blog posts alongside the rest of the site.
             </p>
           </article>
           <article class="post-card">
             <p class="meta">Research note</p>
-            <h3><a href="vignettes/">Example segregation vignette</a></h3>
+            <h3><a href="blog/">Example segregation note</a></h3>
             <p>A starter Quarto file showing how empirical notes can become public posts.</p>
           </article>
           <article class="post-card">
@@ -182,7 +127,7 @@
             <p>Use this slot for practical statistical analysis commentary.</p>
           </article>
         </div>
-        <p class="section-more"><a class="text-link" href="vignettes/">See more vignettes and notes</a></p>
+        <p class="section-more"><a class="text-link" href="blog/">See more blog posts</a></p>
       </section>
 
     </main>
@@ -201,6 +146,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="script.js?v=20260702-teaching-landing-meta"></script>
+    <script src="script.js?v=20260703-blog"></script>
   </body>
 </html>

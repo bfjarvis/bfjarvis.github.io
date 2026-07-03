@@ -4,8 +4,8 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VIGNETTES = ROOT / "vignettes"
-OUTPUT = VIGNETTES / "index.html"
+BLOG = ROOT / "blog"
+OUTPUT = BLOG / "index.html"
 
 
 def parse_front_matter(path):
@@ -24,14 +24,14 @@ def parse_front_matter(path):
     return data
 
 
-def vignette_rows():
+def blog_rows():
     rows = []
-    for qmd in sorted(VIGNETTES.glob("*.qmd")):
+    for qmd in sorted(BLOG.glob("*.qmd")):
         if qmd.name.startswith("_"):
             continue
         meta = parse_front_matter(qmd)
         html_name = qmd.with_suffix(".html").name
-        html_exists = (VIGNETTES / html_name).exists()
+        html_exists = (BLOG / html_name).exists()
         rows.append(
             {
                 "title": meta.get("title", qmd.stem.replace("-", " ").title()),
@@ -47,14 +47,14 @@ def vignette_rows():
 
 
 def build():
-    rows = vignette_rows()
+    rows = blog_rows()
     items = "\n".join(
         f"""
-          <article class="vignette-item">
+          <article class="blog-item">
             <p class="meta">{escape(row["date"])} · {escape(row["categories"].strip("[]"))}</p>
             <h2><a href="{escape(row["html"] if row["html_exists"] else row["source"])}">{escape(row["title"])}</a></h2>
             <p>{escape(row["description"])}</p>
-            <div class="vignette-actions">
+            <div class="blog-actions">
               {f'<a href="{escape(row["html"])}">Read HTML</a>' if row["html_exists"] else ""}
               <a href="{escape(row["source"])}">Source .qmd</a>
             </div>
@@ -69,9 +69,9 @@ def build():
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Quarto data vignettes and reproducible analysis notes by Benjamin F. Jarvis.">
-    <title>Vignettes | Benjamin F. Jarvis</title>
-    <link rel="stylesheet" href="../styles.css?v=20260701-cv-grants">
+    <meta name="description" content="Blog posts and reproducible research notes by Benjamin F. Jarvis.">
+    <title>Blog | Benjamin F. Jarvis</title>
+    <link rel="stylesheet" href="../styles.css?v=20260703-blog">
   </head>
   <body>
     <header class="site-header is-scrolled" data-nav>
@@ -84,19 +84,19 @@ def build():
         <a href="../publications/">Publications</a>
         <a href="../grants/">Projects</a>
         <a href="../teaching/">Teaching</a>
-        <a href="../vignettes/">Vignettes</a>
+        <a href="../blog/">Blog</a>
         <a href="../cv/">CV</a>
       </nav>
     </header>
 
     <main>
       <section class="cv-hero">
-        <h1>Data vignettes & reproducible notes</h1>
+        <h1>Blog & reproducible notes</h1>
       </section>
 
       <section class="cv-page">
-        <div class="vignette-index">
-          {items or "<p>No vignettes found yet.</p>"}
+        <div class="blog-index">
+          {items or "<p>No blog posts found yet.</p>"}
         </div>
       </section>
     </main>
@@ -115,7 +115,7 @@ def build():
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="../script.js?v=20260701-cv-grants"></script>
+    <script src="../script.js?v=20260703-blog"></script>
   </body>
 </html>
 """,
