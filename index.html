@@ -9,7 +9,7 @@
     >
     <title>Benjamin F. Jarvis | Analytical Sociologist</title>
     <link rel="preload" as="image" href="assets/research-header-painterly.png">
-    <link rel="stylesheet" href="styles.css?v=20260703-child-hero">
+    <link rel="stylesheet" href="styles.css?v=20260703-home-blog">
   </head>
   <body>
     <header class="site-header" data-nav>
@@ -107,26 +107,7 @@
             <h2 id="posts-title">Blog</h2>
           </div>
         </div>
-        <div class="post-grid home-list">
-          <article class="post-card featured">
-            <p class="meta">Quarto workflow</p>
-            <h3><a href="blog/">Publish analysis notes from RStudio or Positron</a></h3>
-            <p>
-              Draft `.qmd` files locally, render them with Quarto, and publish clean HTML
-              blog posts alongside the rest of the site.
-            </p>
-          </article>
-          <article class="post-card">
-            <p class="meta">Research note</p>
-            <h3><a href="blog/">Example segregation note</a></h3>
-            <p>A starter Quarto file showing how empirical notes can become public posts.</p>
-          </article>
-          <article class="post-card">
-            <p class="meta">Methods note</p>
-            <h3><a href="#">Communicating model uncertainty without flattening it</a></h3>
-            <p>Use this slot for practical statistical analysis commentary.</p>
-          </article>
-        </div>
+        <div class="blog-index home-list" data-blog-posts="blog/posts.json" data-blog-base="blog/" data-blog-limit="3"></div>
         <p class="section-more"><a class="text-link" href="blog/">See more blog posts</a></p>
       </section>
 
@@ -146,6 +127,6 @@
       <p class="footer-copyright">&copy; <span data-year></span> Benjamin F. Jarvis</p>
     </footer>
 
-    <script src="script.js?v=20260703-child-hero"></script>
+    <script src="script.js?v=20260703-home-blog"></script>
   </body>
 </html>

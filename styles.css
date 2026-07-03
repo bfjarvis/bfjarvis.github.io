@@ -773,13 +773,21 @@ h3 {
   grid-row: 1 / span 3;
 }
 
+.home-list > article h2,
 .home-list > article h3,
 .home-list > article p:not(.meta) {
   grid-column: 2;
 }
 
+.home-list > article h2,
 .home-list > article h3 {
   margin-bottom: 6px;
+}
+
+.home-list > article h2 {
+  font-family: inherit;
+  font-size: 1.08rem;
+  line-height: 1.3;
 }
 
 .home-list > article p:not(.meta) {
@@ -1289,6 +1297,7 @@ h3 {
   }
 
   .home-list > article .meta,
+  .home-list > article h2,
   .home-list > article h3,
   .home-list > article p:not(.meta) {
     grid-column: 1;

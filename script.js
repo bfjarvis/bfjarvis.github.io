@@ -1294,10 +1294,11 @@ function formatBlogCategories(categories = []) {
 }
 
 async function renderBlogIndex() {
-  const target = document.querySelector("[data-blog-posts]");
-  if (!target) return;
+  const targets = document.querySelectorAll("[data-blog-posts]");
+  if (!targets.length) return;
 
-  try {
+  targets.forEach(async (target) => {
+    try {
     const response = await fetch(target.dataset.blogPosts || "posts.json");
     const posts = await response.json();
 
@@ -1306,16 +1307,22 @@ async function renderBlogIndex() {
       return;
     }
 
-    target.innerHTML = posts.map((post) => `
+    const limit = Number(target.dataset.blogLimit) || posts.length;
+    const basePath = target.dataset.blogBase || "";
+    target.innerHTML = posts.slice(0, limit).map((post) => {
+      const href = `${basePath}${post.url || `${post.slug}/`}`;
+      return `
       <article class="blog-item">
         <p class="meta">${escapeHtml(post.date || "")}${post.categories?.length ? ` · ${escapeHtml(formatBlogCategories(post.categories))}` : ""}</p>
-        <h2><a href="${escapeHtml(post.url || `${post.slug}/`)}">${escapeHtml(post.title || "")}</a></h2>
+        <h2><a href="${escapeHtml(href)}">${escapeHtml(post.title || "")}</a></h2>
         ${post.description ? `<p>${escapeHtml(post.description)}</p>` : ""}
       </article>
-    `).join("");
-  } catch {
-    target.innerHTML = "<p>Blog posts could not be loaded.</p>";
-  }
+    `;
+    }).join("");
+    } catch {
+      target.innerHTML = "<p>Blog posts could not be loaded.</p>";
+    }
+  });
 }
 
 async function renderBlogPost() {
