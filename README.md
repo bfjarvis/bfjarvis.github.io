@@ -17,15 +17,15 @@ Personal GitHub Pages site for Benjamin F. Jarvis.
 - `teaching/` - teaching index page fed by `data/teaching.json`.
 - `cv/Benjamin-F-Jarvis-CV.pdf` - generated PDF CV.
 - `posts/statistical-notes.html` - starter post for statistical analysis notes.
-- `blog/` - Quarto `.qmd` source files and rendered blog pages.
+- `blog/index.html` - website-owned blog index page.
+- `blog/post-template.html` - website-owned post shell used for rendered research notes.
+- `blog/posts.json` and `blog/<slug>/content.html` - rendered blog payload published from the sibling `research-notes` repository.
 - `assets/research-header-painterly.png` - research-derived homepage hero image.
 - `assets/research-header-raw.png` - original research-derived header image.
 - `assets/research-header-adjusted.png` - adjusted alternate header image.
 - `assets/hero-social-statistics.png` - earlier generated hero image, retained as an alternate.
 - `scripts/build_cv_pdf.py` - rebuilds the PDF CV from `cv/cv.md`, `data/publications.json`, and `data/supervision.json`.
-- `scripts/import_blog_post.sh` - imports a `.qmd` blog post from this repo or another research repo.
-- `scripts/render_blog.sh` - renders blog posts and rebuilds the blog index.
-- `docs/publishing-workflow.md` - recommended workflow for connecting research repos to the website.
+- `docs/publishing-workflow.md` - workflow for publishing rendered Quarto notes from `research-notes`.
 
 GitHub Pages can serve this directly from the repository root with no build step.
 
@@ -174,21 +174,11 @@ python3 scripts/build_cv_pdf.py
 
 ## Publishing Blog Posts
 
-1. Copy `blog/_template.qmd` to a new filename such as
-   `blog/segregation-measurement-note.qmd`.
-2. Edit the `.qmd` in RStudio, Positron, or another Quarto-aware editor.
-3. Render and rebuild the blog index:
+Blog source lives in the sibling repository `../research-notes`, not in this
+public website repo. Add or edit `.qmd` files there, render locally if desired,
+then commit and push `research-notes`. Its GitHub Actions workflow renders lean
+post fragments, updates `blog/posts.json`, and copies the website-owned
+`blog/post-template.html` shell into each public post directory.
 
-```bash
-scripts/render_blog.sh
-```
-
-The script renders every non-template `.qmd` file in `blog/` and then updates
-`blog/index.html`. If a blog post has not been rendered yet, the index links to
-the source `.qmd` file instead of a missing HTML page.
-
-To import a blog post from another research repository:
-
-```bash
-scripts/import_blog_post.sh ../project-repo/blog/my-note.qmd my-note
-```
+The website menu label remains `Blog`; the source repo name is only part of the
+authoring workflow.

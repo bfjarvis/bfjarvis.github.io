@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Hello World",
+    "description": "A minimal Quarto post used to test the research-notes to website publishing workflow.",
+    "date": "2026-07-03",
+    "categories": [
+      "quarto",
+      "workflow"
+    ],
+    "author": "Benjamin F. Jarvis",
+    "url": "hello-world/",
+    "content": "hello-world/content.html"
+  },
+  {
+    "slug": "example-segregation-note",
+    "title": "Example Segregation Note",
+    "description": "A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation.",
+    "date": "2026-06-27",
+    "categories": [
+      "segregation",
+      "reproducible analysis",
+      "quarto"
+    ],
+    "author": "Benjamin F. Jarvis",
+    "url": "example-segregation-note/",
+    "content": "example-segregation-note/content.html"
+  }
+]

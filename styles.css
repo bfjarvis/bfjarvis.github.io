@@ -11,7 +11,7 @@
   --white: #fffdf8;
   --shadow: 0 18px 45px rgba(29, 34, 36, 0.12);
   --site-hero-image: url("assets/research-header-painterly.png");
-  --site-hero-position: center top;
+  --site-hero-position: left top;
   --header-height: 80px;
   --home-profile-space: clamp(420px, 36svh, 500px);
   --home-hero-height: clamp(
@@ -856,11 +856,11 @@ h3 {
 
 .page-hero-image {
   position: relative;
-  min-height: clamp(260px, 34vh, 390px);
+  min-height: clamp(150px, 22vh, 240px);
   display: grid;
   align-items: start;
   overflow: hidden;
-  padding: clamp(36px, 5vw, 76px) clamp(18px, 5vw, 72px) 58px;
+  padding: clamp(28px, 4vw, 48px) clamp(18px, 5vw, 72px) clamp(30px, 4vw, 46px);
   color: var(--white);
   background:
     radial-gradient(circle at 24% 28%, rgba(18, 22, 23, 0.32), rgba(18, 22, 23, 0.08) 34%, rgba(18, 22, 23, 0) 62%),
@@ -876,11 +876,11 @@ h3 {
 
 .cv-hero {
   position: relative;
-  min-height: clamp(260px, 34vh, 390px);
+  min-height: clamp(150px, 22vh, 240px);
   display: grid;
   align-content: start;
   overflow: hidden;
-  padding: clamp(36px, 5vw, 76px) clamp(18px, 5vw, 72px) 58px;
+  padding: clamp(28px, 4vw, 48px) clamp(18px, 5vw, 72px) clamp(30px, 4vw, 46px);
   color: var(--white);
   background:
     radial-gradient(circle at 24% 28%, rgba(18, 22, 23, 0.32), rgba(18, 22, 23, 0.08) 34%, rgba(18, 22, 23, 0) 62%),
@@ -1004,23 +1004,133 @@ h3 {
   padding: 120px clamp(18px, 5vw, 72px) 72px;
 }
 
+.blog-post-content h1,
+.blog-post-content h2,
+.blog-post-content h3,
 .quarto-blog h1,
 .quarto-blog h2,
 .quarto-blog h3 {
   font-family: Georgia, "Times New Roman", serif;
 }
 
+.blog-post-content h1,
 .quarto-blog h1 {
   max-width: 860px;
-  font-size: clamp(2rem, 4.8vw, 4rem);
+  font-size: var(--section-title-size);
 }
 
+.blog-post-content h2,
+.quarto-blog h2 {
+  font-size: clamp(1.25rem, 1.6vw, 1.85rem);
+}
+
+.blog-post-content pre,
 .quarto-blog pre {
   overflow-x: auto;
   padding: 18px;
   border-radius: 8px;
   background: #242928;
   color: var(--white);
+}
+
+.blog-post-fragment-header,
+.quarto-blog .quarto-title-block {
+  margin-bottom: 28px;
+}
+
+.blog-post-content .description,
+.quarto-blog .description {
+  max-width: 760px;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+
+.blog-post-fragment-meta,
+.quarto-title-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 34px;
+  margin-top: 24px;
+  color: var(--ink-soft);
+}
+
+.quarto-title-meta-heading,
+.quarto-listing-category-title {
+  color: var(--brick);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quarto-title-meta-contents p {
+  margin: 0;
+}
+
+.quarto-categories,
+.listing-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 12px 0;
+}
+
+.quarto-category,
+.listing-category,
+.quarto-listing-category .category {
+  color: var(--brick);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.quarto-listing-category .category {
+  cursor: pointer;
+}
+
+.quarto-listing-category .category.active {
+  color: var(--teal-dark);
+}
+
+.quarto-post {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 26px;
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+
+.quarto-post:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.quarto-post .thumbnail {
+  display: none;
+}
+
+.quarto-post .listing-title {
+  margin-bottom: 10px;
+  font-size: clamp(1.35rem, 2.4vw, 2.2rem);
+}
+
+.quarto-post .listing-description a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.quarto-post .metadata {
+  color: var(--brick);
+  font-weight: 800;
+}
+
+.quarto-post .metadata a {
+  text-decoration: none;
+}
+
+.quarto-listing-category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 
 .post-page article {
@@ -1096,8 +1206,8 @@ h3 {
 
   .page-hero-image,
   .cv-hero {
-    min-height: 230px;
-    padding: 42px 18px 36px;
+    min-height: 160px;
+    padding: 34px 18px 30px;
   }
 
   .hero-content {
@@ -1132,6 +1242,15 @@ h3 {
   .site-footer {
     grid-template-columns: 1fr;
     align-items: start;
+  }
+
+  .quarto-blog {
+    padding-top: 72px;
+  }
+
+  .quarto-post {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .section-heading {

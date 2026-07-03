@@ -1,44 +1,57 @@
 # Publishing Workflow
 
-This site is best treated as the public publishing surface, not necessarily the
-only place where analysis happens.
+This repository is the public publishing surface. Blog source materials live in
+the sibling `research-notes` repository.
 
-## Recommended Setup
+## Source and Output Repos
 
-Use separate GitHub repositories for substantial research projects:
+- `research-notes/blog/<slug>/index.qmd` - Quarto source note or post.
+- `research-notes/blog/_template/index.qmd` - starter template for new posts.
+- `research-notes/blog/<slug>/` - post-specific R scripts, data, figures, and references.
+- `research-notes/renv.lock` - R dependency lockfile for reproducible rendering.
+- `research-notes/.github/workflows/publish-blog.yml` - render and publish workflow.
+- `bfjarvis.github.io/blog/index.html` - website-owned blog index layout.
+- `bfjarvis.github.io/blog/post-template.html` - website-owned post page shell copied into each public post directory.
+- `bfjarvis.github.io/blog/posts.json` - metadata generated from post front matter.
+- `bfjarvis.github.io/blog/<slug>/content.html` - lean rendered post fragment from Quarto.
 
-- `project-repo/analysis/` for R scripts, Quarto notebooks, model objects, and draft figures.
-- `project-repo/data/` for shareable data or data documentation, if allowed.
-- `project-repo/blog/` for one or more public-facing `.qmd` files.
-- `bfjarvis.github.io/blog/` for the publishable copies that appear on the website.
+Keep R code, Quarto source, data, figures, and project-specific dependencies in
+`research-notes` where possible. Keep this website repo focused on the static
+public site and rendered blog output.
 
-When a blog post is ready to publish, import it into this website repo:
+## Publishing a Post
 
-```bash
-scripts/import_blog_post.sh ../project-repo/blog/my-note.qmd my-note
-scripts/render_blog.sh
-```
+From `research-notes`:
 
-This keeps research repositories free to be messy, private, or computationally
-heavy, while the website remains clean and fast.
+1. Copy `blog/_template/` to a new directory such as `blog/segregation-measurement-note/`.
+2. Edit `blog/segregation-measurement-note/index.qmd` in RStudio, Positron, or another Quarto-aware editor.
+3. Put post-specific R scripts, figures, data, or references inside the same post directory.
+4. Render locally with `quarto render` and run `python3 scripts/build_posts_json.py` if you want to preview the payload.
+5. Commit and push to `main`.
 
-## Lightweight Local Workflow
+GitHub Actions in `research-notes` will:
 
-For a blog post that only belongs on the site:
+1. Check out `research-notes`.
+2. Install Quarto and R.
+3. Restore R packages from `renv.lock`.
+4. Render the Quarto project.
+5. Check out `bfjarvis/bfjarvis.github.io`.
+6. Update `bfjarvis.github.io/blog/posts.json`.
+7. Copy each rendered `content.html` fragment into `bfjarvis.github.io/blog/<slug>/`.
+8. Copy the website-owned `bfjarvis.github.io/blog/post-template.html` shell to `bfjarvis.github.io/blog/<slug>/index.html`.
+9. Commit and push the website update.
 
-1. Copy `blog/_template.qmd` to a new file in `blog/`.
-2. Edit it in RStudio or Positron.
-3. Render it with `scripts/render_blog.sh`.
-4. Commit the `.qmd`, generated `.html`, and updated `blog/index.html`.
+## Authentication
 
-## Cross-Repository Options
+Add a `research-notes` repository secret named `WEBSITE_REPO_TOKEN`. For the
+initial setup, a fine-grained personal access token with contents read/write
+permission for `bfjarvis.github.io` is simplest. A write-enabled deploy key
+scoped to the website repo is a narrower option for later.
 
-There are three sensible levels of integration:
+## Design Integration
 
-1. Manual import: use `scripts/import_blog_post.sh`. This is simple and reliable.
-2. Git submodule or subtree: useful if you want the website to track a public
-   blog folder from another repository.
-3. GitHub Actions: useful later if you want one repo to trigger a website rebuild
-   automatically after a release.
-
-Start with manual import. Automate only once the repeated workflow becomes clear.
+The public website owns blog layout. `blog/index.html` reads `blog/posts.json`
+and renders the post list using the site's existing CSS and JavaScript. Each
+public post directory contains a copied `post-template.html` shell that fetches the
+lean Quarto-rendered `content.html` fragment. This keeps Quarto focused on
+analysis output and keeps final page formatting in `bfjarvis.github.io`.

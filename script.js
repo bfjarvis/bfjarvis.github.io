@@ -1289,9 +1289,57 @@ async function renderCvMarkdown() {
   }
 }
 
+function formatBlogCategories(categories = []) {
+  return Array.isArray(categories) ? categories.join(", ") : String(categories || "");
+}
+
+async function renderBlogIndex() {
+  const target = document.querySelector("[data-blog-posts]");
+  if (!target) return;
+
+  try {
+    const response = await fetch(target.dataset.blogPosts || "posts.json");
+    const posts = await response.json();
+
+    if (!posts.length) {
+      target.innerHTML = "<p>No blog posts found yet.</p>";
+      return;
+    }
+
+    target.innerHTML = posts.map((post) => `
+      <article class="blog-item">
+        <p class="meta">${escapeHtml(post.date || "")}${post.categories?.length ? ` · ${escapeHtml(formatBlogCategories(post.categories))}` : ""}</p>
+        <h2><a href="${escapeHtml(post.url || `${post.slug}/`)}">${escapeHtml(post.title || "")}</a></h2>
+        ${post.description ? `<p>${escapeHtml(post.description)}</p>` : ""}
+      </article>
+    `).join("");
+  } catch {
+    target.innerHTML = "<p>Blog posts could not be loaded.</p>";
+  }
+}
+
+async function renderBlogPost() {
+  const target = document.querySelector("[data-blog-post-content]");
+  if (!target) return;
+
+  try {
+    const response = await fetch(target.dataset.blogPostContent || "content.html");
+    target.innerHTML = await response.text();
+    const titleElement = target.querySelector("h1");
+    const title = titleElement?.textContent;
+    if (title) {
+      document.title = `${title} | Benjamin F. Jarvis`;
+    }
+  } catch {
+    target.innerHTML = "<p>This blog post could not be loaded.</p>";
+  }
+}
+
 renderPublications();
 renderCvMarkdown();
 renderGrants();
 renderTeaching();
 renderCvTeaching();
 renderCvGrants();
+renderBlogIndex();
+renderBlogPost();
