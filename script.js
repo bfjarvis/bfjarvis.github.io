@@ -2,6 +2,7 @@ const header = document.querySelector("[data-nav]");
 const navToggle = document.querySelector(".nav-toggle");
 const year = document.querySelector("[data-year]");
 const publicationLightboxAssets = {};
+const HERO_IMAGE_RATIO = 1672 / 941;
 
 const typeLabels = {
   article: "Preprint",
@@ -28,8 +29,27 @@ function setHeaderState() {
   header?.classList.toggle("is-scrolled", window.scrollY > 24);
 }
 
+function resolvedHomeHeroHeight() {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;height:var(--home-hero-height);width:0;overflow:hidden;";
+  document.body.appendChild(probe);
+  const height = probe.getBoundingClientRect().height;
+  probe.remove();
+  return height;
+}
+
+function setHeroRenderWidth() {
+  const homeHeroHeight = resolvedHomeHeroHeight();
+  const renderWidth = Math.max(window.innerWidth, homeHeroHeight * HERO_IMAGE_RATIO);
+  document.documentElement.style.setProperty("--hero-render-width", `${Math.ceil(renderWidth)}px`);
+}
+
 setHeaderState();
+setHeroRenderWidth();
 window.addEventListener("scroll", setHeaderState, { passive: true });
+window.addEventListener("resize", () => {
+  window.requestAnimationFrame(setHeroRenderWidth);
+}, { passive: true });
 
 navToggle?.addEventListener("click", () => {
   const isOpen = header.classList.toggle("is-open");

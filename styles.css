@@ -12,6 +12,7 @@
   --shadow: 0 18px 45px rgba(29, 34, 36, 0.12);
   --site-hero-image: url("assets/research-header-painterly.png");
   --site-hero-position: left top;
+  --hero-render-width: 100vw;
   --header-height: 80px;
   --home-profile-space: clamp(420px, 36svh, 500px);
   --home-hero-height: clamp(
@@ -117,6 +118,7 @@ a:hover {
   overflow: hidden;
   color: var(--white);
   isolation: isolate;
+  background: var(--site-hero-image) var(--site-hero-position) / var(--hero-render-width) auto no-repeat;
 }
 
 .hero-image,
@@ -128,9 +130,7 @@ a:hover {
 }
 
 .hero-image {
-  object-fit: cover;
-  object-position: var(--site-hero-position);
-  z-index: -3;
+  display: none;
 }
 
 .hero-shade {
@@ -873,7 +873,7 @@ h3 {
   background:
     radial-gradient(circle at 24% 28%, rgba(18, 22, 23, 0.32), rgba(18, 22, 23, 0.08) 34%, rgba(18, 22, 23, 0) 62%),
     linear-gradient(90deg, rgba(18, 22, 23, 0.18), rgba(18, 22, 23, 0.02) 62%),
-    var(--page-hero-image, var(--site-hero-image)) var(--site-hero-position) / cover;
+    var(--page-hero-image, var(--site-hero-image)) var(--site-hero-position) / var(--hero-render-width) auto no-repeat;
 }
 
 .page-hero-image h1 {
@@ -893,7 +893,7 @@ h3 {
   background:
     radial-gradient(circle at 24% 28%, rgba(18, 22, 23, 0.32), rgba(18, 22, 23, 0.08) 34%, rgba(18, 22, 23, 0) 62%),
     linear-gradient(90deg, rgba(18, 22, 23, 0.18), rgba(18, 22, 23, 0.02) 62%),
-    var(--page-hero-image, var(--site-hero-image)) var(--site-hero-position) / cover;
+    var(--page-hero-image, var(--site-hero-image)) var(--site-hero-position) / var(--hero-render-width) auto no-repeat;
 }
 
 .cv-hero h1 {
@@ -976,6 +976,11 @@ h3 {
 .blog-index {
   max-width: 1040px;
   margin: 0 auto;
+}
+
+.blog-index.home-list {
+  max-width: none;
+  margin: 0;
 }
 
 .blog-list {
