@@ -1,17 +1,18 @@
 [
   {
-    "slug": "segregation-workflow-test",
-    "title": "Segregation Workflow Test",
-    "description": "A copied segregation note used to test the research-notes publishing workflow with a substantive-looking post.",
+    "slug": "clogit-vs-loglinear",
+    "title": "Conditional Logit and Loglinear Models on Toy Matching Data",
+    "description": "A small worked example comparing conditional logit and loglinear formulations for the same toy contingency table.",
     "date": "2026-07-03",
     "categories": [
-      "segregation",
-      "reproducible analysis",
-      "quarto"
+      "matching",
+      "loglinear models",
+      "conditional logit"
     ],
     "author": "Benjamin F. Jarvis",
-    "url": "segregation-workflow-test/",
-    "content": "segregation-workflow-test/content.html"
+    "url": "clogit-vs-loglinear/",
+    "content": "clogit-vs-loglinear/content.html",
+    "sourceUrl": "https://github.com/bfjarvis/research-notes/blob/main/blog/clogit-vs-loglinear/index.qmd"
   },
   {
     "slug": "example-segregation-note",
@@ -25,6 +26,7 @@
     ],
     "author": "Benjamin F. Jarvis",
     "url": "example-segregation-note/",
-    "content": "example-segregation-note/content.html"
+    "content": "example-segregation-note/content.html",
+    "sourceUrl": "https://github.com/bfjarvis/research-notes/blob/main/blog/example-segregation-note/index.qmd"
   }
 ]

@@ -1313,6 +1313,11 @@ function formatBlogCategories(categories = []) {
   return Array.isArray(categories) ? categories.join(", ") : String(categories || "");
 }
 
+function blogSourceLink(post = {}) {
+  if (!post.sourceUrl) return "";
+  return `<a href="${escapeHtml(post.sourceUrl)}" rel="noopener noreferrer">Quarto source</a>`;
+}
+
 async function renderBlogIndex() {
   const targets = document.querySelectorAll("[data-blog-posts]");
   if (!targets.length) return;
@@ -1336,6 +1341,7 @@ async function renderBlogIndex() {
         <p class="meta">${escapeHtml(post.date || "")}${post.categories?.length ? ` · ${escapeHtml(formatBlogCategories(post.categories))}` : ""}</p>
         <h2><a href="${escapeHtml(href)}">${escapeHtml(post.title || "")}</a></h2>
         ${post.description ? `<p>${escapeHtml(post.description)}</p>` : ""}
+        ${post.sourceUrl ? `<p class="blog-source-link">${blogSourceLink(post)}</p>` : ""}
       </article>
     `;
     }).join("");
@@ -1345,6 +1351,25 @@ async function renderBlogIndex() {
   });
 }
 
+function currentBlogSlug() {
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const blogIndex = parts.lastIndexOf("blog");
+  return blogIndex >= 0 ? parts[blogIndex + 1] || "" : "";
+}
+
+async function loadCurrentBlogPostMetadata() {
+  const slug = currentBlogSlug();
+  if (!slug) return null;
+
+  try {
+    const response = await fetch("../posts.json");
+    const posts = await response.json();
+    return posts.find((post) => post.slug === slug) || null;
+  } catch {
+    return null;
+  }
+}
+
 async function renderBlogPost() {
   const target = document.querySelector("[data-blog-post-content]");
   if (!target) return;
@@ -1352,6 +1377,11 @@ async function renderBlogPost() {
   try {
     const response = await fetch(target.dataset.blogPostContent || "content.html");
     target.innerHTML = await response.text();
+    const post = await loadCurrentBlogPostMetadata();
+    const header = target.querySelector(".blog-post-fragment-header");
+    if (post?.sourceUrl && header && !header.querySelector(".blog-source-link")) {
+      header.insertAdjacentHTML("beforeend", `<p class="blog-source-link">${blogSourceLink(post)}</p>`);
+    }
     const titleElement = target.querySelector("h1");
     const title = titleElement?.textContent;
     if (title) {
