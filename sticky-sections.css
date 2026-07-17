@@ -1,5 +1,6 @@
 :root {
   --navbar-height: 62px;
+  --sticky-heading-top: calc(var(--navbar-height) - 2px);
 }
 
 #quarto-header.headroom,
@@ -18,11 +19,12 @@ main.content:has(> .hero-quarto) h2,
 main.content.column-page-left:has(> .page-hero) h2,
 main.content.column-page-left:has(> .hero-quarto) h2 {
   position: sticky;
-  top: var(--navbar-height);
+  top: var(--sticky-heading-top);
   z-index: 30;
   margin-right: calc(-1 * clamp(0.75rem, 2vw, 1.25rem));
   margin-left: calc(-1 * clamp(0.75rem, 2vw, 1.25rem));
   padding: 0.7rem clamp(0.75rem, 2vw, 1.25rem) 0.55rem;
   background: rgba(247, 248, 248, 0.96);
+  box-shadow: 0 -4px 0 rgba(247, 248, 248, 0.98);
   backdrop-filter: blur(12px);
 }
