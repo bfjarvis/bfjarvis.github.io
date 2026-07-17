@@ -1,0 +1,2137 @@
+---
+title: "Curriculum Vitae"
+description: "Curriculum vitae for Benjamin F. Jarvis."
+title-block-style: none
+body-class: generated-page
+---
+
+::: {.page-hero .cv-hero}
+# Curriculum Vitae
+
+[Download PDF](cv/Benjamin-F-Jarvis-CV.pdf){.btn .btn-light}
+:::
+
+::: {.cv-layout}
+::: {.cv-sidebar}
+[Appointments](#appointments)
+[Education](#education)
+[Journal Articles](#journal-articles)
+[Books & Chapters](#books-chapters)
+[Works in Progress](#working-papers)
+[Presentations](#presentations)
+[Invited & Other Talks](#invited-talks)
+[Grants](#grants)
+[Teaching](#teaching)
+[Supervision](#supervision)
+[Service](#service)
+[Skills](#skills)
+[Miscellaneous](#miscellaneous)
+:::
+
+::: {.cv-main}
+::: {.cv-section #appointments}
+## Appointments
+::: {.cv-entry}
+::: {.cv-date}
+2016-Present
+:::
+
+::: {.cv-detail}
+### Associate Professor
+
+The Institute for Analytical Sociology, Linköping University.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2025-Present  
+2017-2019
+:::
+
+::: {.cv-detail}
+### Director, Master's Programme in Computational Social Science
+
+The Institute for Analytical Sociology, Linköping University.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2015-2016
+:::
+
+::: {.cv-detail}
+### Postdoctoral Researcher
+
+The Institute for Analytical Sociology, Linköping University.
+:::
+:::
+:::
+
+::: {.cv-section #education}
+## Education
+::: {.cv-entry}
+::: {.cv-date}
+2015
+:::
+
+::: {.cv-detail}
+### PhD, Sociology
+
+University of California, Los Angeles. Dissertation: Matching Residential Mobility to Race-Based Neighborhood Preferences in Los Angeles: Implications for Racial Residential Segregation. Supervised by Mark S. Handcock, Ka-Yuet Liu, Robert D. Mare, and Jennie E. Brand (Chair).
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2011
+:::
+
+::: {.cv-detail}
+### MA, Sociology
+
+University of California, Los Angeles.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2003
+:::
+
+::: {.cv-detail}
+### BS, Applied Physics
+
+Yale University.
+:::
+:::
+:::
+
+::: {.cv-section #journal-articles}
+## Journal Articles
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Guilherme Kenji Chihaya, and Eduardo Tapia. 2025. "Kin Propinquity, Residential Mobility, and the Persistence of Segregation." *Demography*, 62(6):1873–1898, [Link](https://doi.org/10.1215/00703370-12347377).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Laura Fürsich and Benjamin F Jarvis. 2025. "The effect of school peers on residential mobility in young adulthood: evidence from Sweden." *European Sociological Review*, 41(5):774–792, [Link](https://doi.org/10.1093/esr/jcaf002).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Jenjira J. Yahirun. 2025. "Exogamy, Proximity to Parents, and the Residential Choices of 1.5- and Second-Generation Immigrants in Sweden." *Population, Space and Place*, 31(8):e70117, [Link](https://doi.org/10.1002/psp.70117).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Robert D. Mare, and Monica K. Nordvik. 2023. "Assortative mating, residential choice, and ethnic segregation." *Research in Social Stratification and Mobility*, 88:100809, [Link](https://doi.org/10.1016/j.rssm.2023.100809).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2019. "Estimating Multinomial Logit Models with Samples of Alternatives." *Sociological Methodology*, 49(1):341–348, [Link](https://doi.org/10.1177/0081175018793460).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Juta Kawalerowicz, and Sarah Valdez. 2017. "Impact of ancestry categorisations on residential segregation measures using Swedish register data." *Scandinavian Journal of Public Health*, 45(17, Suppl.), [Link](https://doi.org/10.1177/1403494817702341).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Xi Song. 2017. "Rising Intragenerational Occupational Mobility in the United States, 1969 to 2011." *American Sociological Review*, 82(3):568–599, [Link](https://doi.org/10.1177/0003122417706391).
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #books-chapters}
+## Books & Book Chapters
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Martin Arvidsson, Peter Hedström, Benjamin F. Jarvis, and Marc Keuschnigg. 2025. "On the intersection of analytical sociology and computational social science." *Handbook of Computational Social Science*, 56–71, [Link](https://doi.org/10.4337/9781802207309.00011).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Marc Keuschnigg, and Peter Hedström. 2021. "Analytical sociology amidst a computational social science revolution." *Handbook of Computational Social Science*, 1:33–52, [Link](https://doi.org/10.4324/9781003024583).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2019. "Förfäder, tillhörigheter och selektiv parbildning: Sociala bindningar som segregationsbevarande mekanismer." *Segregation: Mikromekanismer och makrodynamik, Stockholm*, 71–78, [Link](https://view.publitas.com/riksbankens-jubileumsfond/rj-s-skriftserie-nr-16-2019).
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #working-papers}
+## Works in Progress
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Miriam Hurtado Bodell, Benjamin Jarvis, and Selcan Mutgan. 2026. "The Ethnic Reputations of Neighborhoods: A Study of Mainstream and Social Media Discourse in Sweden." *SocArXiv*, [Link](https://doi.org/10.31235/osf.io/4x93e_v1).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Jesper Lindmarker and Benjamin F. Jarvis. 2025. "However Far Away? The Spatial Contingencies of Assortative Mating." *SocArXiv*, [Link](https://doi.org/10.31235/osf.io/4tq8z_v1).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Maël Lecoursonnais, and Guilherme Kenji Chihaya. 2024. "Ethnic Preferences in Action? A Discrete Choice Analysis of Apartment Rental Applications." *Uppsala*.
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #presentations}
+## Conference Presentations
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2024. "Modeling segregation processes in a hybrid housing market." *16th Annual Conference of the International Network of Analytical Sociology, Leipzig*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Laura Fürsich and Benjamin F. Jarvis. 2022. "How do super-local network features shape residential segregation? A modified Schelling model." *Sunbelt 2022, Cairns, Australia*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2021. "Kinship Effects on Couples' Residential Choices: Asymmetries by Gender and Ancestry." *Population Association of America 2021 Annual Meeting, Online*, [Link](https://submissions2.mirasmart.com/PAA2021/ViewSubmissionFile.aspx?sbmID=3409&mode=html&validate=false).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Robert D. Mare, and Monica K. Nordvik. 2018. "Assortative Mating and Residential Segregation of Ancestry Groups in Stockholm." *The 11th Annual Conference of the International Network of Analytical Sociologists, Stanford, California*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2018. "Frontier Land, Migration and Intragenerational Mobility among American Men, 1870-1880." *2018 Spring Meeting of the Research Committee on Social Stratification and Mobility (RC28) of the International Sociological Association (ISA), Seoul, South Korea*, [Link](http://paa2013.princeton.edu/abstracts/132503).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Guilherme Kenji Chihaya. 2017. "Kinship Effects on Residential Mobility and Ethnic Segregation in Sweden." *The 10th Annual Conference of the International Network of Analytical Sociologists, Oslo, Norway*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2016
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Guilherme Kenji Chihaya. 2016. "Kinship Effects on Residential Mobility and Ethnic Segregation in Sweden." *Population Association of America 2016 Annual Meeting, Washington, D.C.*, [Link](https://paa.confex.com/paa/2016/meetingapp.cgi/Paper/6554).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2015
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Xi Song. 2015. "Intra-generational Occupational Mobility in the United States, 1981-2011." *Meeting of the Research Committee on Social Stratification (RC28), Tilburg, Netherlands*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2015
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Robert D. Mare, and Monica K. Nordvik. 2015. "Assortative Mating and Residential Segregation of Ancestry Groups in Stockholm." *Population Association of America Annual Meeting, San Diego, CA*, [Link](http://paa2015.princeton.edu/abstracts/150526).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2013
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2013. "The Effect of Agricultural Opportunities on the Migration and Social Mobility of American Men, 1870-1880." *Population Association of America Annual Meeting, New Orleans, LA*, [Link](http://paa2013.princeton.edu/abstracts/132503).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2013
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Robert D. Mare. 2013. "Do Stated Racial Preferences Match Residential Mobility Behavior?." *Population Association of America Annual Meeting, New Orleans, LA*, [Link](http://paa2013.princeton.edu/abstracts/132109).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2012
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Ted Mouw, Jennie E. Brand, and Benjamin F. Jarvis. 2012. "Immigration and Worker Displacement from High-Immigration Industries: Evidence Using Longitudinal Data from the LEHD." *Population Association of America Annual Meeting, San Francisco, CA*, [Link](http://paa2012.princeton.edu/abstracts/122680).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2012
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2012. "Neighborhood Experiences and the Influence of Neighborhood Racial Composition in Residential Choice." *Population Association of America Annual Meeting, San Francisco, CA*, [Link](http://paa2012.princeton.edu/abstracts/122590).
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #invited-talks}
+## Invited and Other Talks
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2024. "Segregation Dynamics in a Hybrid Housing Market." *Norrköping / Uppsala*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2023. "Preliminary findings regarding segregation processes in a hybrid housing market." *Uppsala Collaboration Meeting, Norrköping / Uppsala*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2023. "Ethnic Preferences in Action? A Discrete Choice Analysis of Apartment Rental Applications." *First Retreat for the Sweden National Research Program in Segregation, Uppsala*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Jenjira J. Yahirun. 2022. "Interethnic Unions, Proximity to Parents, and Residential Choice in Sweden." *European Population Conference 2022, Groningen*, [Link](https://epc2022.eaps.nl/abstracts/210857).
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis, Guilherme Kenji Chihaya, and Eduardo Tapia. 2022. "Kin Propinquity, Residential Mobility, and the Persistence of Ethnic Segregation." *Center for Economic Demography Seminar*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis. 2019. "Segregation Research at the Institute for Analytical Sociology." *Uppsala*.
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+Benjamin F. Jarvis and Guilherme Kenji Chihaya. 2018. "Kinship Effects on Residential Mobility and Ethnic Segregation in Sweden." *Nuffield College Sociology Seminar, Oxford*.
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #grants}
+## Grants
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+### The Spatial Bargain: Intergenerational Proximity and the Integration of Second-Generation Immigrants
+
+::: {.meta}
+Under Review · Vetenskapsrådet · Research Project - Migration and Integration
+:::
+
+Benjamin F. Jarvis (PI), Jenjira J. Yahirun, and Sara Forsberg
+
+Project Number: 2026-07154, Budget: 5,030,600 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2026
+:::
+
+::: {.cv-history-text}
+Finally registered · Vetenskapsrådet · Research Project - Migration and Integration
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2025
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2024
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2024
+:::
+
+::: {.cv-history-text}
+Rejected · Forte · Research Project
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2023
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2023
+:::
+
+::: {.cv-history-text}
+Rejected · Forte · Research Project
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+### Language as a Gatekeeper? Mapping and Analysis of Multilingual Public Information and Social Integration in Sweden (LINGUA-MAP)
+
+::: {.meta}
+Under Review · Vetenskapsrådet · Research Project - Migration and Integration
+:::
+
+Satu Manninen (PI), Andreas Kerren, Lonni Besançon, Vasiliki Simaki, Konstiantyn Kucher, Katarina Vrotsou, and Benjamin F. Jarvis
+
+Project Number: 2026-06703, Budget: 5,091,000 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2026
+:::
+
+::: {.cv-history-text}
+Finally registered · Vetenskapsrådet · Research Project - Migration and Integration
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+### Consolidated segregation: How reinforcing social differences shape the causes and consequences of segregation
+
+::: {.meta}
+Under Review · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Martin Arvidsson (PI), Laura Fürsich, Linda Zhao, and Benjamin F. Jarvis
+
+Project Number: 2026-00810, Budget: 5,084,000 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2026
+:::
+
+::: {.cv-history-text}
+Finally registered · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2025
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Environment - Segregation
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+### Understanding Social Boundaries through Partner Choice: The Role of Residential Segregation
+
+::: {.meta}
+Ongoing · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Siddartha Aradhya (PI), Jesper Lindmarker, Benjamin F. Jarvis, Carl Nordlund, and Sarah Valdez
+
+Project Number: 2025-04468, Budget: 5,045,000 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2025
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+### Neighborhood and school segregation across educational careers: patterns, processes, and implications for educational inequality
+
+::: {.meta}
+Ongoing · Vetenskapsrådet · Research Environment - Segregation
+:::
+
+Benjamin F. Jarvis (PI), Adel Daoud, Elizabeth E. Bruch, Maria Brandén, Miriah Meyer, Peter Hedström, Martin Arvidsson, Selcan Mutgan, Eduardo Tapia, Erik Rosenqvist, and Laura Fürsich
+
+Project Number: 2023-00933, Budget: 17,765,500 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2023
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Environment - Segregation
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+### The pan-ethnic dimension of residential segregation: patterns and dynamics
+
+::: {.meta}
+Rejected · Vetenskapsrådet · Research Project - Segregation
+:::
+
+Simone Scarpa (PI), Benjamin F. Jarvis, and Guilherme Kenjy Chihaya Da Silva
+
+Project Number: 2022-05234, Budget: 5,081,449 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2022
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Segregation
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2020
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Research Project
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2017
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2017
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+### The Role of Media in School and Neighborhood Reputation Formation, and its Effect on School and Residential Segregation
+
+::: {.meta}
+Ongoing · Vetenskapsrådet · Research Project - Segregation
+:::
+
+Maria Brandén (PI), Eduardo Tapia, and Benjamin F. Jarvis
+
+Project Number: 2022-05251, Budget: 5,094,136 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2022
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Project - Segregation
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+### How do perceptions of the city inform neighbourhood selection and housing search? A comparison of second generation migrants and natives in Stockholm
+
+::: {.meta}
+Ongoing · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Louisa Vogiazides (PI), Guilherme Kenjy Chihaya Da Silva, Sara Forsberg, and Benjamin F. Jarvis
+
+Project Number: 2022-05205, Budget: 6,721,356 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2022
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2022
+:::
+
+::: {.cv-history-text}
+Rejected · Forte · Research Project
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2020
+:::
+
+::: {.cv-history-text}
+Rejected · Forte · Research Project
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2020
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+### Transforming the housing landscape: how dwelling construction and tenure conversion affect processes of residential segregation
+
+::: {.meta}
+Ongoing · Formas · Early-Career Researcher
+:::
+
+Benjamin F. Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, and Yana Kucheva
+
+Project Number: 2021-00534, Budget: 3,994,586 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Granted · Formas · Early-Career Researcher
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+### Social network inference from complex digital data: methods and applications
+
+::: {.meta}
+Rejected · Vetenskapsrådet · Research Environment - Interdisciplinary
+:::
+
+Claudio Altafini (PI), Alexandra Segerberg, Matteo Magnani, Sarah Valdez, and Benjamin F. Jarvis
+
+Project Number: 2021-02446, Budget: 22,142,780 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2021
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Vetenskapsrådet · Research Environment - Interdisciplinary
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019
+:::
+
+::: {.cv-detail}
+### An Integrated Register Database for Analysis of City Planning and Land Use
+
+::: {.meta}
+Completed · Vetenskapsrådet · Research Infrastructure - Inventory of Needs
+:::
+
+Guilherme Kenjy Chihaya Da Silva (PI), Erika Sandow, Jenny Olofsson, Benjamin F. Jarvis, Karen Haandrikman, Sarah Valdez, Simone Scarpa, and Örjan Pettersson
+
+Project Number: 2019-06492
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2019
+:::
+
+::: {.cv-history-text}
+Needs audit closed · Vetenskapsrådet · Research Infrastructure - Inventory of Needs
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019
+:::
+
+::: {.cv-detail}
+### Like candidate, like voter: the role of life trajectories and representativeness of right wing radical populist candidates in Sweden
+
+::: {.meta}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Juta Kawalerowicz (PI), Étienne Ollion, Satu Helske, and Benjamin F. Jarvis
+
+Project Number: 2019-03002, Budget: 4,282,734 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2019
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2019
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+### Mining for Meaning: The Dynamics of Public Discourse on Migration
+
+::: {.meta}
+Ongoing · Vetenskapsrådet · Research Environment - Migration and Integration
+:::
+
+Marc Keuschnigg (PI), Étienne Ollion, Sophie Mützel, Måns Magnusson, Sarah Valdez, and Benjamin F. Jarvis
+
+Project Number: 2018-05170, Budget: 17,216,881 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Environment - Migration and Integration
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+### The Effects of Public and Private Housing Markets on Ethnic Segregation
+
+::: {.meta}
+Completed · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Sarah Valdez (PI), Benjamin F. Jarvis, Guilherme Kenjy Chihaya Da Silva, and Simone Scarpa
+
+Project Number: 2018-01562, Budget: 4,384,922 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+### Social exposure as a motive for migration? The migration strategies and migration patterns of same-sex parent families
+
+::: {.meta}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Katarina Haugen (PI), Jenny Olofsson, Guilherme Kenjy Chihaya Da Silva, and Benjamin F. Jarvis
+
+Project Number: 2018-01392, Budget: 4,481,008 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+### The segregating effects of market and non-market housing allocation mechanisms
+
+::: {.meta}
+Completed · Formas · Targeted Call - Research Project in Sustainable Spatial Planning
+:::
+
+Benjamin Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, Sarah Valdez, and Simone Scarpa
+
+Project Number: 2018-00269, Budget: 8,807,105 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Granted · Formas · Targeted Call - Research Project in Sustainable Spatial Planning
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Rejected · Formas · Targeted Call - Housing Policy for Social Sustainability
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2016
+:::
+
+::: {.cv-detail}
+### Social Ties and Residential Segregation
+
+::: {.meta}
+Completed · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Benjamin F. Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, Einar Holme, Matthew Weldon, Robert Mare, and Urban Lindgren
+
+Project Number: 2016-01987, Budget: 5,441,463 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2016
+:::
+
+::: {.cv-history-text}
+Granted · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2016
+:::
+
+::: {.cv-history-text}
+Not accepted for stage two · Forte · Junior Researcher
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2016
+:::
+
+::: {.cv-detail}
+### Intergenerational Occupational Mobility in Sweden: Determinants, Mechanisms and Outcomes
+
+::: {.meta}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+
+Chanchal Balachandran (PI), Benjamin F. Jarvis, and Frederik Witte
+
+Project Number: 2016-02347, Budget: 5,939,824 SEK
+
+#### Application History {.cv-history-heading}
+
+::: {.grant-history .cv-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2016
+:::
+
+::: {.cv-history-text}
+Rejected · Vetenskapsrådet · Research Project - Humanities and Social Sciences
+:::
+:::
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #teaching}
+## Teaching
+::: {.cv-list}
+::: {.cv-entry}
+::: {.cv-date}
+2024-2026
+:::
+
+::: {.cv-detail}
+### Research Methods in Strategic Urban and Regional Planning
+
+Master's Programme in Strategic Urban and Regional Planning | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2026
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2025
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2024
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017-2026
+:::
+
+::: {.cv-detail}
+### Master's Programme in Computational Social Science
+
+Master's Programme in Computational Social Science | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+2026
+:::
+
+::: {.cv-history-text}
+Program Director
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2025
+:::
+
+::: {.cv-history-text}
+Program Director
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2019
+:::
+
+::: {.cv-history-text}
+Program Director
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+2018
+:::
+
+::: {.cv-history-text}
+Program Director
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2017
+:::
+
+::: {.cv-history-text}
+Program Director
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019-2025
+:::
+
+::: {.cv-detail}
+### Inequality and Segregation: Theory and Measurement
+
+Master's Programme in Computational Social Science | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2025
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2024
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2023
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2022
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2021
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2020
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2019
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2019-2025
+:::
+
+::: {.cv-detail}
+### Discrete Choice Modelling
+
+Master's Programme in Computational Social Science | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2025
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2024
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2023
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2022
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2021
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2019
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2018
+:::
+
+::: {.cv-detail}
+### Discrete Choice Modelling with Applications
+
+The Institute for Analytical Sociology | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2018
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+### IAS Stata Workshop
+
+The Institute for Analytical Sociology | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2017
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+### Residential Segregation: Measurement and Mechanisms
+
+Department of Sociology and Human Geography | University of Oslo
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Spring 2017
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2016
+:::
+
+::: {.cv-detail}
+### Introduction to Analytical Sociology
+
+The Institute for Analytical Sociology | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2016
+:::
+
+::: {.cv-history-text}
+Guest Lecturer
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2016
+:::
+
+::: {.cv-detail}
+### Residential Segregation: Measurement and Analysis
+
+The Institute for Analytical Sociology | Linköping University
+
+#### Teaching History {.cv-history-heading}
+
+::: {.cv-history .teaching-history}
+::: {.cv-history-row}
+::: {.cv-history-date}
+Fall 2016
+:::
+
+::: {.cv-history-text}
+Course Coordinator
+:::
+:::
+:::
+:::
+:::
+:::
+:::
+
+::: {.cv-section #supervision}
+## Supervision
+
+### Doctoral Supervision {.cv-subheading}
+::: {.cv-list}
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Jesper Lindmarker.** Propinquity and the Assortative Mating of Immigrant Groups in Sweden
+:::
+
+Supervision: Carl Nordlund, Benjamin F. Jarvis, and Károly Takács.
+
+Supervised Doctoral Dissertation. Linköping University. Norrköping.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Laura Fürsich.** The Urban Tapestry: Essays on the Relationship Between Social Networks and Residential Segregation
+:::
+
+Supervision: Maria Brandén, Benjamin F. Jarvis, and Sarah Valdez.
+
+Supervised Doctoral Dissertation. Linköping University. Norrköping.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Emanuel Wittberg.** Corruption risks in a mature democracy : Mechanisms of social advantage and danger zones for corruption
+:::
+
+Supervision: Gissur Erlingson, Karl Wennberg, and Benjamin F. Jarvis.
+
+Supervised Doctoral Dissertation. Linköping University. Norrköping.
+:::
+:::
+:::
+
+### Master's Supervision {.cv-subheading}
+::: {.cv-list}
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Aleksandra Bocheva.** How predictable is love? Machine learning meetings partner choice
+:::
+
+Supervision: Jesper Lindmarker and Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Yannick Paul Kayser.** The Dark Side of AI - Narrative analysis of human labour in the AI supply chain
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Yan Gao.** Who moves the market? – Evidence from weibo blogger communities and stock price forecasting in china
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2026
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Jie Yang.** The impact of the introduction of tuition fees for higher education on international students' program choices in sweden
+:::
+
+Supervision: Benjamin F. Jarvis and Jesper Lindmarker.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2025
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Emerald Adjei.** Ethnicity or ideology?: Investigating the drivers of voter choice in ghana
+:::
+
+Supervision: Benjamin F. Jarvis and Carl Nordlund.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Kyu Woon Ha.** Diffusion, spatial dynamics, and residential segregation focusing on chinese and korean populations in los angeles and orange county
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Axel Johansson.** A computational frame analysis of Stockholm neighborhoods – Using transformer-based computer vision models and sparse logistic PCA to construct visual frames from news images
+:::
+
+Supervision: Benjamin F. Jarvis and Gabriel Eilertsen.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Sarah Lorraine Newton.** Exploring the inclusivity of electric vehicle infrastructure - Neighbourhood demographics and public charging accessibility in Gothenburg, Sweden
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2024
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Jiayi Chen.** Couple-level gender role attitudes and their associations with relationship satisfaction: Evidence from china
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Philip Öberg.** A spatially explicit model of segregation dynamics
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2023
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Wenshi San.** How do housing systems affect residential segregation? – A residential segregation model based on wealth and queue points
+:::
+
+Supervision: Benjamin F. Jarvis and Eduardo Tapia.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Johanna Tegborg.** Impacts of tenure mixing on income segregation - an analysis of segregation processes in sweden
+:::
+
+Supervision: Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2022
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Lijun Peng.** Using topic modelling to explore the association between neighborhood reputations and demographic composition
+:::
+
+Supervision: Benjamin F. Jarvis and Hendrik Ertz.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Simona Bisiani.** Blank spots, critical information needs and local journalism funding
+:::
+
+Supervision: Étienne Ollion and Benjamin F. Jarvis.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+
+::: {.cv-entry .supervision-entry}
+::: {.cv-date}
+2021
+:::
+
+::: {.cv-detail}
+::: {.citation-line}
+**Di Ping.** Measuring cultural differences by using wikipedia to predict the world cultural map
+:::
+
+Supervision: Benjamin F. Jarvis and Rubing Shen.
+
+Master's thesis. Linköping University. Norrköping, Sweden.
+:::
+:::
+:::
+:::
+
+::: {.cv-section #service}
+## Service
+::: {.cv-entry}
+::: {.cv-date}
+Ongoing
+:::
+
+::: {.cv-detail}
+### Peer Review
+
+Reviewer for American Journal of Sociology, American Sociological Review, Socius, Social Forces, Sociological Methods and Research, Journal of Artificial Societies and Simulation, Scandinavian Journal of Public Health, and Population, Space and Place.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2012-Present
+:::
+
+::: {.cv-detail}
+### Professional Memberships
+
+Member, Population Association of America (2012-present); American Sociological Association (2015-present); ISA RC28 Social Stratification (2015-present).
+:::
+:::
+:::
+
+::: {.cv-section #skills}
+## Skills
+::: {.cv-entry}
+::: {.cv-date}
+2010-Present
+:::
+
+::: {.cv-detail}
+### Stata
+
+Discrete choice models, including logit, multinomial logit, conditional logit, and mixed logit.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2010-Present
+:::
+
+::: {.cv-detail}
+### R
+
+Network analysis, discrete choice modeling, data wrangling, and visualization, including sna, ergm, mlogit, tidyr, and ggplot2.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2014-2015
+:::
+
+::: {.cv-detail}
+### AnyLogic
+
+Java-based agent-based modeling.
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2000-2003
+:::
+
+::: {.cv-detail}
+### MATLAB
+
+Scientific computing and applied physics coursework.
+:::
+:::
+:::
+
+::: {.cv-section #miscellaneous}
+## Miscellaneous
+::: {.cv-entry}
+::: {.cv-date}
+2022-2023
+:::
+
+::: {.cv-detail}
+### Parental Leave
+
+November-January
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2020
+:::
+
+::: {.cv-detail}
+### Parental Leave
+
+January-December
+:::
+:::
+
+::: {.cv-entry}
+::: {.cv-date}
+2017
+:::
+
+::: {.cv-detail}
+### Parental Leave
+
+August-December 2017
+:::
+:::
+:::
+:::
+:::

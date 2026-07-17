@@ -1,0 +1,18 @@
+---
+title: "Blog"
+title-block-style: none
+body-class: generated-page blog-page
+listing:
+  contents: "*/index.qmd"
+  type: default
+  sort: "date desc"
+  categories: true
+  feed: true
+page-layout: full
+---
+
+::: {.page-hero}
+# Blog
+:::
+
+Short research notes, worked examples, and project sketches.

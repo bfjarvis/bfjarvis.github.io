@@ -1,3 +1,6 @@
 __pycache__/
 *.py[cod]
 *.sublime*
+.DS_Store
+.quarto/
+docs/

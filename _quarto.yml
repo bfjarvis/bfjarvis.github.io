@@ -1,0 +1,51 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "blog/**/*.qmd"
+  pre-render:
+    - python3 scripts/generate_site.py
+  resources:
+    - .nojekyll
+    - assets/
+    - cv/Benjamin-F-Jarvis-CV.pdf
+
+website:
+  title: "Benjamin F. Jarvis"
+  site-url: "https://bfjarvis.github.io"
+  description: "Academic website for Benjamin F. Jarvis: publications, projects, teaching, CV, and research notes."
+  navbar:
+    title: "Benjamin F. Jarvis"
+    left:
+      - href: publications.qmd
+        text: Publications
+      - href: projects.qmd
+        text: Projects
+      - href: teaching.qmd
+        text: Teaching
+      - href: blog/index.qmd
+        text: Blog
+      - href: cv.qmd
+        text: CV
+  page-footer:
+    left: "© Benjamin F. Jarvis"
+    right:
+      - text: Email
+        href: mailto:benjamin.jarvis@liu.se
+      - text: Google Scholar
+        href: https://scholar.google.com/citations?user=AZvfKd8AAAAJ&hl=en&oi=ao
+      - text: ORCID
+        href: https://orcid.org/0000-0001-8127-4051
+      - text: GitHub
+        href: https://github.com/bfjarvis
+
+format:
+  html:
+    theme: cosmo
+    css:
+      - styles-quarto.css
+      - sticky-sections.css
+    toc: false
+    smooth-scroll: true
+    anchor-sections: false

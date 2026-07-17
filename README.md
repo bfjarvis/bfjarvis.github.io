@@ -1,50 +1,45 @@
 # bfjarvis.github.io
 
-Personal GitHub Pages site for Benjamin F. Jarvis.
+Quarto source for Benjamin F. Jarvis's personal academic website.
 
 ## Structure
 
-- `index.html` - homepage with publications, supervision, grants, teaching, posts, and contact sections.
+- `_quarto.yml` - Quarto website configuration. The site renders locally to `docs/`.
+- `index.qmd`, `publications.qmd`, `projects.qmd`, `teaching.qmd`, and `cv.qmd` - generated Quarto source pages.
+- `templates/*.qmd.j2` - editable page templates used by `scripts/generate_site.py`.
 - `data/grants.json` - structured source for ongoing and completed grants/projects.
-- `data/grants-zotero-import.json` - temporary CSL JSON seed made from the historical grants spreadsheet for importing into Zotero.
 - `data/publication-assets.json` - maps Zotero citation keys to representative publication images.
 - `data/teaching.json` - CSL JSON source for courses and programme teaching records.
 - `data/publications.json` - Better CSL JSON source for publications, presentations, talks, and theses.
 - `data/supervision.json` - Better CSL JSON source for supervised MSc and PhD theses.
 - `cv/cv.md` - editable Markdown source for the non-publication CV sections.
-- `cv/index.html` - HTML curriculum vitae page. It renders `cv/cv.md`, `data/publications.json`, and `data/supervision.json` in the browser.
-- `grants/` - grant and project index plus project detail pages for ongoing work.
-- `teaching/` - teaching index page fed by `data/teaching.json`.
 - `cv/Benjamin-F-Jarvis-CV.pdf` - generated PDF CV.
-- `posts/statistical-notes.html` - starter post for statistical analysis notes.
-- `blog/index.html` - website-owned blog index page.
-- `blog/post-template.html` - website-owned post shell used for rendered research notes.
-- `blog/posts.json` and `blog/<slug>/content.html` - rendered blog payload published from the sibling `research-notes` repository.
+- `blog/index.qmd` - Quarto blog listing.
+- `blog/<slug>/index.qmd` - native Quarto blog posts with their own front matter, prose, code, data, and figures.
 - `assets/research-header-painterly.png` - research-derived homepage hero image.
-- `assets/research-header-raw.png` - original research-derived header image.
-- `assets/research-header-adjusted.png` - adjusted alternate header image.
-- `assets/hero-social-statistics.png` - earlier generated hero image, retained as an alternate.
+- `scripts/generate_site.py` - reads the JSON data and templates, then writes the generated `.qmd` pages.
 - `scripts/build_cv_pdf.py` - rebuilds the PDF CV from `cv/cv.md`, `data/publications.json`, and `data/supervision.json`.
-- `docs/publishing-workflow.md` - workflow for publishing rendered Quarto notes from `research-notes`.
 
-GitHub Pages can serve this directly from the repository root with no build step.
+For publication, use Quarto's `gh-pages` workflow. Source files live on `main`; rendered
+site output is published to the `gh-pages` branch by `quarto publish gh-pages`.
 
 ## Local Preview
 
-Do not open `index.html` directly with `file://` when previewing the site. Browsers block
-the local `fetch()` calls used for `data/publications.json`, `data/supervision.json`, `data/grants.json`, and other
-structured content.
-
-Run a local static server from the repository root instead:
+Generate the Quarto pages from the JSON data, then render the site:
 
 ```bash
-python3 -m http.server 8001
+python3 scripts/generate_site.py
+quarto render
 ```
 
-Then open:
+For a local development server, run:
+
+```bash
+quarto preview
+```
 
 ```text
-http://localhost:8001/
+http://localhost:4321/
 ```
 
 ## Updating Publications
@@ -55,8 +50,8 @@ Working papers, manuscripts, and preprints are shown separately in Works in Prog
 If no entries are tagged `selected`, the homepage falls back to recent journal articles,
 books, and book chapters. All entries appear on the CV page, grouped by output type.
 
-Better CSL JSON is preferred for the website because it is easy to parse in the browser
-while preserving Zotero fields such as dates, event titles, locations, URLs, abstracts,
+Better CSL JSON is preferred because it is easy for the generator to parse while
+preserving Zotero fields such as dates, event titles, locations, URLs, abstracts,
 and notes.
 
 To add a representative image for a publication:
@@ -95,9 +90,6 @@ from the accepted version when one exists. If no version has been accepted, the 
 the most recent version by report/project number. The history table then provides a
 compact year/status/funder-call trail for the related submissions.
 
-The `data/grants-zotero-import.json` file is only a seed file for Zotero import,
-created from `Grants.xlsx`; it is not used by the website.
-
 Suggested Zotero conventions for grants/projects:
 
 - Use Zotero item type `Report`.
@@ -119,7 +111,7 @@ The full Projects page shows ongoing, under review, completed, and rejected grou
 Export course records from Zotero as CSL JSON and save them to
 `data/teaching.json`.
 The most recent grouped course records appear on the homepage. The full grouped
-list appears on `teaching/index.html`.
+list appears on `teaching.qmd`.
 
 Suggested Zotero conventions for teaching:
 
@@ -134,8 +126,8 @@ Suggested Zotero conventions for teaching:
 - Use `Presenter` / CSL `contributor` for guest lecturers, including Benjamin F. Jarvis when relevant.
 - Put teaching metadata in `Extra` or `Notes` using stable labels such as `Hours: 14`, `Credits: 7.5`, and `Students: 27`.
 
-If a course or supervision area needs more space, add a page under `teaching/` and
-put its relative URL in that entry's `page` field. Otherwise, leave `page` blank.
+If a course or supervision area needs more space, add a Quarto page and put its
+relative URL in that entry's `page` field. Otherwise, leave `page` blank.
 
 ## Updating Supervision
 
@@ -157,7 +149,7 @@ Suggested Zotero conventions for supervision:
 
 MSc theses and dissertations can remain together in Zotero; the site uses the CSL
 genre/type to split dissertation or PhD records from master's thesis records. The
-browser CV and the PDF CV both render a separate supervision line, for example:
+Quarto CV and the PDF CV both render a separate supervision line, for example:
 
 ```text
 Supervision: Maria Branden (Main), Benjamin F. Jarvis, and Sarah Valdez.
@@ -174,18 +166,23 @@ python3 scripts/build_cv_pdf.py
 
 ## Publishing Blog Posts
 
-Blog source lives in the sibling repository `../research-notes`, not in this
-public website repo. Add or edit `.qmd` files there, then run the local publish
-script from `research-notes`:
+Blog posts live directly in this repository as Quarto documents. Add or edit
+posts under `blog/<slug>/index.qmd`, with any post-specific data, scripts, and
+figures colocated in that same directory.
 
 ```bash
-python3 scripts/publish_local.py
+quarto render
 ```
 
-That script renders lean post fragments, updates this repo's `blog/posts.json`,
-and copies the website-owned `blog/post-template.html` shell into each public
-post directory. Commit the resulting public output in this repo when the preview
-looks right.
+Quarto builds the blog listing from `blog/index.qmd` and the post front matter.
 
-The website menu label remains `Blog`; the source repo name is only part of the
-authoring workflow.
+## Publishing
+
+Commit the Quarto source files on `main`, then publish the rendered site with:
+
+```bash
+quarto publish gh-pages
+```
+
+The local `docs/` render directory and `.quarto/` cache are ignored. They are useful
+for previewing, but they are not the deployment source for this repository.

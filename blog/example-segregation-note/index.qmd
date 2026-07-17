@@ -1,0 +1,42 @@
+---
+title: "Example Segregation Note"
+description: "A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation."
+date: "2026-06-27"
+author: "Benjamin F. Jarvis"
+categories:
+  - "segregation"
+  - "reproducible analysis"
+  - "quarto"
+toc: true
+toc-location: right
+---
+
+## Question
+
+This starter blog note shows the publication pattern for short empirical notes. A real blog post should begin with a substantive question about segregation, mobility, or stratification, then keep the statistical machinery close enough for readers to audit.
+
+## Data and Measurement
+
+Use this section to state the data source, unit of analysis, population, time period, and measurement choices. For spatial work, name the scale because the same empirical pattern can look different across neighborhoods, municipalities, commuting zones, or schools.
+
+## Analysis
+
+```{r}
+set.seed(42)
+places <- data.frame(
+  place = paste("Area", 1:12),
+  exposure = runif(12, 0.15, 0.75),
+  mobility = runif(12, 0.2, 0.9)
+)
+
+model <- lm(mobility ~ exposure, data = places)
+summary(model)
+```
+
+## Interpretation
+
+The prose should do more than repeat the table. Explain what comparison is being made, what uncertainty remains, and which interpretation is justified by the design.
+
+## Sensitivity
+
+Good candidates for sensitivity checks include alternate spatial scales, different definitions of exposure, influential places, and changes in model specification.

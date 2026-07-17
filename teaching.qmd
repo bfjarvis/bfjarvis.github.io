@@ -1,0 +1,223 @@
+---
+title: "Teaching"
+description: "Teaching by Benjamin F. Jarvis."
+title-block-style: none
+body-class: generated-page
+---
+
+::: {.page-hero}
+# Teaching
+:::
+
+## Courses
+
+::: {.teaching-list}
+::: {.content-card .teaching-card .teaching-course #709a07}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Master's Programme in Strategic Urban and Regional Planning
+:::
+
+### Research Methods in Strategic Urban and Regional Planning
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/709A07/vt-2025](https://studieinfo.liu.se/en/kurs/709A07/vt-2025)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a27}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Master's Programme in Computational Social Science
+:::
+
+### Inequality and Segregation: Theory and Measurement
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a19}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Master's Programme in Computational Social Science
+:::
+
+### Discrete Choice Modelling
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+This course enables students to perform their own empirical research using discrete choice methods. Students learn how to create discrete choice datasets, estimate discrete choice models, including binomial, multinomial, and conditional logistic regression, and interpret model output. The focus will be on the practical aspects of modeling. During intensive computer labs, hands on experience will be provided using real data drawn from examples in the areas of consumer choice, migration, and labor market mobility. More advanced models for handling panel data and unobservable heterogeneity, as well as identification of latent groups will be examined and deployed. Applications to counterfactual and agent-based simulation will also be explored during lab sessions.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/771A19/vt-2019](https://studieinfo.liu.se/en/kurs/771A19/vt-2019)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a06}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2018 • The Institute for Analytical Sociology
+:::
+
+### Discrete Choice Modelling with Applications
+
+::: {.content-card-byline}
+Course Coordinator • Linköping University
+:::
+
+::: {.content-card-description}
+Discrete choice modeling has been central in economics, marketing, and transportation research for decades, and is increasingly used in political science and sociology. Discrete choice models have been used to understand how individuals and households choose in different situations. This course will provide an overview of these applications using real-world examples.   
+Focus will be on practical aspects of modeling. The multinomial conditional logistic regression model will feature prominently. More advanced models for handling panel data, dealing with unobserved heterogeneity, and identifying latent groups will also be considered. Applications to counterfactual prediction and agent-based simulation will be highlighted.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/771A06/vt-2018](https://studieinfo.liu.se/en/kurs/771A06/vt-2018)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #ias-stata-workshop}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2017 • The Institute for Analytical Sociology
+:::
+
+### IAS Stata Workshop
+
+::: {.content-card-byline}
+Course Coordinator • Linköping University
+:::
+
+::: {.content-card-description}
+This workshop offers a "starter pack" for those interested in gaining more control over their Stata workflows and in developing more sophisticated data analyses. It first discusses some of the elements of reporducible research, with an emphasis on the importance of script files. It then provides an overview of  the Stata statistical programming environment: its memory structure, file formats, and some syntax basics. It then dives into Stata macros, which are key means for storing temporary information and extracting information returned by other Stata functions. Finally, loops and control-flow functionality are presented.
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #sos9232}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2017 • Department of Sociology and Human Geography
+:::
+
+### Residential Segregation: Measurement and Mechanisms
+
+::: {.content-card-byline}
+Guest Lecturer • University of Oslo
+:::
+
+::: {.content-card-description}
+Residential segregation is a common concern among social scientists because it signals social distance between groups based on characteristics such as race/ethnicity, socioeconomic standing, or immigrant status. Furthermore, segregation has been shown to lead to unequal outcomes in terms of education, income, and health in a variety of settings cross-nationally and over time. This course covers the foundational literatures on residential segregation, explains the most commonly used segregation measures, and introduces students to current, advanced measures in the field. Students will be given a brief primer on calculating segregation indices in R. Though the course focuses on residential segregation, the indices can be applied to schools, workplaces, and other organizational or geographic units. We will also review the mechanisms and processes that generate segregation and discuss ways these can be modeled to bridge the micro-macro divide.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://www.uio.no/studier/emner/sv/iss/SOS9232/index.html](https://www.uio.no/studier/emner/sv/iss/SOS9232/index.html)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a03}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2016 • The Institute for Analytical Sociology
+:::
+
+### Introduction to Analytical Sociology
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+The course begins with an introduction to the basic principles of analytical sociology. The course examines different types of action theories and various problems that arise when seeking to link micro-level behavior with macro-level outcomes. The course covers in detail how computer-based simulations in combination with different historical, qualitative, and quantitative data may help to improve our understanding of the driving forces behind important social processes.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/771A03/ht-2016](https://studieinfo.liu.se/en/kurs/771A03/ht-2016)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a02}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2016 • The Institute for Analytical Sociology
+:::
+
+### Residential Segregation: Measurement and Analysis
+
+::: {.content-card-byline}
+Course Coordinator • Linköping University
+:::
+
+::: {.content-card-description}
+This course introduces current literature on residential segregation with a focus on ethnic and socio-economic segregation in Europe and the United States. The course begins by conceptualizing neighborhoods, a fundamental social unit in many segregation studies. The course then introduces measures of segregation, examining the varied dimensions of segregation captured by these measures. The course then examines mechanisms and processes that can generate and perpetuate segregation. It considers statistical and simulation techniques to analyze the relative contributions of mechanisms and processes that generate residential segregation.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/771A02/ht-2016](https://studieinfo.liu.se/en/kurs/771A02/ht-2016)
+:::
+
+:::
+:::
+:::
+
+## Programs
+
+::: {.teaching-list}
+::: {.content-card .teaching-card .teaching-course #f7mcd}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Master's Programme in Computational Social Science
+:::
+
+### Master's Programme in Computational Social Science
+
+::: {.content-card-byline}
+Program Director • Linköping University
+:::
+
+::: {.content-card-description}
+The Master’s Programme in Computational Social Science (CSS) is a second-cycle programme that leads to a Degree of Master of Science in Computational Social Science. During the programme, students train to apply computational methods to analyse large, complex datasets related to human social behaviour, and to arrive at theoretically and empirically grounded explanations of social outcomes such as ethnic segregation in schools, income inequality, firm growth and survival, political change and cultural diffusion.  In the process, students are inducted into multidisciplinary domains of research in the social sciences that connect sociology, political science, economics, management science, and related disciplines with technical innovations in mathematics, statistics, and computer science.
+:::
+
+:::
+:::
+:::

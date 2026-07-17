@@ -1,0 +1,478 @@
+---
+title: "Projects"
+description: "Ongoing and completed research projects by Benjamin F. Jarvis."
+title-block-style: none
+body-class: generated-page
+---
+
+::: {.page-hero}
+# Projects
+:::
+
+## Ongoing Projects
+
+::: {.grant-list}
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Ongoing • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Understanding Social Boundaries through Partner Choice: The Role of Residential Segregation
+
+::: {.content-card-byline}
+Siddartha Aradhya (PI), Jesper Lindmarker, Benjamin F. Jarvis, Carl Nordlund, and Sarah Valdez
+:::
+
+::: {.content-card-description}
+Despite decades of immigration, many ethnic groups in Sweden remain socially and spatially separated. Rising diversity has not guaranteed rising integration—particularly between migrant-origin groups. This 3-year project investigates how segregation shapes social boundaries by studying patterns of partner choice.
+
+Romantic unions are powerful indicators of group relations: they reflect whether ethnic boundaries are weakening or holding firm, and are deeply shaped by the segregated contexts in which people live. Yet most research frames ethnic boundaries either as a binary between natives and immigrants, or as a question of in-group versus out-group partnering—rarely examining how immigrant-origin groups relate to each other.
+
+Using Swedish register data from 1991 to 2022, combined with high-resolution geographic information, we model how residential segregation and group composition structure the partner market. Through discrete choice models and counterfactual simulations, we estimate the strength of social boundaries between specific groups, distinguishing structural constraints from active social preferences.
+
+By revealing where boundaries persist even when people live nearby—and where they dissolve despite segregation—this project offers a timely, detailed understanding of how segregation and social distance are linked. As spatial and social divisions continue to shape life chances, understanding intergroup relations is critical for building an inclusive society.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2025-04468, Budget: 5,045,000 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2023 • Ongoing • Vetenskapsrådet • Research Environment - Segregation
+:::
+
+### Neighborhood and school segregation across educational careers: patterns, processes, and implications for educational inequality
+
+::: {.content-card-byline}
+Benjamin F. Jarvis (PI), Adel Daoud, Elizabeth E. Bruch, Maria Brandén, Miriah Meyer, Peter Hedström, Martin Arvidsson, Selcan Mutgan, Eduardo Tapia, Erik Rosenqvist, and Laura Fürsich
+:::
+
+::: {.content-card-description}
+The purpose of this research environment is to explain how the dynamics of residential and school segregation shape ethnic and socioeconomic inequalities in academic outcomes, and suggest policy remedies. Despite extensive research on the causes and consequences of segregation, we still have surprisingly little knowledge about how the two fit together. This is partly due to complex relationships between them. When parents choose a place to live and send their children to school, it is both influenced by and influences the composition of schools and neighborhoods. These compositions can affect short-term achievements among students, which guide subsequent educational choices and shape academic outcomes. This interplay means that structural interventions in school and housing policies–changes in the quantity, quality, and spatial distribution of schools and housing, as well as the rules governing access to them–can lead to sudden compositional shifts and unintended consequences. To address these complexities, we form an interdisciplinary team with unique methodological, substantive, and theoretical expertise. We use Swedish register data to estimate state-of-the-art models of residential and school choices and causal models of school and neighborhood effects. We integrate our findings into generative simulations and novel visualizations of segregation processes, using these to vet potential policy interventions that we theorize will reduce segregation and inequality.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2023-00933, Budget: 17,765,500 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2022 • Ongoing • Vetenskapsrådet • Research Project - Segregation
+:::
+
+### The Role of Media in School and Neighborhood Reputation Formation, and its Effect on School and Residential Segregation
+
+::: {.content-card-byline}
+Maria Brandén (PI), Eduardo Tapia, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+Previous studies suggest that individuals’ subjective perception of the reputation of schools and residential areas influences their decisions about where to live and which school to attend. We however know little about the nature of those reputations, how they come about, and how they eventually might impact the segregation of schools and neighborhoods. This project extends previous work by providing a holistic perspective of how the school-neighborhood portrayals in newspapers and online platforms affect the patterns of school and residential segregation.
+
+The first stage of the project will focus on evaluating the reputation itself. Using data from digital social-media sites and the Swedish newspapers, we will measure school and neighborhood reputations in Stockholm city. Then, we will analyze which characteristics of the schools and neighborhoods contribute to shaping their reputations and whether those are results of media bias. The second stage will evaluate the effect of reputation on segregation patterns. Using Swedish register data on residential mobility and education, we will assess how reputation influences the neighborhood and school choices across different ethnic and socioeconomic groups. Lastly, we will implement a simulation platform to assess the cumulative effect of reputation on segregation and gauge the potential impact of integrative policy initiatives based on changing schools and neighborhood portrayal in the media.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2022-05251, Budget: 5,094,136 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2022 • Ongoing • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### How do perceptions of the city inform neighbourhood selection and housing search? A comparison of second generation migrants and natives in Stockholm
+
+::: {.content-card-byline}
+Louisa Vogiazides (PI), Guilherme Kenjy Chihaya Da Silva, Sara Forsberg, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This project examines whether and how ethnic differences in neighborhood awareness and preconceptions perpetuate segregation by shaping the housing search behaviors of immigrants and natives in Uppsala. It uses a survey including a Discrete Choice Experiment, apartment search data, register data, and qualitative interviews.
+
+Segregation is often viewed as stemming from socioeconomic inequality, housing discrimination, and ethnic preferences. Yet, despite the slow moderation of prejudices, improvements in minority socioeconomic standing, and the enactment of anti-discrimination laws, residential segregation between different ethnic groups remains high.
+
+The emerging social structural sorting perspective attempts to explain the surprising durability of segregation, while complementing existing understandings of segregation processes. It builds on evidence that people not only lack complete knowledge of their residential options, but also that the knowledge they have is shaped by their ethnically segregated lived experiences and social networks. This leads people to exclude, in ethnically stratified ways, whole sections of cities from consideration before housing search begins, contributing to a self-perpetuating cycle of segregation.
+
+This project engages with the forefront of segregation research through one of the most comprehensive empirical examinations of social structural sorting to date. It will contribute with useful insights to tackle segregation and inequality in the city.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2022-05205, Budget: 6,721,356 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2021 • Ongoing • Formas • Early-Career Researcher
+:::
+
+### Transforming the housing landscape: how dwelling construction and tenure conversion affect processes of residential segregation
+
+::: {.content-card-byline}
+Benjamin F. Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, and Yana Kucheva
+:::
+
+::: {.content-card-description}
+This project investigates the reciprocal relationship between residential segregation and the housing landscape—the geographic mix of different tenure types and densities. In so doing, the project shifts the focus of segregation research from the demand-side—the renters and homeowners vying for places to live—to the supply side: the landlords and developers who transform the housing landscape by building, renovating, converting, and selling housing. Using detailed registry data describing the Swedish population, properties, and building permits, this project uses statistical analyses and computer simulations to investigate a series of research questions designed to explore the relationship between housing and segregation. How is mobility related to the spatial distribution of different housing tenures? Are decisions about where to build housing, what housing is built, or whether public housing is sold to private actors, related to the social characteristics of neighborhoods? And how have recent changes in the Swedish housing landscape, particularly the swing toward privatization, contributed to or mitigated patterns of mobility that lead to segregation? Our results and analytical methods will be of keen interest to national and municipal policy makers looking to reduce segregation while ensuring that all Swedish residents have access to high quality housing.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2021-00534, Budget: 3,994,586 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2018 • Ongoing • Vetenskapsrådet • Research Environment - Migration and Integration
+:::
+
+### Mining for Meaning: The Dynamics of Public Discourse on Migration
+
+::: {.content-card-byline}
+Marc Keuschnigg (PI), Étienne Ollion, Sophie Mützel, Måns Magnusson, Sarah Valdez, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This research environment addresses how media discourses have portrayed and reacted to immigration, during a period of heightened immigration to Sweden. It is particularly concerned with attention in traditional and social media to the arrival of refugee and assylum seekers during the 2000s and 2010s, often from countries in Africa and the Middle East. The environment brings together interdisciplinary researchers to develop and deploy cutting-edge, machine-learning based text analysis models. These methods are applied to large-scale text data drawn from popular Swedish social media websites, political speeches, and stores of articles published in Swedish newspapers and maintained by Sweden's national library, Kungliga biblioteket. We use the models to extract the evolving semantic meanings attached to immigration in the public discourse, relating these to prominent events and the socio-demographic attributes of immigrant groups.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2018-05170, Budget: 17,216,881 SEK
+:::
+
+:::
+:::
+:::
+
+## Under Review
+
+::: {.grant-list}
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Under Review • Vetenskapsrådet • Research Project - Migration and Integration
+:::
+
+### The Spatial Bargain: Intergenerational Proximity and the Integration of Second-Generation Immigrants
+
+::: {.content-card-byline}
+Benjamin F. Jarvis (PI), Jenjira J. Yahirun, and Sara Forsberg
+:::
+
+::: {.content-card-description}
+This project examines how proximity to kin is reciprocally related to intergenerational relationships and the spatial integration of immigrants in Sweden. Among second-generation immigrants, close residential proximity to parents may provide vital access to social support, but it may also concentrate social interactions within ethnically delimited networks that constrain residential, labor market, and other opportunities. Conversely, moving away from parents may facilitate integration, but can strain intergenerational relationships and disrupt support between generations.
+
+By combining register, survey, and interview data, this project develops a dynamic, multigenerational account of the evolving tension between family relationships, residential proximity, and immigrant integration. Register data allow us to map kin availability and proximity across the life course for second-generation immigrants and non-immigrants, which we incorporate into discrete choice models of residential destinations to identify when and how life-course transitions—such as nest-leaving and union formation—produce differences in proximity to kin. Panel data from the Swedish Gender and Generations Survey tell us how family obligations, relationship quality, and support exchange shape mobility intentions and subsequent moves. Finally, qualitative interviews with parents and adult children in immigrant and non-immigrant families reveal the mechanisms linking family ties, mobility, and integration.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2026-07154, Budget: 5,030,600 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Under Review • Vetenskapsrådet • Research Project - Migration and Integration
+:::
+
+### Language as a Gatekeeper? Mapping and Analysis of Multilingual Public Information and Social Integration in Sweden (LINGUA-MAP)
+
+::: {.content-card-byline}
+Satu Manninen (PI), Andreas Kerren, Lonni Besançon, Vasiliki Simaki, Konstiantyn Kucher, Katarina Vrotsou, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+LINGUA-MAP investigates multilingual communication practices on Swedish public institutions’ websites and their implications for integration. Combining computational, qualitative, and quantitative approaches, the project maps the presence of languages other than Swedish in such sources and assesses if such provision supports social inclusion. First, we provide an overview of the multilingual communication landscape through interactive visualizations and computational analyses of public institutions’ websites. We identify patterns of language coverage, balance, and content parallelism, as well as consistency within and across institutions. Informed by these patterns, we then conduct in‑depth qualitative case studies of selected institutions' websites, focusing on the English‑language content. We examine translation strategies, content parallelism, structural choices, and overall linguistic quality, assessing how information is adapted-or not-for different target audiences. Third, we link patterns of multilingual provision to integration outcomes using Swedish population registers. Using statistical and machine‑learning models, we examine if access to multilingual content is associated with outcomes such as labor market participation and education, exploiting variation across time, place and language groups. LINGUA-MAP provides important evidence on the role of multilingual institutional communication in promoting equitable access to public services and immigrant integration.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2026-06703, Budget: 5,091,000 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Under Review • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Consolidated segregation: How reinforcing social differences shape the causes and consequences of segregation
+
+::: {.content-card-byline}
+Martin Arvidsson (PI), Laura Fürsich, Linda Zhao, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+People and the contexts they occupy vary in many dimensions---ethnicity, gender, income, education---that shape life experiences, social ties, aspirations, and opportunities. Segregation research examines how the composition of contexts varies across times, places, and individuals. But it often examines contextual variations in a single dimension at a time, e.g., focusing on ethnic segregation separately from income segregation. This overlooks how these aspects of segregation overlap and intersect. Macro-structural social theory and social network research suggest the overlaps and intersections between different social characteristics---referred to as consolidation---are critical to processes of stratification. Our project breaks new ground by integrating the concept of consolidation into segregation research.
+
+We do this through three interlinked work packages (WPs), all utilizing comprehensive Swedish register data. WP1 maps consolidation in schools, workplaces, and neighborhoods, showing how socioeconomic, ethnic and gender compositions are correlated in these different domains. WP2 uses discrete choice models and agentbased simulations to examine how preference-based and network-based sorting mechanisms respond to varying levels of consolidation, shaping segregation patterns. WP3 investigates how the multidimensional nature of segregation, through its contextual effects, influences social inequality in terms of educational attainment and labor market outcomes.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2026-00810, Budget: 5,084,000 SEK
+:::
+
+:::
+:::
+:::
+
+## Completed Projects
+
+::: {.grant-list}
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2019 • Completed • Vetenskapsrådet • Research Infrastructure - Inventory of Needs
+:::
+
+### An Integrated Register Database for Analysis of City Planning and Land Use
+
+::: {.content-card-byline}
+Guilherme Kenjy Chihaya Da Silva (PI), Erika Sandow, Jenny Olofsson, Benjamin F. Jarvis, Karen Haandrikman, Sarah Valdez, Simone Scarpa, and Örjan Pettersson
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2019-06492
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2018 • Completed • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### The Effects of Public and Private Housing Markets on Ethnic Segregation
+
+::: {.content-card-byline}
+Sarah Valdez (PI), Benjamin F. Jarvis, Guilherme Kenjy Chihaya Da Silva, and Simone Scarpa
+:::
+
+::: {.content-card-description}
+Housing policies designed to reduce economic segregation in Sweden have been largely effective but may have inadvertently contributed to ethnic segregation. The rental queue system and collectively bargained rental prices are important mechanisms for guaranteeing the right to a good home for all residents, but also limit housing choices for newcomers who are at the bottom of queues that are often years-long. Compounding this problem, refugee arrivals are disadvantaged in the private housing market because they often lack the financial resources to purchase a privately-owned housing unit. This project investigates how and to what extent ethnic groups are unevenly distributed across rentals and ownership in major Swedish cities and how this affects patterns of residential segregation. We identify the selection processes that lead to differences between native-born Swedes and immigrants in the types of housing units they occupy as well as the neighborhoods they are located in. Finally, we test the impact of housing reform by using computer simulations to examine how actual and counterfactual policy interventions in local housing markets might influence residential mobility and thereby induce changes in patterns and levels of ethnic residential segregation.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2018-01562, Budget: 4,384,922 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2018 • Completed • Formas • Targeted Call - Research Project in Sustainable Spatial Planning
+:::
+
+### The segregating effects of market and non-market housing allocation mechanisms
+
+::: {.content-card-byline}
+Benjamin Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, Sarah Valdez, and Simone Scarpa
+:::
+
+::: {.content-card-description}
+Recent welfare state reforms have shifted Swedish housing policy towards market-based approaches, increasing the importance of economic resources for residential attainment. Yet, the extent of public intervention in the housing market remains important, as seniority-based non-market housing queues continue to play an important role in housing allocation. Both market and non-market housing allocation mechanisms contribute to segregation by disadvantaging newly arrived immigrants who have few economic resources and lack seniority. This project investigates how and to what extent ethnic groups are unevenly distributed across the different housing tenures in Swedish major cities and large municipalities, and how this relates to residential segregation. We study how intermunicipal differences in housing tenure composition and mix relate to overall ethnic residential segregation patterns. We then delve into the individual-level dynamics of residential mobility, and we identify the selection processes contributing to differences between immigrants and native Swedes in the distribution and transition of individuals across different housing tenures and neighborhoods. Finally, we use microsimulation to examine how actual and counterfactual policy interventions in local housing markets influence residential mobility choices and thereby induce changes in patterns and levels of ethnic residential segregation in municipalities, across and within the market and non-market regulated sectors.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2018-00269, Budget: 8,807,105 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2016 • Completed • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Social Ties and Residential Segregation
+
+::: {.content-card-byline}
+Benjamin F. Jarvis (PI), Guilherme Kenjy Chihaya Da Silva, Einar Holme, Matthew Weldon, Robert Mare, and Urban Lindgren
+:::
+
+::: {.content-card-description}
+This project examines the link between social networks, including kinship and school friendships, and the residential segregation of immigrant groups in Sweden, with a focus on second generation immigrants. We combine register data that identify family ties, school attendance, and residential mobility with survey data characterizing friendship networks within schools. We use advanced network analysis and discrete choice statistical methods to investigate how school attendance is influenced by residential segregation, how schools shape friendship networks, and how these friendship networks, along with existing kinship ties, influence residential mobility. We then use micro-simulations to show how these components fit together to generate residential segregation observed at the city-level. This project is one of the first to explicitly connect the literature on social networks and the literature on residential segregation. It makes extensive use of Swedish population registers and provides an unprecedented view of social processes contributing to the intergenerational transmission of context and the production of residential segregation. The project provides important insights for policy makers, showing how interventions designed to address segregation among first generation immigrants may have long-term consequences for their children, may forestall the development of an ethnicized underclass, and increase wellbeing for immigrants and native Swedes.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2016-01987, Budget: 5,441,463 SEK
+:::
+
+:::
+:::
+:::
+
+## Rejected Applications
+
+::: {.grant-list}
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2022 • Rejected • Vetenskapsrådet • Research Project - Segregation
+:::
+
+### The pan-ethnic dimension of residential segregation: patterns and dynamics
+
+::: {.content-card-byline}
+Simone Scarpa (PI), Benjamin F. Jarvis, and Guilherme Kenjy Chihaya Da Silva
+:::
+
+::: {.content-card-description}
+This project examines how pan-ethnic relations can affect patterns of segregation, using Swedish cities as a test bed for theory. Pan-ethnicity relates to a sense of common cause, or even just a greater tolerance for contact, with ethnic groups that are culturally adjacent to one's own. Pan-ethnic relations seem particularly relevant for immigrants in contexts where their own ethnic group is relatively rare, but culturally similar groups may be more abundant. Theoretically, the project shows that when groups have pan-ethnic affinities, in addition to homophilous preferences for members of their own ethnic group, unique segregation dynamics and patterns can emerge. Empirically, we demonstrate the existence of these pan-ethnic affinities in Sweden using data on residential mobility, and we work out how the specific configuration of ethnic and pan-ethnic sorting behaviors we observe relate to patterns of segregation.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2022-05234, Budget: 5,081,449 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2021 • Rejected • Vetenskapsrådet • Research Environment - Interdisciplinary
+:::
+
+### Social network inference from complex digital data: methods and applications
+
+::: {.content-card-byline}
+Claudio Altafini (PI), Alexandra Segerberg, Matteo Magnani, Sarah Valdez, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This proposal is in the area of Computational Social Sciences, and in particular of large-scale social network inference and analysis. It has two overarching goals:
+
+To develop principled mathematical and computational methods for inferring social networks from large heterogeneous datasets (WP1); To apply these methods in large-scale sociological studies, in particular, to the following 3 workpackages: WP2: to identify network-based mechanisms explaining social mobility using data from the Swedish register; WP3: to investigate the role that the social network of immigrants has on job recruitment; and WP4: to explain how networked image-based political narratives spread in social media.
+
+These two goals are strictly interlinked: the development of novel computational methods is motivated and driven by the practical sociological questions, while a thorough sociological analysis in the applicative workpackages is in turn enabled by the algorithms.
+
+The scientists participating in the consortium bring together expertise from both Computational Sciences and Social Sciences, coherently with the interdisciplinary nature of the proposed research.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2021-02446, Budget: 22,142,780 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2019 • Rejected • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Like candidate, like voter: the role of life trajectories and representativeness of right wing radical populist candidates in Sweden
+
+::: {.content-card-byline}
+Juta Kawalerowicz (PI), Étienne Ollion, Satu Helske, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2019-03002, Budget: 4,282,734 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2018 • Rejected • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Social exposure as a motive for migration? The migration strategies and migration patterns of same-sex parent families
+
+::: {.content-card-byline}
+Katarina Haugen (PI), Jenny Olofsson, Guilherme Kenjy Chihaya Da Silva, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This project examines when and under what circumstances same-sex families---i.e., families with young children whose parents are same-sex---move or migrate, and what kinds of neighborhoods they move to. A key question is whether same-sex families take the proximity of other same-sex families into account when deciding if or where to move, and how this thinking is related to perceptions of favorable social environments for both parents and children in these families. The study undertakes this research using a combination of Swedish register data and a novel survey instrument. The goal is to contribute to knowledge of migration practices in an understudied group, and to guide the development of policies to support parents and children in same-sex families.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2018-01392, Budget: 4,481,008 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2016 • Rejected • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Intergenerational Occupational Mobility in Sweden: Determinants, Mechanisms and Outcomes
+
+::: {.content-card-byline}
+Chanchal Balachandran (PI), Benjamin F. Jarvis, and Frederik Witte
+:::
+
+::: {.content-card-description}
+We propose studying how parental influence is channeled through labor market institutions to determine offspring's occupations. Patterns of intergenerational mobility--the strength and extent of parental influence on their offspring's occupations--are a serious concern. A world in which children mostly inherit their parents' occupations contradicts the principle of equal opportunity. High inheritance may discourage workers from investing in education, hamper firms seeking competent workers, and undermine economic development.
+
+Despite intergenerational mobility's significance, few studies have examined how labor market institutions, like industries and firms, intervene in the process. We remedy this oversight and explore parental influence on offspring's (1) initial occupational choice and skill development, (2) attainment within organizations' occupational hierarchies, and (3) inter-metropolitan migration and occupational mobility.
+
+We link together population-based register data that describe the labor market histories of a generation of parents and their children. The data detail mobility across occupations, organizations and geographic regions. We analyze these data using advanced statistical techniques (e.g., multilevel panel models), and provide an unprecedented view of labor market channels of intergenerational mobility. Given the unique, detailed data available, Sweden should be at the forefront of studying the mechanisms of intergenerational occupational mobility.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2016-02347, Budget: 5,939,824 SEK
+:::
+
+:::
+:::
+:::

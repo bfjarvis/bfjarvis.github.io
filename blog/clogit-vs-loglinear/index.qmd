@@ -1,0 +1,191 @@
+---
+title: "Conditional Logit and Loglinear Models on Toy Matching Data"
+description: "A small worked example comparing conditional logit and loglinear formulations for the same toy contingency table."
+date: "2026-07-03"
+author: "Benjamin F. Jarvis"
+categories:
+  - "matching"
+  - "loglinear models"
+  - "conditional logit"
+toc: true
+toc-location: right
+---
+
+## Question
+
+How close are the conditional logit and loglinear views of a small matching table? This note starts from a toy table of pairings between three male categories and three female categories, then fits parallel models that describe the same pattern from two different directions.
+
+The goal is not to make a substantive claim from the toy data. The goal is to make the bookkeeping visible: counts in a contingency table can be represented as matched choices, and the model formulas then become easier to compare.
+
+## Toy Data
+
+```{r}
+library(survival)
+library(dplyr)
+library(tidyr)
+
+set.seed(123)
+
+dt <- expand_grid(m = c("a", "b", "c"), f = c("a", "b", "c")) |>
+  bind_cols(n = c(40, 8, 2, 8, 14, 8, 2, 8, 10)) |>
+  mutate(
+    homogamy = if_else(m == f, m, "not"),
+    homogamy = relevel(factor(homogamy), ref = "not")
+  ) |>
+  group_by(f) |>
+  mutate(n_f = sum(n)) |>
+  group_by(m) |>
+  mutate(n_m = sum(n)) |>
+  ungroup()
+```
+
+The marginal distribution of male categories is:
+
+```{r}
+xtabs(n ~ m, data = dt)
+```
+
+The full table is:
+
+```{r}
+xtabs(n ~ m + f, data = dt)
+```
+
+## From Counts to Choice Sets
+
+The loglinear models work directly with the cell counts. The conditional logit models need the same information represented as individual choices. The next steps expand the table into male and female records, then recover the observed pairings implied by the cell counts.
+
+```{r}
+singles_m <- dt |>
+  group_by(m) |>
+  summarize(n = sum(n), .groups = "drop") |>
+  reframe(m = rep(m, times = n)) |>
+  mutate(m_id = row_number()) |>
+  group_by(m) |>
+  mutate(m_order = row_number()) |>
+  ungroup()
+
+singles_f <- dt |>
+  group_by(f) |>
+  summarize(n = sum(n), .groups = "drop") |>
+  reframe(f = rep(f, times = n)) |>
+  mutate(f_id = row_number()) |>
+  group_by(f) |>
+  mutate(f_order = row_number()) |>
+  ungroup()
+
+cell_assignments <- dt |>
+  group_by(m) |>
+  mutate(
+    m_start = lag(cumsum(n), default = 0) + 1,
+    m_end = cumsum(n)
+  ) |>
+  ungroup() |>
+  group_by(f) |>
+  mutate(
+    f_start = lag(cumsum(n), default = 0) + 1,
+    f_end = cumsum(n)
+  ) |>
+  ungroup()
+
+unions <- cell_assignments |>
+  rowwise() |>
+  mutate(
+    m_order = list(m_start:m_end),
+    f_order = list(f_start:f_end)
+  ) |>
+  unnest(c(m_order, f_order)) |>
+  ungroup() |>
+  select(m, f, m_order, f_order) |>
+  left_join(singles_m, by = c("m", "m_order")) |>
+  left_join(singles_f, by = c("f", "f_order")) |>
+  select(m_id, f_id, m, f)
+
+cset <- expand_grid(
+  singles_m |> select(-m_order),
+  singles_f |> select(-f_order)
+) |>
+  left_join(mutate(unions, choice = 1L), by = c("m_id", "f_id", "m", "f")) |>
+  mutate(choice = !is.na(choice)) |>
+  mutate(
+    homogamy = if_else(m == f, m, "not"),
+    homogamy = relevel(factor(homogamy), ref = "not")
+  )
+```
+
+The expanded choice-set data have one row for every possible pairing. The observed unions are the rows where `choice` is `TRUE`.
+
+```{r}
+cset |>
+  count(choice)
+```
+
+## Model Fits
+
+These four loglinear specifications and their conditional-logit counterparts are deliberately paired. The first loglinear model is saturated. There is no direct conditional-logit counterpart in this setup because conditioning on the male identifier absorbs the male-side total and leaves no comparable saturated choice model.
+
+```{r}
+loglin_models <- list(
+  "1a" = glm(n ~ m * f, family = poisson, data = dt),
+  "1b" = glm(n ~ m * f + offset(log(n_f)), family = poisson, data = dt),
+  "1c" = glm(n ~ m + f + homogamy, family = poisson, data = dt),
+  "2a" = glm(n ~ m + offset(log(n_f)) + homogamy, family = poisson, data = dt)
+)
+
+clogit_models <- list(
+  "1a" = NULL,
+  "1b" = clogit(choice ~ m * f + strata(m_id), data = cset),
+  "1c" = clogit(choice ~ f + homogamy + strata(m_id), data = cset),
+  "2a" = clogit(choice ~ homogamy + strata(m_id), data = cset)
+)
+```
+
+## Predicted Counts
+
+For the loglinear models, predicted counts are obtained directly from the fitted Poisson mean. For the conditional logit models, the linear predictors are converted into probabilities within each male choice set and then summed back to the original table cells.
+
+```{r}
+loglin_predictions <- lapply(loglin_models, function(x) {
+  bind_cols(dt |> select(m, f), n_hat = exp(predict(x)))
+})
+
+clogit_predictions <- lapply(clogit_models, function(x) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+
+  bind_cols(cset, eta = predict(x)) |>
+    group_by(m_id) |>
+    mutate(p = exp(eta) / sum(exp(eta))) |>
+    ungroup() |>
+    group_by(m, f) |>
+    summarize(n_hat = sum(p), .groups = "drop")
+})
+```
+
+The paired predictions can then be compared cell by cell.
+
+```{r}
+compare_predictions <- function(model_id) {
+  loglin <- loglin_predictions[[model_id]] |>
+    rename(loglinear = n_hat)
+
+  clogit <- clogit_predictions[[model_id]]
+
+  if (is.null(clogit)) {
+    return(loglin)
+  }
+
+  loglin |>
+    left_join(rename(clogit, conditional_logit = n_hat), by = c("m", "f")) |>
+    mutate(difference = loglinear - conditional_logit)
+}
+
+compare_predictions("1c")
+```
+
+## Interpretation
+
+The comparison is useful because the two model families emphasize different parts of the same setup. The loglinear model treats the table cells as the observations. The conditional logit model treats each observed male case as a choice among possible female cases. With the right conditioning and offsets, the fitted implications can line up closely, but the route to those fitted counts is different.
+
+For this toy table, the most interesting comparisons are not the saturated model, but the reduced specifications that keep the broad marginal structure and then ask how much is added by category-specific homogamy terms.

@@ -1,0 +1,436 @@
+---
+title: "Benjamin F. Jarvis"
+description: "Academic website for Benjamin F. Jarvis."
+title-block-style: none
+body-class: generated-page
+---
+
+::: {.hero-quarto}
+# Research on segregation and mobility
+:::
+
+::: {.intro-copy}
+I am an associate professor at The Institute for Analytical Sociology at Linkoping University. My research examines ethnic segregation and patterns of residential and social mobility. I combine discrete choice models and agent-based simulations to make the link between micro behaviors and macro outcomes.
+
+This site is a record of formal outputs and a home for short research notes. You can also find my [CV](cv.qmd), [Google Scholar](https://scholar.google.com/citations?user=AZvfKd8AAAAJ&hl=en&oi=ao), [ORCID](https://orcid.org/0000-0001-8127-4051), [GitHub](https://github.com/bfjarvis), or reach out by [e-mail](mailto:benjamin.jarvis@liu.se).
+:::
+
+## Works in Progress
+
+::: {.publication-list}
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Working Paper / Preprint
+:::
+
+### The Ethnic Reputations of Neighborhoods: A Study of Mainstream and Social Media Discourse in Sweden
+
+::: {.content-card-byline}
+Miriam Hurtado Bodell, Benjamin Jarvis, and Selcan Mutgan
+:::
+
+::: {.content-card-description}
+This study introduces ethnic reputations—collectively constructed associations between specific neighborhoods and ethnic groups—as a distinct dimension of urban symbolic reality. These reputations circulate in public discourse and may guide the race- and ethnicity-based heuristics people use to evaluate places, serving as potential mediators in segregation processes. A key question is whether ethnic reputations correspond to the demographic realities of neighborhoods. We answer this question by applying computational methods to a combination of textual and demographic data. We use word embeddings models to extract ethnic reputation scores for ethnic groups and neighborhoods in Stockholm from articles in Sweden's largest newspaper and posts in its largest online discussion forum between 2010 and 2017. We link these to demographic data from the Swedish population registers, enabling comparisons of ethnic reputations to demographic reality across media environments. We find that ethnic reputations appear in both media environments and follow similar patterns: reputations tend to be stronger for groups perceived as more culturally distant from the Swedish majority, especially in neighborhoods with larger minority populations. However, reputations in social media are more consistent across neighborhoods, groups, and over time compared to mainstream media.  These results show that media discourses contain ethnicized representations of urban space that are accessible to a wider public and only partially reflect demographic realities.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[SocArXiv](https://doi.org/10.31235/osf.io/4x93e_v1)
+:::
+:::
+
+:::
+:::
+
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Working Paper / Preprint
+:::
+
+### However Far Away? The Spatial Contingencies of Assortative Mating
+
+::: {.content-card-byline}
+Jesper Lindmarker and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This study reconsiders a classic sociological question: how does space shape intimate ties? Specifically, it examines how the spatial segregation of ethnic groups contributes to patterns of ethnic endogamy. It does so by applying conditional logit models to Swedish population registers describing couples who began cohabiting between 1990 and 2017. The models compare observed unions to counterfactual unions drawn from available singles, distinguishing the effects of ancestry assortativity---based on country of origin---from residential propinquity, while controlling for matching on nativity, education, and age. Proximity strongly predicts partnering, but assortativity matters too, particularly for non-Western groups. Mediation analysis shows that failing to account for propinquity overstates endogamy by 20–40 percent for these groups, with stronger mediation for the most segregated groups. The findings suggest that segregation complements ethnic boundaries in the short term, but also suggest how integration may undermine group boundaries in the longer term.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[SocArXiv](https://doi.org/10.31235/osf.io/4tq8z_v1)
+:::
+:::
+
+:::
+:::
+
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2024 • Working Paper / Preprint
+:::
+
+### Ethnic Preferences in Action? A Discrete Choice Analysis of Apartment Rental Applications
+
+::: {.content-card-byline}
+Benjamin F. Jarvis, Maël Lecoursonnais, and Guilherme Kenji Chihaya
+:::
+
+:::
+:::
+:::
+
+[See more works in progress](publications.qmd#works-in-progress)
+
+## Selected Publications
+
+::: {.publication-list}
+::: {.content-card .publication-card .publication-item .has-media}
+::: {.content-card-media .publication-media}
+![Book cover for Edward Elgar's Handbook of Computational Social Science.](assets/publications/css_handbook_elgar.jpg)
+:::
+
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Book Chapter
+:::
+
+### On the intersection of analytical sociology and computational social science
+
+::: {.content-card-byline}
+Martin Arvidsson, Peter Hedström, Benjamin F. Jarvis, and Marc Keuschnigg
+:::
+
+::: {.content-card-description}
+Analytical sociology is concerned with mechanism-based explanations of collective phenomena in socially interdependent systems. Social interdependencies make identifying the processes that generate collective outcomes a challenging task, however, and their study typically requires research designs that differ from those traditionally used by sociologists. The availability of time-stamped networked datasets, the rapid progress in computational power, and the development of new methodological tools in the field of computational social science have enabled detailed analyses of large populations of interacting individuals in different social environments. This has in turn opened the door to detailed, empirically grounded investigations of the microlevel dynamics that give rise to macrolevel phenomena. These advances are important because they help close the gap between theoretical and empirical work in sociology in ways that should be instructive for the field of computational social science.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[Handbook of Computational Social Science](https://doi.org/10.4337/9781802207309.00011)
+:::
+:::
+
+:::
+:::
+
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Journal Article
+:::
+
+### Kin Propinquity, Residential Mobility, and the Persistence of Segregation
+
+::: {.content-card-byline}
+Benjamin F. Jarvis, Guilherme Kenji Chihaya, and Eduardo Tapia
+:::
+
+::: {.content-card-description}
+This article presents an analysis of the relationship between kin propinquity, residential mobility, and the persistence of segregation among ancestry groups living in Stockholm, Sweden. Residential segregation between Swedish and non-Swedish ancestry groups is established when immigrants first settle in Stockholm, which creates disparities in the spatial distribution of kin for the children of immigrants compared with their Swedish counterparts. Using agent-based models, we show how preferences to live near kin are sufficient to maintain existing segregation but are not sufficient to generate it. We then apply discrete choice models of residential mobility to longitudinal residential history data from Swedish population registers to estimate the effects of kin on the neighborhood choices of movers, ages 18‒30, during the 1998‒2017 period. We find that people are more likely to move to neighborhoods that are near to kin, net of controls for sorting by ancestry, socioeconomic status, and life course characteristics. Counterfactual simulations of residential mobility show that kin propinquity contributes to higher levels of segregation between Swedish and non-Swedish ancestry groups. These effects are larger for groups already experiencing high levels of segregation from the Swedish majority. We situate these findings in the emerging literature on social structural sorting.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[Demography](https://doi.org/10.1215/00703370-12347377)
+:::
+:::
+
+:::
+:::
+
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Journal Article
+:::
+
+### The effect of school peers on residential mobility in young adulthood: evidence from Sweden
+
+::: {.content-card-byline}
+Laura Fürsich and Benjamin F Jarvis
+:::
+
+::: {.content-card-description}
+There is increasing evidence that social networks matter not only for long-distance moves but also for short-distance residential mobility. And the emerging structural sorting perspective is integrating networks into understandings of segregation processes. We add to this literature by considering how former school peers influence residential choices. We use Swedish register data describing the residential histories of cohorts of students who attended the same primary or secondary schools in Sweden. We trace their residential choices in young adulthood and estimate the effect of distance to peers on these choices. To account for selection, we use the spatial configuration of older cohorts who attended the same schools to adjust for peer similarity on unobserved preferences and attitudes. Using conditional logistic regression models of residential destinations, we find that individuals are more likely to choose a neighbourhood close to former school peers. Drawing on a linked lives perspective, we also consider how the peer effects change over the early adult life-course. The models imply that other networks can displace the social influence of primary and secondary school peers. While our analysis does not consider segregation as an outcome, our results suggest that schools may play a role in reproducing patterns of segregation within and between generations.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[European Sociological Review](https://doi.org/10.1093/esr/jcaf002)
+:::
+:::
+
+:::
+:::
+
+::: {.content-card .publication-card .publication-item}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Journal Article
+:::
+
+### Exogamy, Proximity to Parents, and the Residential Choices of 1.5- and Second-Generation Immigrants in Sweden
+
+::: {.content-card-byline}
+Benjamin F. Jarvis and Jenjira J. Yahirun
+:::
+
+::: {.content-card-description}
+Living near kin facilitates intergenerational support, which may be especially important for immigrant families. For 1.5- and second-generation immigrants, this creates a tension between residential integration and family obligations. This tension can grow when forming a union, particularly with a nonimmigrant. Yet little is known about how residential moves for partnered immigrants shape and are shaped by proximity to parents. Using Swedish register data from 1990 to 2017, we examine the settlement patterns and residential choices of (1) endogamous immigrant couples where partners have the same national background, (2) exogamous couples featuring one immigrant and one nonimmigrant partner, and (3) endogamous unions with two nonimmigrant Swedish partners. Descriptive statistics show that endogamous immigrants are most likely to be living near their parents, followed by exogamous immigrants, and then endogamous and exogamous Swedes. However, discrete choice models of residential mobility behaviors, which account for the spatial distribution of housing, reveal that all groups are more likely to locate nearer to parents, with only modest differences between them. Across model specifications, the effect of distance to parents for immigrants in exogamous unions is slightly, but consistently, weaker than for their partners or counterparts in other kinds of unions. These findings suggest weaker attachments between exogamous immigrants and their parents, while also underscoring how group differences in proximity to family reflect the uneven geographic distributions of housing and immigrant families in Sweden.
+:::
+
+::: {.content-card-detail .publication-footer}
+::: {.publication-links}
+[Population, Space and Place](https://doi.org/10.1002/psp.70117)
+:::
+:::
+
+:::
+:::
+:::
+
+[See more publications](publications.qmd)
+
+## Projects
+
+::: {.grant-list}
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Ongoing • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### Understanding Social Boundaries through Partner Choice: The Role of Residential Segregation
+
+::: {.content-card-byline}
+Siddartha Aradhya (PI), Jesper Lindmarker, Benjamin F. Jarvis, Carl Nordlund, and Sarah Valdez
+:::
+
+::: {.content-card-description}
+Despite decades of immigration, many ethnic groups in Sweden remain socially and spatially separated. Rising diversity has not guaranteed rising integration—particularly between migrant-origin groups. This 3-year project investigates how segregation shapes social boundaries by studying patterns of partner choice.
+
+Romantic unions are powerful indicators of group relations: they reflect whether ethnic boundaries are weakening or holding firm, and are deeply shaped by the segregated contexts in which people live. Yet most research frames ethnic boundaries either as a binary between natives and immigrants, or as a question of in-group versus out-group partnering—rarely examining how immigrant-origin groups relate to each other.
+
+Using Swedish register data from 1991 to 2022, combined with high-resolution geographic information, we model how residential segregation and group composition structure the partner market. Through discrete choice models and counterfactual simulations, we estimate the strength of social boundaries between specific groups, distinguishing structural constraints from active social preferences.
+
+By revealing where boundaries persist even when people live nearby—and where they dissolve despite segregation—this project offers a timely, detailed understanding of how segregation and social distance are linked. As spatial and social divisions continue to shape life chances, understanding intergroup relations is critical for building an inclusive society.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2025-04468, Budget: 5,045,000 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2023 • Ongoing • Vetenskapsrådet • Research Environment - Segregation
+:::
+
+### Neighborhood and school segregation across educational careers: patterns, processes, and implications for educational inequality
+
+::: {.content-card-byline}
+Benjamin F. Jarvis (PI), Adel Daoud, Elizabeth E. Bruch, Maria Brandén, Miriah Meyer, Peter Hedström, Martin Arvidsson, Selcan Mutgan, Eduardo Tapia, Erik Rosenqvist, and Laura Fürsich
+:::
+
+::: {.content-card-description}
+The purpose of this research environment is to explain how the dynamics of residential and school segregation shape ethnic and socioeconomic inequalities in academic outcomes, and suggest policy remedies. Despite extensive research on the causes and consequences of segregation, we still have surprisingly little knowledge about how the two fit together. This is partly due to complex relationships between them. When parents choose a place to live and send their children to school, it is both influenced by and influences the composition of schools and neighborhoods. These compositions can affect short-term achievements among students, which guide subsequent educational choices and shape academic outcomes. This interplay means that structural interventions in school and housing policies–changes in the quantity, quality, and spatial distribution of schools and housing, as well as the rules governing access to them–can lead to sudden compositional shifts and unintended consequences. To address these complexities, we form an interdisciplinary team with unique methodological, substantive, and theoretical expertise. We use Swedish register data to estimate state-of-the-art models of residential and school choices and causal models of school and neighborhood effects. We integrate our findings into generative simulations and novel visualizations of segregation processes, using these to vet potential policy interventions that we theorize will reduce segregation and inequality.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2023-00933, Budget: 17,765,500 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2022 • Ongoing • Vetenskapsrådet • Research Project - Segregation
+:::
+
+### The Role of Media in School and Neighborhood Reputation Formation, and its Effect on School and Residential Segregation
+
+::: {.content-card-byline}
+Maria Brandén (PI), Eduardo Tapia, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+Previous studies suggest that individuals’ subjective perception of the reputation of schools and residential areas influences their decisions about where to live and which school to attend. We however know little about the nature of those reputations, how they come about, and how they eventually might impact the segregation of schools and neighborhoods. This project extends previous work by providing a holistic perspective of how the school-neighborhood portrayals in newspapers and online platforms affect the patterns of school and residential segregation.
+
+The first stage of the project will focus on evaluating the reputation itself. Using data from digital social-media sites and the Swedish newspapers, we will measure school and neighborhood reputations in Stockholm city. Then, we will analyze which characteristics of the schools and neighborhoods contribute to shaping their reputations and whether those are results of media bias. The second stage will evaluate the effect of reputation on segregation patterns. Using Swedish register data on residential mobility and education, we will assess how reputation influences the neighborhood and school choices across different ethnic and socioeconomic groups. Lastly, we will implement a simulation platform to assess the cumulative effect of reputation on segregation and gauge the potential impact of integrative policy initiatives based on changing schools and neighborhood portrayal in the media.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2022-05251, Budget: 5,094,136 SEK
+:::
+
+:::
+:::
+
+::: {.content-card .project-card .grant-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2022 • Ongoing • Vetenskapsrådet • Research Project - Humanities and Social Sciences
+:::
+
+### How do perceptions of the city inform neighbourhood selection and housing search? A comparison of second generation migrants and natives in Stockholm
+
+::: {.content-card-byline}
+Louisa Vogiazides (PI), Guilherme Kenjy Chihaya Da Silva, Sara Forsberg, and Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+This project examines whether and how ethnic differences in neighborhood awareness and preconceptions perpetuate segregation by shaping the housing search behaviors of immigrants and natives in Uppsala. It uses a survey including a Discrete Choice Experiment, apartment search data, register data, and qualitative interviews.
+
+Segregation is often viewed as stemming from socioeconomic inequality, housing discrimination, and ethnic preferences. Yet, despite the slow moderation of prejudices, improvements in minority socioeconomic standing, and the enactment of anti-discrimination laws, residential segregation between different ethnic groups remains high.
+
+The emerging social structural sorting perspective attempts to explain the surprising durability of segregation, while complementing existing understandings of segregation processes. It builds on evidence that people not only lack complete knowledge of their residential options, but also that the knowledge they have is shaped by their ethnically segregated lived experiences and social networks. This leads people to exclude, in ethnically stratified ways, whole sections of cities from consideration before housing search begins, contributing to a self-perpetuating cycle of segregation.
+
+This project engages with the forefront of segregation research through one of the most comprehensive empirical examinations of social structural sorting to date. It will contribute with useful insights to tackle segregation and inequality in the city.
+:::
+
+::: {.content-card-detail .grant-number-budget}
+Project Number: 2022-05205, Budget: 6,721,356 SEK
+:::
+
+:::
+:::
+:::
+
+[See more projects](projects.qmd)
+
+## Teaching
+
+::: {.teaching-list}
+::: {.content-card .teaching-card .teaching-course #709a07}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Master's Programme in Strategic Urban and Regional Planning
+:::
+
+### Research Methods in Strategic Urban and Regional Planning
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+The course introduces research methods and design of research projects relevant to strategic urban and regional planning. The course discusses central qualitative and quantitative methods used in the field and how these methods are designed, developed, presented and implemented in research and practice. In the course, scientific texts and the scientific discourse are studied and problematised by reviewing scientific publications and research reports in strategic urban and regional planning. Research ethics and good research practices are addressed and discussed. The course also covers the research process, how a scientific paper is written and how research results are presented.
+:::
+
+::: {.content-card-detail .teaching-link}
+[https://studieinfo.liu.se/en/kurs/709A07/vt-2025](https://studieinfo.liu.se/en/kurs/709A07/vt-2025)
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #f7mcd}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • Master's Programme in Computational Social Science
+:::
+
+### Master's Programme in Computational Social Science
+
+::: {.content-card-byline}
+Program Director • Linköping University
+:::
+
+::: {.content-card-description}
+The Master’s Programme in Computational Social Science (CSS) is a second-cycle programme that leads to a Degree of Master of Science in Computational Social Science. During the programme, students train to apply computational methods to analyse large, complex datasets related to human social behaviour, and to arrive at theoretically and empirically grounded explanations of social outcomes such as ethnic segregation in schools, income inequality, firm growth and survival, political change and cultural diffusion.  In the process, students are inducted into multidisciplinary domains of research in the social sciences that connect sociology, political science, economics, management science, and related disciplines with technical innovations in mathematics, statistics, and computer science.
+:::
+
+:::
+:::
+
+::: {.content-card .teaching-card .teaching-course #771a27}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2025 • Master's Programme in Computational Social Science
+:::
+
+### Inequality and Segregation: Theory and Measurement
+
+::: {.content-card-byline}
+Guest Lecturer • Linköping University
+:::
+
+::: {.content-card-description}
+This course engages with classical and contemporary research on inequality and segregation. The first part of the course explores the concepts and principles of segregation and inequality measurement. Issues related to comparisons across places and times are discussed. During computer laboratories, measures of inequality and segregation are calculated using empirical data and compared. The second part of the course reviews, evaluates, and synthesizes theories positing generative mechanisms underpinning segregation and inequality dynamics. Finally, the connection between inequality and segregation is explored. Special attention is paid to computational methods and their explanatory role in segregation and inequality research.
+:::
+
+:::
+:::
+:::
+
+[See more teaching](teaching.qmd)
+
+## Blog
+
+::: {.post-list}
+::: {.content-card .post-card .compact-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • matching, loglinear models, conditional logit
+:::
+
+### [Conditional Logit and Loglinear Models on Toy Matching Data](blog/clogit-vs-loglinear/)
+
+::: {.content-card-byline}
+Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+A small worked example comparing conditional logit and loglinear formulations for the same toy contingency table.
+:::
+
+:::
+:::
+
+::: {.content-card .post-card .compact-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • segregation, reproducible analysis, quarto
+:::
+
+### [Example Segregation Note](blog/example-segregation-note/)
+
+::: {.content-card-byline}
+Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation.
+:::
+
+:::
+:::
+:::
+
+[See more blog posts](blog/index.qmd)
