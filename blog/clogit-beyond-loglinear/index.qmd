@@ -1,0 +1,82 @@
+---
+title: "What Conditional Logit Can Use That a Group Table Cannot"
+description: "The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis."
+date: "2026-07-17"
+author: "Benjamin F. Jarvis"
+categories:
+  - "conditional logit"
+  - "loglinear models"
+  - "assortative mating"
+toc: true
+toc-location: right
+---
+
+## Beyond the Group Table
+
+A conventional group-by-group table is useful, but it is also intentionally compressed. Once the data have been reduced to group counts, information about age gaps, spatial distance, and individual attractiveness is no longer available.
+
+The conditional-logit representation can keep those pair-level covariates because the rows are possible partners, not only table cells.
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+source("../_matching-simulation.R")
+library(survival)
+
+market <- simulate_actors_and_locations(seed = 543)
+partner_market <- match_partners(market$men, market$women)
+choice_sets <- make_choice_sets(market$men, market$women, partner_market$matched_pairs)
+```
+
+## A Richer Choice Model
+
+```{r}
+#| label: rich-clogit
+
+group_only <- clogit(
+  choice ~ same_group + factor(candidate_group) + strata(chooser_id),
+  data = choice_sets
+)
+
+with_pair_covariates <- clogit(
+  choice ~ same_group + age_gap + log(distance + 0.01) + factor(candidate_group) + strata(chooser_id),
+  data = choice_sets
+)
+
+rbind(
+  group_only = AIC(group_only),
+  with_pair_covariates = AIC(with_pair_covariates)
+)
+```
+
+```{r}
+#| label: rich-coefficients
+
+summary(with_pair_covariates)$coefficients
+```
+
+The richer model uses the same matched outcome, but it asks a more detailed question. Are same-group partners more likely to be chosen net of age gaps and geographic distance? That question is difficult to pose once the data have been collapsed to a group table.
+
+## What the Loglinear Table Misses
+
+The loglinear model can be extended by adding more dimensions to the table, but doing so quickly creates sparse cells. Age gaps and distances are continuous. Turning them into table dimensions requires binning, and each bin multiplies the number of cells.
+
+This is one reason the conditional-logit representation can be attractive. It keeps the pair-level structure while preserving the choice-set interpretation.
+
+```{r}
+#| label: observed-choice-covariates
+
+choice_sets |>
+  group_by(choice) |>
+  summarize(
+    mean_same_group = mean(same_group),
+    mean_age_gap = mean(age_gap),
+    mean_distance = mean(distance),
+    .groups = "drop"
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
+
+The next question is more delicate: even if the conditional logit uses more of the data, does it represent the underlying two-sided matching process that generated the matches?

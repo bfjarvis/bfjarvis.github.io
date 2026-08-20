@@ -396,17 +396,17 @@ This course engages with classical and contemporary research on inequality and s
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
-2026 • matching, loglinear models, conditional logit
+2026 • assortative mating, simulation, spatial models
 :::
 
-### [Conditional Logit and Loglinear Models on Toy Matching Data](blog/clogit-vs-loglinear/)
+### [Simulating Actors and Locations for a Matching Model](blog/actors-and-locations/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
 :::
 
 ::: {.content-card-description}
-A small worked example comparing conditional logit and loglinear formulations for the same toy contingency table.
+The first note in a small series: create actors, quasi-random locations, group attractors, and a utility-based residential assignment.
 :::
 
 :::
@@ -416,17 +416,37 @@ A small worked example comparing conditional logit and loglinear formulations fo
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
-2026 • segregation, reproducible analysis, quarto
+2026 • conditional logit, loglinear models, assortative mating
 :::
 
-### [Example Segregation Note](blog/example-segregation-note/)
+### [What Conditional Logit Can Use That a Group Table Cannot](blog/clogit-beyond-loglinear/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
 :::
 
 ::: {.content-card-description}
-A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation.
+The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis.
+:::
+
+:::
+:::
+
+::: {.content-card .post-card .compact-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
+2026 • conditional logit, matching, assortative mating
+:::
+
+### [Does Conditional Logit Represent a Two-Sided Matching Process?](blog/clogit-two-sided-process/)
+
+::: {.content-card-byline}
+Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+The fifth note in the series: revisit what a one-sided choice model can and cannot recover from a two-sided stable matching process.
 :::
 
 :::

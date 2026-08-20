@@ -11,6 +11,9 @@ project:
     - assets/
     - cv/Benjamin-F-Jarvis-CV.pdf
 
+execute:
+  freeze: auto
+
 website:
   title: "Benjamin F. Jarvis"
   site-url: "https://bfjarvis.github.io"

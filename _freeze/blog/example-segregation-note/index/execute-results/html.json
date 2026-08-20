@@ -1,0 +1,15 @@
+{
+  "hash": "9ca1913616d48ccacdab1d75e1fd58d1",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Example Segregation Note\"\ndescription: \"A compact Quarto note showing the structure for a research note that combines prose, R code, output, and interpretation.\"\ndate: \"2026-06-27\"\nauthor: \"Benjamin F. Jarvis\"\ncategories:\n  - \"segregation\"\n  - \"reproducible analysis\"\n  - \"quarto\"\ntoc: true\ntoc-location: right\n---\n\n\n\n## Question\n\nThis starter blog note shows the publication pattern for short empirical notes. A real blog post should begin with a substantive question about segregation, mobility, or stratification, then keep the statistical machinery close enough for readers to audit.\n\n## Data and Measurement\n\nUse this section to state the data source, unit of analysis, population, time period, and measurement choices. For spatial work, name the scale because the same empirical pattern can look different across neighborhoods, municipalities, commuting zones, or schools.\n\n## Analysis\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(42)\nplaces <- data.frame(\n  place = paste(\"Area\", 1:12),\n  exposure = runif(12, 0.15, 0.75),\n  mobility = runif(12, 0.2, 0.9)\n)\n\nmodel <- lm(mobility ~ exposure, data = places)\nsummary(model)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n\nCall:\nlm(formula = mobility ~ exposure, data = places)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-0.36111 -0.17365  0.08604  0.18960  0.26282 \n\nCoefficients:\n            Estimate Std. Error t value Pr(>|t|)  \n(Intercept)   0.5470     0.2846   1.922   0.0836 .\nexposure      0.1941     0.5222   0.372   0.7179  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.252 on 10 degrees of freedom\nMultiple R-squared:  0.01363,\tAdjusted R-squared:  -0.08501 \nF-statistic: 0.1382 on 1 and 10 DF,  p-value: 0.7179\n```\n\n\n:::\n:::\n\n\n\n## Interpretation\n\nThe prose should do more than repeat the table. Explain what comparison is being made, what uncertainty remains, and which interpretation is justified by the design.\n\n## Sensitivity\n\nGood candidates for sensitivity checks include alternate spatial scales, different definitions of exposure, influential places, and changes in model specification.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

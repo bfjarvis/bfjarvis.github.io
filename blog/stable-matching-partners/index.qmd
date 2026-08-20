@@ -1,0 +1,144 @@
+---
+title: "Assigning Partners With Gale-Shapley Matching"
+description: "The second note in the series: construct two-sided partner utilities and use Gale-Shapley matching to create stable pairs."
+date: "2026-07-17"
+author: "Benjamin F. Jarvis"
+categories:
+  - "assortative mating"
+  - "matching"
+  - "simulation"
+toc: true
+toc-location: right
+---
+
+## From Actors to Preferences
+
+The previous note created actors and locations. This note turns those actors into a two-sided matching market. Men and women evaluate potential partners using the same broad ingredients: group membership, age gap, geographic distance, and a person-specific attractiveness component.
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+source("../_matching-simulation.R")
+
+market <- simulate_actors_and_locations(seed = 543)
+men <- market$men
+women <- market$women
+partner_market <- match_partners(men, women)
+matched_pairs <- partner_market$matched_pairs
+```
+
+## Partner Utility
+
+The utility construction is deliberately simple. A potential partner is more attractive when they are from the same group, closer in age, closer in space, and higher on an individual attractiveness term. The attractiveness term is observed by actors in the simulation, but it is useful to think of it as partly unobserved from the analyst's point of view.
+
+```{r}
+#| label: preference-weights
+
+tibble(
+  component = names(preference_weights),
+  weight = unlist(preference_weights)
+)
+```
+
+```{r}
+#| label: utility-components
+
+partner_market$men_to_women |>
+  transmute(
+    same_group = preference_weights$same_group * as.numeric(same_group),
+    age_gap = preference_weights$age_gap * age_gap,
+    distance = preference_weights$distance * log(distance + 0.01),
+    attractiveness = preference_weights$attractiveness * candidate_attractiveness
+  ) |>
+  pivot_longer(everything(), names_to = "component", values_to = "value") |>
+  group_by(component) |>
+  summarize(sd = sd(value), .groups = "drop") |>
+  arrange(desc(sd))
+```
+
+## Gale-Shapley Matching
+
+The simulation uses `matchingR::galeShapley.marriageMarket()`. Men propose in this version. Women rank potential male partners and may trade up as proposals arrive. The algorithm ends when no proposer can improve by continuing to propose.
+
+One informal way to read the algorithm is:
+
+1. Each man proposes to his highest-ranked woman who has not yet rejected him.
+2. Each woman provisionally keeps her favorite proposal so far.
+3. Rejected men propose again.
+4. The process stops when no man remains unmatched and able to propose.
+
+The resulting matching is stable in the Gale-Shapley sense.
+
+```{r}
+#| label: matching-check
+
+tibble(
+  men = n_distinct(partner_market$matches$man_id),
+  women = n_distinct(partner_market$matches$woman_id),
+  matches = nrow(partner_market$matches),
+  stable = galeShapley.checkStability(
+    partner_market$male_utilities,
+    partner_market$female_utilities,
+    partner_market$matching$proposals,
+    partner_market$matching$engagements
+  )
+)
+```
+
+## What Matching Changes
+
+The matched pairs are much more similar than all possible man-woman pairs. This is partly because people prefer similar and nearby partners, and partly because two-sided competition determines who is actually available to whom.
+
+```{r}
+#| label: matched-summary
+
+matched_pairs |>
+  select(same_group, age_gap, distance) |>
+  summary()
+```
+
+```{r}
+#| label: allpair-summary
+
+all_possible_pairs(men, women) |>
+  select(same_group, age_gap, distance) |>
+  summary()
+```
+
+```{r}
+#| label: group-table
+
+matched_pairs |>
+  count(man_group, woman_group) |>
+  pivot_wider(names_from = woman_group, values_from = n, values_fill = 0)
+```
+
+```{r}
+#| label: match-plot
+#| fig-cap: "Matched pairs in geographic space. Lines connect partners after Gale-Shapley matching."
+#| fig-width: 6.5
+#| fig-height: 5.8
+
+ggplot() +
+  geom_segment(
+    data = matched_pairs,
+    aes(x = man_x, y = man_y, xend = woman_x, yend = woman_y),
+    color = "#555c60",
+    alpha = 0.18,
+    linewidth = 0.35
+  ) +
+  geom_point(
+    data = market$singles,
+    aes(x, y, color = group, shape = sex),
+    alpha = 0.72,
+    size = 1.8
+  ) +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+  scale_color_manual(values = group_colors) +
+  labs(x = "Spatial coordinate x", y = "Spatial coordinate y", color = "Group", shape = "Sex") +
+  theme_void(base_size = 12)
+```
+
+The next note starts from the matched pairs and asks a more statistical question: how do conditional-logit and loglinear models describe the group-level association pattern?
