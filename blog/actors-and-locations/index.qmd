@@ -11,7 +11,7 @@ toc: true
 toc-location: right
 ---
 
-# Intro: Conditional logit models for assortative mating research
+## Intro: Conditional logit models for assortative mating research
 
 There's a been a trend in assortative mating research, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on Daniel McFadden's multinomial logit model.^[Confusingly, this is also referred to as the conditional logistic regression model. This model actually nests what sociologists and political scientists often refer as multinomial logistic regression.]. Examples include the work of Karen Haandrikman^[Haandrikman, K., & van Wissen, L. J. G. (2012). Explaining the Flight of Cupid’s Arrow: A Spatial Random Utility Model of Partner Choice. European Journal of Population, 28(4), 417–439.], Aaron Gullickson^[Gullickson, A. (2021). A counterfactual choice approach to the study of partner selection. Demographic Research, 44, 513–536. https://doi.org/10.4054/DemRes.2021.44.22], and my colleague and student, Jesper Lindmarker^[Lindmarker, J., & Jarvis, B. F. (2025). However Far Away? The Spatial Contingencies of Assortative Mating (4tq8z_v1). SocArXiv. https://doi.org/10.31235/osf.io/4tq8z_v1]. 
 
@@ -23,11 +23,11 @@ So, this research note. My goal is to demonstrate, yet again, the equivalence be
 
 This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I'll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the ``deeper'' parameters that actually drive union formation in the simulated data.
 
-# Building a simulated marriage market
+## Building a simulated marriage market
 
 The marriage market we will work with will be characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.
 
-# Positions
+## Positions
 
 My goal is to create a semi-regular grid of what might be construed as housing units for actors to occupy. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn't look "right" to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced that pseudo-random numbers, which feels right for this fictive quasi-geographic set-up.
 
@@ -82,7 +82,7 @@ make_positions <- function(n) {
 }
 ```
 
-# Actors
+## Actors
 
 For the actors, I assume they are split into two gendered groups, men and women, with sebsequent unions constituted by opposite gendered pairs. I'll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. I stipulate that each partner is characterized by just handful of attributes. First, there will be a group membership, proxying something like race or ethnicity, I'll just use primary colors for the different groups. There will also be age, with the possibility of differences in ages between groups. 
 
