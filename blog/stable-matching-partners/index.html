@@ -8,9 +8,9 @@
 
 <meta name="author" content="Benjamin F. Jarvis">
 <meta name="dcterms.date" content="2026-07-17">
-<meta name="description" content="The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates.">
+<meta name="description" content="The second note in the series: construct two-sided partner utilities and use Gale-Shapley matching to create stable pairs.">
 
-<title>Conditional Logit and Loglinear Models for Group-Level Assortative Mating – Benjamin F. Jarvis</title>
+<title>Assigning Partners With Gale-Shapley Matching – Benjamin F. Jarvis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -162,12 +162,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#same-matches-two-representations" id="toc-same-matches-two-representations" class="nav-link active" data-scroll-target="#same-matches-two-representations">Same Matches, Two Representations</a></li>
-  <li><a href="#the-group-table" id="toc-the-group-table" class="nav-link" data-scroll-target="#the-group-table">The Group Table</a></li>
-  <li><a href="#conditional-logit" id="toc-conditional-logit" class="nav-link" data-scroll-target="#conditional-logit">Conditional Logit</a></li>
-  <li><a href="#loglinear-model" id="toc-loglinear-model" class="nav-link" data-scroll-target="#loglinear-model">Loglinear Model</a></li>
-  <li><a href="#predicted-group-counts" id="toc-predicted-group-counts" class="nav-link" data-scroll-target="#predicted-group-counts">Predicted Group Counts</a></li>
-  <li><a href="#what-this-comparison-does-not-yet-use" id="toc-what-this-comparison-does-not-yet-use" class="nav-link" data-scroll-target="#what-this-comparison-does-not-yet-use">What This Comparison Does Not Yet Use</a></li>
+  <li><a href="#from-actors-to-preferences" id="toc-from-actors-to-preferences" class="nav-link active" data-scroll-target="#from-actors-to-preferences">From Actors to Preferences</a></li>
+  <li><a href="#partner-utility" id="toc-partner-utility" class="nav-link" data-scroll-target="#partner-utility">Partner Utility</a></li>
+  <li><a href="#gale-shapley-matching" id="toc-gale-shapley-matching" class="nav-link" data-scroll-target="#gale-shapley-matching">Gale-Shapley Matching</a></li>
+  <li><a href="#what-matching-changes" id="toc-what-matching-changes" class="nav-link" data-scroll-target="#what-matching-changes">What Matching Changes</a></li>
   </ul>
 </nav>
     </div>
@@ -176,18 +174,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Conditional Logit and Loglinear Models for Group-Level Assortative Mating</h1>
+<h1 class="title">Assigning Partners With Gale-Shapley Matching</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">matching</div>
-    <div class="quarto-category">conditional logit</div>
-    <div class="quarto-category">loglinear models</div>
     <div class="quarto-category">assortative mating</div>
+    <div class="quarto-category">matching</div>
+    <div class="quarto-category">simulation</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates.
+    The second note in the series: construct two-sided partner utilities and use Gale-Shapley matching to create stable pairs.
   </div>
 </div>
 
@@ -216,139 +213,165 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="same-matches-two-representations" class="level2">
-<h2 data-anchor-id="same-matches-two-representations">Same Matches, Two Representations</h2>
-<p>The first two notes created a synthetic population and then used a two-sided matching process to assign partners. This note starts from the resulting matches and compares two ways of describing the group-level pattern.</p>
-<p>The conditional-logit representation treats each matched man as choosing among possible women. The loglinear representation treats the observed matches as counts in a table. To keep the comparison focused, this note uses only group-level covariates.</p>
+<section id="from-actors-to-preferences" class="level2">
+<h2 data-anchor-id="from-actors-to-preferences">From Actors to Preferences</h2>
+<p>The previous note created actors and locations. This note turns those actors into a two-sided matching market. Men and women evaluate potential partners using the same broad ingredients: group membership, age gap, geographic distance, and a person-specific attractiveness component.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"../_matching-simulation.R"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">simulate_actors_and_locations</span>(<span class="at">seed =</span> <span class="dv">543</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>partner_market <span class="ot">&lt;-</span> <span class="fu">match_partners</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>matched_pairs <span class="ot">&lt;-</span> partner_market<span class="sc">$</span>matched_pairs</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>choice_sets <span class="ot">&lt;-</span> <span class="fu">make_choice_sets</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women, matched_pairs)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>group_counts <span class="ot">&lt;-</span> <span class="fu">group_pair_counts</span>(matched_pairs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>men <span class="ot">&lt;-</span> market<span class="sc">$</span>men</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>women <span class="ot">&lt;-</span> market<span class="sc">$</span>women</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>partner_market <span class="ot">&lt;-</span> <span class="fu">match_partners</span>(men, women)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>matched_pairs <span class="ot">&lt;-</span> partner_market<span class="sc">$</span>matched_pairs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="the-group-table" class="level2">
-<h2 data-anchor-id="the-group-table">The Group Table</h2>
-<p>The observed group-pairing table is compact. It is also the natural object for a loglinear model.</p>
+<section id="partner-utility" class="level2">
+<h2 data-anchor-id="partner-utility">Partner Utility</h2>
+<p>The utility construction is deliberately simple. A potential partner is more attractive when they are from the same group, closer in age, closer in space, and higher on an individual attractiveness term. The attractiveness term is observed by actors in the simulation, but it is useful to think of it as partly unobserved from the analyst’s point of view.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>group_counts <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> woman_group, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">component =</span> <span class="fu">names</span>(preference_weights),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">unlist</span>(preference_weights)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  man_group same_group     a     b     c
-  &lt;chr&gt;          &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-1 a                  1    31     0     0
-2 a                  0     0    12     7
-3 b                  0    13     0     4
-4 b                  1     0    13     0
-5 c                  0     6     5     0
-6 c                  1     0     0     9</code></pre>
+<pre><code># A tibble: 5 × 2
+  component      weight
+  &lt;chr&gt;           &lt;dbl&gt;
+1 same_group        0.5
+2 age_gap          -0.1
+3 distance         -1  
+4 attractiveness    1  
+5 noise             2  </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(group_counts, <span class="fu">aes</span>(woman_group, man_group, <span class="at">fill =</span> n)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> n), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#9aa0a3"</span>, <span class="at">high =</span> <span class="st">"#c73535"</span>) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Woman's group"</span>, <span class="at">y =</span> <span class="st">"Man's group"</span>, <span class="at">fill =</span> <span class="st">"Matches"</span>) <span class="sc">+</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>partner_market<span class="sc">$</span>men_to_women <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_group =</span> preference_weights<span class="sc">$</span>same_group <span class="sc">*</span> <span class="fu">as.numeric</span>(same_group),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_gap =</span> preference_weights<span class="sc">$</span>age_gap <span class="sc">*</span> age_gap,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">distance =</span> preference_weights<span class="sc">$</span>distance <span class="sc">*</span> <span class="fu">log</span>(distance <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">attractiveness =</span> preference_weights<span class="sc">$</span>attractiveness <span class="sc">*</span> candidate_attractiveness</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"component"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(component) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">sd =</span> <span class="fu">sd</span>(value), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(sd))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  component         sd
+  &lt;chr&gt;          &lt;dbl&gt;
+1 distance       0.574
+2 age_gap        0.522
+3 attractiveness 0.358
+4 same_group     0.243</code></pre>
+</div>
+</div>
+</section>
+<section id="gale-shapley-matching" class="level2">
+<h2 data-anchor-id="gale-shapley-matching">Gale-Shapley Matching</h2>
+<p>The simulation uses <code>matchingR::galeShapley.marriageMarket()</code>. Men propose in this version. Women rank potential male partners and may trade up as proposals arrive. The algorithm ends when no proposer can improve by continuing to propose.</p>
+<p>One informal way to read the algorithm is:</p>
+<ol type="1">
+<li>Each man proposes to his highest-ranked woman who has not yet rejected him.</li>
+<li>Each woman provisionally keeps her favorite proposal so far.</li>
+<li>Rejected men propose again.</li>
+<li>The process stops when no man remains unmatched and able to propose.</li>
+</ol>
+<p>The resulting matching is stable in the Gale-Shapley sense.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">men =</span> <span class="fu">n_distinct</span>(partner_market<span class="sc">$</span>matches<span class="sc">$</span>man_id),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">women =</span> <span class="fu">n_distinct</span>(partner_market<span class="sc">$</span>matches<span class="sc">$</span>woman_id),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">matches =</span> <span class="fu">nrow</span>(partner_market<span class="sc">$</span>matches),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stable =</span> <span class="fu">galeShapley.checkStability</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    partner_market<span class="sc">$</span>male_utilities,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    partner_market<span class="sc">$</span>female_utilities,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    partner_market<span class="sc">$</span>matching<span class="sc">$</span>proposals,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    partner_market<span class="sc">$</span>matching<span class="sc">$</span>engagements</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+    men women matches stable
+  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;lgl&gt; 
+1   100   100     100 TRUE  </code></pre>
+</div>
+</div>
+</section>
+<section id="what-matching-changes" class="level2">
+<h2 data-anchor-id="what-matching-changes">What Matching Changes</h2>
+<p>The matched pairs are much more similar than all possible man-woman pairs. This is partly because people prefer similar and nearby partners, and partly because two-sided competition determines who is actually available to whom.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>matched_pairs <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(same_group, age_gap, distance) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   same_group      age_gap            distance      
+ Min.   :0.00   Min.   : 0.04811   Min.   :0.03495  
+ 1st Qu.:0.00   1st Qu.: 0.99378   1st Qu.:0.13796  
+ Median :1.00   Median : 2.62286   Median :0.23896  
+ Mean   :0.53   Mean   : 4.02566   Mean   :0.30212  
+ 3rd Qu.:1.00   3rd Qu.: 5.19851   3rd Qu.:0.41170  
+ Max.   :1.00   Max.   :21.44226   Max.   :0.88399  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all_possible_pairs</span>(men, women) <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(same_group, age_gap, distance) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   same_group      age_gap             distance      
+ Min.   :0.00   Min.   :2.982e-04   Min.   :0.02368  
+ 1st Qu.:0.00   1st Qu.:2.959e+00   1st Qu.:0.33148  
+ Median :0.00   Median :6.177e+00   Median :0.50874  
+ Mean   :0.38   Mean   :7.215e+00   Mean   :0.52105  
+ 3rd Qu.:1.00   3rd Qu.:1.074e+01   3rd Qu.:0.70416  
+ Max.   :1.00   Max.   :2.481e+01   Max.   :1.26079  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>matched_pairs <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(man_group, woman_group) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> woman_group, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  man_group     a     b     c
+  &lt;chr&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt;
+1 a            31    12     7
+2 b            13    13     4
+3 c             6     5     9</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> matched_pairs,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> man_x, <span class="at">y =</span> man_y, <span class="at">xend =</span> woman_x, <span class="at">yend =</span> woman_y),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#555c60"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.18</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.35</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> market<span class="sc">$</span>singles,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(x, y, <span class="at">color =</span> group, <span class="at">shape =</span> sex),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.72</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.8</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>, <span class="at">color =</span> <span class="st">"Group"</span>, <span class="at">shape =</span> <span class="st">"Sex"</span>) <span class="sc">+</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/group-heatmap-1.png" class="img-fluid figure-img" width="556"></p>
-<figcaption>Observed matched pairs by male and female group.</figcaption>
+<p><img src="index_files/figure-html/match-plot-1.png" class="img-fluid figure-img" width="624"></p>
+<figcaption>Matched pairs in geographic space. Lines connect partners after Gale-Shapley matching.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="conditional-logit" class="level2">
-<h2 data-anchor-id="conditional-logit">Conditional Logit</h2>
-<p>For the conditional-logit model, each man has a choice set containing all women. The model asks whether women from the same group are more likely to be selected, controlling for the availability of women in each candidate group.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>clogit_fit <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  choice <span class="sc">~</span> same_group <span class="sc">+</span> <span class="fu">factor</span>(candidate_group) <span class="sc">+</span> <span class="fu">strata</span>(chooser_id),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> choice_sets</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(clogit_fit)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                              coef exp(coef)  se(coef)         z    Pr(&gt;|z|)
-same_group               0.6798549  1.973591 0.2085784 3.2594684 0.001116212
-factor(candidate_group)b 0.1089737  1.115133 0.2409037 0.4523538 0.651014109
-factor(candidate_group)c 0.1778241  1.194615 0.2752827 0.6459691 0.518299394</code></pre>
-</div>
-</div>
-<p>The coefficient on <code>same_group</code> is the group-level assortative-mating term in this one-sided choice representation. It compares same-group alternatives with different-group alternatives within each man’s choice set.</p>
-</section>
-<section id="loglinear-model" class="level2">
-<h2 data-anchor-id="loglinear-model">Loglinear Model</h2>
-<p>The loglinear model works directly with the count table. A simple parallel specification controls the male and female group margins, then adds a same-group association term.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>loglinear_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  n <span class="sc">~</span> man_group <span class="sc">+</span> woman_group <span class="sc">+</span> same_group,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> poisson,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> group_counts</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(loglinear_fit)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>               Estimate Std. Error   z value     Pr(&gt;|z|)
-(Intercept)   2.7740243  0.2161093 12.836211 1.027829e-37
-man_groupb   -0.4018519  0.2409037 -1.668102 9.529557e-02
-man_groupc   -0.7384666  0.2752827 -2.682576 7.305759e-03
-woman_groupb -0.4018519  0.2409037 -1.668102 9.529557e-02
-woman_groupc -0.7384666  0.2752827 -2.682576 7.305759e-03
-same_group    0.6798549  0.2085784  3.259468 1.116212e-03</code></pre>
-</div>
-</div>
-<p>The loglinear same-group coefficient describes the association structure in the table. It is not literally the same estimand as the conditional-logit coefficient, because the two models condition on different things and treat the data differently. But the two estimates are describing a related pattern: same-group matching is more common than expected from group availability alone.</p>
-</section>
-<section id="predicted-group-counts" class="level2">
-<h2 data-anchor-id="predicted-group-counts">Predicted Group Counts</h2>
-<p>The two models can both be converted back to predicted group counts. For the conditional-logit model, fitted choice probabilities are summed over all men and women in the relevant group pairing. For the loglinear model, predicted counts come directly from the fitted Poisson means.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>clogit_pred <span class="ot">&lt;-</span> choice_sets <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">linear_predictor =</span> <span class="fu">predict</span>(clogit_fit, <span class="at">type =</span> <span class="st">"lp"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(chooser_id) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">probability =</span> <span class="fu">exp</span>(linear_predictor) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(linear_predictor))) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">man_group =</span> chooser_group, <span class="at">woman_group =</span> candidate_group) <span class="sc">|&gt;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">clogit =</span> <span class="fu">sum</span>(probability), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>loglinear_pred <span class="ot">&lt;-</span> group_counts <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loglinear =</span> <span class="fu">as.numeric</span>(<span class="fu">predict</span>(loglinear_fit, <span class="at">type =</span> <span class="st">"response"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(man_group, woman_group, loglinear)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>group_counts <span class="sc">|&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(man_group, woman_group, <span class="at">observed =</span> n) <span class="sc">|&gt;</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(clogit_pred, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"man_group"</span>, <span class="st">"woman_group"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(loglinear_pred, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"man_group"</span>, <span class="st">"woman_group"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(clogit, loglinear), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 5
-  man_group woman_group observed clogit loglinear
-  &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;dbl&gt;     &lt;dbl&gt;
-1 a         a                 31  31.6      31.6 
-2 a         b                 12  10.7      10.7 
-3 a         c                  7   7.66      7.66
-4 b         a                 13  10.7      10.7 
-5 b         b                 13  14.2      14.2 
-6 b         c                  4   5.12      5.12
-7 c         a                  6   7.66      7.66
-8 c         b                  5   5.12      5.12
-9 c         c                  9   7.22      7.22</code></pre>
-</div>
-</div>
-</section>
-<section id="what-this-comparison-does-not-yet-use" class="level2">
-<h2 data-anchor-id="what-this-comparison-does-not-yet-use">What This Comparison Does Not Yet Use</h2>
-<p>This first comparison deliberately ignores age, distance, and attractiveness. That keeps the bookkeeping visible, but it also discards much of what was built into the simulation. The next note asks what the conditional-logit representation can use once those individual-level and pair-level covariates are allowed into the model.</p>
+<p>The next note starts from the matched pairs and asks a more statistical question: how do conditional-logit and loglinear models describe the group-level association pattern?</p>
 
 
 </section>

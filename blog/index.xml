@@ -10,30 +10,36 @@
 <atom:link href="https://bfjarvis.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Academic website for Benjamin F. Jarvis: publications, projects, teaching, CV, and research notes.</description>
 <generator>quarto-1.6.42</generator>
-<lastBuildDate>Thu, 02 Jul 2026 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 16 Jul 2026 22:00:00 GMT</lastBuildDate>
 <item>
-  <title>Conditional Logit and Loglinear Models on Toy Matching Data</title>
+  <title>Discrete Choice Models for Assortative Mating, Part 1: Simulating Actors and Locations for a Matching Model</title>
   <dc:creator>Benjamin F. Jarvis</dc:creator>
-  <link>https://bfjarvis.github.io/blog/clogit-vs-loglinear/</link>
+  <link>https://bfjarvis.github.io/blog/actors-and-locations/</link>
   <description><![CDATA[ 
 
 
 
 
-<section id="question" class="level2">
-<h2 data-anchor-id="question">Question</h2>
-<p>How close are the conditional logit and loglinear views of a small matching table? This note starts from a toy table of pairings between three male categories and three female categories, then fits parallel models that describe the same pattern from two different directions.</p>
-<p>The goal is not to make a substantive claim from the toy data. The goal is to make the bookkeeping visible: counts in a contingency table can be represented as matched choices, and the model formulas then become easier to compare.</p>
+<section id="intro-conditional-logit-models-for-assortative-mating-research" class="level1">
+<h1>Intro: Conditional logit models for assortative mating research</h1>
+<p>There’s a been a trend in assortative mating research, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on Daniel McFadden’s multinomial logit model.<sup>1</sup>. Examples include the work of Karen Haandrikman<sup>2</sup>, Aaron Gullickson<sup>3</sup>, and my colleague and student, Jesper Lindmarker<sup>4</sup>.</p>
+<p>That the conditional logit model offers a more general formulation of the log-linear models that have been the “bread and butter” of mobility and assortative mating research has been known, but was not widely acknowledged or leveraged until relatively recently. John A. Logan showed as much in the 1980s<sup>5</sup>, as did Richard Breen in the 1990s<sup>6</sup>.</p>
+<p>That this tiny revolution in assortative mating research is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are more willing to play fast and loose with statistical methods that have descriptive utility, while not always being so concerned with identification and equilibrium, particularly the stable matching assumptions that often underlie economists work in this area. Using a discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
+<p>So, this research note. My goal is to demonstrate, yet again, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis, for relatively simple model specifications. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some intuitive ideas about the factors affecting assortative mating.</p>
+<p>This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I’ll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the ``deeper’’ parameters that actually drive union formation in the simulated data.</p>
 </section>
-<section id="toy-data" class="level2">
-<h2 data-anchor-id="toy-data">Toy Data</h2>
+<section id="building-a-simulated-marriage-market" class="level1">
+<h1>Building a simulated marriage market</h1>
+<p>The marriage market we will work with will be characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.</p>
+</section>
+<section id="positions" class="level1">
+<h1>Positions</h1>
+<p>My goal is to create a semi-regular grid of what might be construed as housing units for actors to occupy. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn’t look “right” to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced that pseudo-random numbers, which feels right for this fictive quasi-geographic set-up.</p>
+<p>First things first a few libraries. I prefer <code>dplyr</code> for data handling and <code>ggplot</code> for plotting. I use <code>mnorm</code> for its halton sequence generation:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(survival)</span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span></code></pre></div>
+font-style: inherit;">library</span>(dplyr)  </span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'dplyr'</code></pre>
@@ -50,885 +56,2182 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(tidyr)</span>
-<span id="cb5-2"></span>
-<span id="cb5-3"><span class="fu" style="color: #4758AB;
+font-style: inherit;">library</span>(ggplot2)  </span>
+<span id="cb5-2"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">library</span>(mnorm)</span></code></pre></div>
+</div>
+<p>We can generate and compare the pseudo- and quasi-random positions as follows:</p>
+<div class="cell" data-caption="quasi-geographic positions generated from halton sequences and draws from a uniform distribution">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">n<span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">123</span>)</span>
-<span id="cb5-4"></span>
-<span id="cb5-5">dt <span class="ot" style="color: #003B4F;
+font-style: inherit;">&lt;-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span></span>
+<span id="cb6-2"></span>
+<span id="cb6-3">xy_sequence <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">expand_grid</span>(<span class="at" style="color: #657422;
+font-style: inherit;">halton</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">m =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"a"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"b"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"c"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"a"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"b"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"c"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-6">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">bind_cols</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">n =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">base =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
 font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">14</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">start =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">1</span>L)</span>
+<span id="cb6-4"></span>
+<span id="cb6-5">xy<span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">bind_rows</span>(</span>
+<span id="cb6-6"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">10</span>)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb6-7">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-7">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">position_id =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">mutate</span>(</span>
-<span id="cb5-8">    <span class="at" style="color: #657422;
+font-style: inherit;">seq_len</span>(n),</span>
+<span id="cb6-8">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">homogamy =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">x =</span> xy_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">if_else</span>(m <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">1</span>],</span>
+<span id="cb6-9">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">==</span> f, m, <span class="st" style="color: #20794D;
+font-style: inherit;">y =</span> xy_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">"not"</span>),</span>
-<span id="cb5-9">    <span class="at" style="color: #657422;
+font-style: inherit;">2</span>],</span>
+<span id="cb6-10">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">homogamy =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">relevel</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">"halton"</span></span>
+<span id="cb6-11">),</span>
+<span id="cb6-12"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">factor</span>(homogamy), <span class="at" style="color: #657422;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb6-13">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">ref =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">position_id =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">"not"</span>)</span>
-<span id="cb5-10">  ) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">seq_len</span>(n),</span>
+<span id="cb6-14">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-11">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">x=</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">group_by</span>(f) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">runif</span>(n),</span>
+<span id="cb6-15">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-12">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">y=</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+font-style: inherit;">runif</span>(n),</span>
+<span id="cb6-16">  <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">n_f =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">sum</span>(n)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"uniform"</span></span>
+<span id="cb6-17">)</span>
+<span id="cb6-18">)</span>
+<span id="cb6-19"></span>
+<span id="cb6-20"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-13">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">ggplot</span>(xy,<span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">group_by</span>(m) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-14">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">x=</span>x,<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+font-style: inherit;">y=</span>y)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">n_m =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">+</span></span>
+<span id="cb6-21">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sum</span>(n)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">geom_point</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb5-15">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">+</span></span>
+<span id="cb6-22">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ungroup</span>()</span></code></pre></div>
+font-style: inherit;">facet_wrap</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vars</span>(type),<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-23">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">aspect.ratio=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/halton-vs-uniform-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<p>The marginal distribution of male categories is:</p>
+</div>
+</div>
+<p>As I said, the Halton draws just look a bit better for the present purposes. It resembles a sort of <code>social distancing</code> heuristic, with positions filling out the space in an irregular, but not overly clumpy way. I save the position generator in a function as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">make_positions <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">xtabs</span>(n <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">~</span> m, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>m
- a  b  c 
-50 30 20 </code></pre>
-</div>
-</div>
-<p>The full table is:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">xtabs</span>(n <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> f, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   f
-m    a  b  c
-  a 40  8  2
-  b  8 14  8
-  c  2  8 10</code></pre>
-</div>
-</div>
-</section>
-<section id="from-counts-to-choice-sets" class="level2">
-<h2 data-anchor-id="from-counts-to-choice-sets">From Counts to Choice Sets</h2>
-<p>The loglinear models work directly with the cell counts. The conditional logit models need the same information represented as individual choices. The next steps expand the table into male and female records, then recover the observed pairings implied by the cell counts.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">singles_m <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> dt <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-2">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(m) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">n =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(n), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"drop"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">reframe</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(m, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">times =</span> n)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m_id =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-6">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(m) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m_order =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>()</span>
-<span id="cb10-9"></span>
-<span id="cb10-10">singles_f <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> dt <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(f) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-12">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">n =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(n), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"drop"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">reframe</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(f, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">times =</span> n)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f_id =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(f) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-16">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f_order =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-17">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>()</span>
-<span id="cb10-18"></span>
-<span id="cb10-19">cell_assignments <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> dt <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-20">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(m) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-21">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(</span>
-<span id="cb10-22">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m_start =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cumsum</span>(n), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">default =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,</span>
-<span id="cb10-23">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m_end =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cumsum</span>(n)</span>
-<span id="cb10-24">  ) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-25">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-26">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(f) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-27">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(</span>
-<span id="cb10-28">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f_start =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lag</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cumsum</span>(n), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">default =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,</span>
-<span id="cb10-29">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f_end =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cumsum</span>(n)</span>
-<span id="cb10-30">  ) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-31">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>()</span>
-<span id="cb10-32"></span>
-<span id="cb10-33">unions <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> cell_assignments <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-34">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rowwise</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-35">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(</span>
-<span id="cb10-36">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">m_order =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(m_start<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>m_end),</span>
-<span id="cb10-37">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">f_order =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(f_start<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>f_end)</span>
-<span id="cb10-38">  ) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-39">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unnest</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(m_order, f_order)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-40">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ungroup</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-41">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(m, f, m_order, f_order) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-42">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(singles_m, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"m"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"m_order"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-43">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(singles_f, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"f"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"f_order"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-44">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(m_id, f_id, m, f)</span>
-<span id="cb10-45"></span>
-<span id="cb10-46">cset <span class="ot" style="color: #003B4F;
+font-weight: bold;
+font-style: inherit;">function</span>(n) {</span>
+<span id="cb7-2">  xy_sequence <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">expand_grid</span>(</span>
-<span id="cb10-47">  singles_m <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">halton</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">base =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">-</span>m_order),</span>
-<span id="cb10-48">  singles_f <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-</span>f_order)</span>
-<span id="cb10-49">) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">start =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-50">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">1</span>L)</span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">left_join</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb7-4">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">mutate</span>(unions, <span class="at" style="color: #657422;
+font-style: inherit;">position_id =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">choice =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">seq_len</span>(n),</span>
+<span id="cb7-5">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">1</span>L), <span class="at" style="color: #657422;
+font-style: inherit;">x =</span> position_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">1</span>],</span>
+<span id="cb7-6">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">y =</span> position_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">"m_id"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"f_id"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"m"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"f"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-51">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">choice =</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">is.na</span>(choice)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb10-52">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(</span>
-<span id="cb10-53">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">homogamy =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">if_else</span>(m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> f, m, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"not"</span>),</span>
-<span id="cb10-54">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">homogamy =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">relevel</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">factor</span>(homogamy), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ref =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"not"</span>)</span>
-<span id="cb10-55">  )</span></code></pre></div>
+font-style: inherit;">2</span>]</span>
+<span id="cb7-7">  )</span>
+<span id="cb7-8">}</span></code></pre></div>
 </div>
-<p>The expanded choice-set data have one row for every possible pairing. The observed unions are the rows where <code>choice</code> is <code>TRUE</code>.</p>
+</section>
+<section id="actors" class="level1">
+<h1>Actors</h1>
+<p>For the actors, I assume they are split into two gendered groups, men and women, with sebsequent unions constituted by opposite gendered pairs. I’ll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. I stipulate that each partner is characterized by just handful of attributes. First, there will be a group membership, proxying something like race or ethnicity, I’ll just use primary colors for the different groups. There will also be age, with the possibility of differences in ages between groups.</p>
+<p>Assortative mating is usually described through attributes of the partners: education, ethnicity, class background, age, religion, or other characteristics. But meetings and choices are also spatial. People do not choose from an abstract population. They choose from people they encounter, and encounters are structured by where people live, study, work, and socialize.</p>
+<p>This note builds the first part of a small simulation: actors with group membership, age, sex, attractiveness, and a position in a two-dimensional unit square. The point is not realism. The point is to create a simple data-generating process with enough structure to make later modeling choices visible.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">cset <span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../_matching-simulation.R"</span>)</span>
+<span id="cb8-2"></span>
+<span id="cb8-3">market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">simulate_actors_and_locations</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">543</span>)</span>
+<span id="cb8-4">singles <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>singles</span>
+<span id="cb8-5">candidate_positions <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>candidate_positions</span></code></pre></div>
+</div>
+<section id="actors-1" class="level2">
+<h2 data-anchor-id="actors-1">Actors</h2>
+<p>There are three groups, labeled <code>a</code>, <code>b</code>, and <code>c</code>. The groups differ in size and in mean age. Group <code>a</code> is larger and younger; group <code>c</code> is smaller and older. The age distributions overlap, however, so group membership is not simply a proxy for age.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">singles <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">count</span>(sex, group)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  sex   group     n
+  &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+1 man   a        50
+2 man   b        30
+3 man   c        20
+4 woman a        50
+5 woman b        30
+6 woman c        20</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">singles <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
 <span id="cb11-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">count</span>(choice)</span></code></pre></div>
+font-style: inherit;">group_by</span>(sex, group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarize</span>(</span>
+<span id="cb11-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n</span>(),</span>
+<span id="cb11-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean_age =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(age),</span>
+<span id="cb11-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd_age =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(age),</span>
+<span id="cb11-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min_age =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(age),</span>
+<span id="cb11-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max_age =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(age),</span>
+<span id="cb11-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"drop"</span></span>
+<span id="cb11-10">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">across</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">where</span>(is.numeric), \(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  choice     n
-  &lt;lgl&gt;  &lt;int&gt;
-1 FALSE   9900
-2 TRUE     100</code></pre>
+<pre><code># A tibble: 6 × 7
+  sex   group     n mean_age sd_age min_age max_age
+  &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 man   a        50     25.5    3.3    19.3    33.3
+2 man   b        30     30.2    5.3    21      43.5
+3 man   c        20     36.1    4.1    28.5    44.3
+4 woman a        50     26.7    4.9    19.5    37.5
+5 woman b        30     31.1    5.1    21.7    41.4
+6 woman c        20     38.8    4.1    29.1    43.5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(singles, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(age, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> group)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.45</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> sex) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> group_colors) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Age"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Group"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/age-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Groups differ in mean age, but the simulated age distributions overlap.</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </section>
-<section id="model-fits" class="level2">
-<h2 data-anchor-id="model-fits">Model Fits</h2>
-<p>These four loglinear specifications and their conditional-logit counterparts are deliberately paired. The first loglinear model is saturated. There is no direct conditional-logit counterpart in this setup because conditioning on the male identifier absorbs the male-side total and leaves no comparable saturated choice model.</p>
+<section id="candidate-locations" class="level2">
+<h2 data-anchor-id="candidate-locations">Candidate Locations</h2>
+<p>Rather than drawing locations with ordinary pseudo-random numbers, the simulation starts with a quasi-random Halton sequence. This gives a more even coverage of the unit square. The locations are not yet assigned to people. They are just available positions.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">loglin_models <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">ggplot</span>(candidate_positions, <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">list</span>(</span>
-<span id="cb13-2">  <span class="st" style="color: #20794D;
+font-style: inherit;">aes</span>(x, y)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"1a"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm</span>(n <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> f, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> poisson, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt),</span>
-<span id="cb13-3">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1b"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm</span>(n <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> f <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">offset</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(n_f)), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> poisson, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt),</span>
-<span id="cb13-4">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1c"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm</span>(n <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> f <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> homogamy, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> poisson, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt),</span>
-<span id="cb13-5">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2a"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm</span>(n <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">offset</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(n_f)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> homogamy, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> poisson, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dt)</span>
-<span id="cb13-6">)</span>
-<span id="cb13-7"></span>
-<span id="cb13-8">clogit_models <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(</span>
-<span id="cb13-9">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1a"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>,</span>
-<span id="cb13-10">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1b"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clogit</span>(choice <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> f <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">strata</span>(m_id), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> cset),</span>
-<span id="cb13-11">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1c"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clogit</span>(choice <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> f <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> homogamy <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">strata</span>(m_id), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> cset),</span>
-<span id="cb13-12">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2a"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clogit</span>(choice <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> homogamy <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">strata</span>(m_id), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> cset)</span>
-<span id="cb13-13">)</span></code></pre></div>
-</div>
-</section>
-<section id="predicted-counts" class="level2">
-<h2 data-anchor-id="predicted-counts">Predicted Counts</h2>
-<p>For the loglinear models, predicted counts are obtained directly from the fitted Poisson mean. For the conditional logit models, the linear predictors are converted into probabilities within each male choice set and then summed back to the original table cells.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">loglin_predictions <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lapply</span>(loglin_models, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(x) {</span>
+font-style: inherit;">+</span></span>
 <span id="cb14-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bind_cols</span>(dt <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">select</span>(m, f), <span class="at" style="color: #657422;
+font-style: inherit;">1.2</span>, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">n_hat =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">exp</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">0.72</span>, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">predict</span>(x)))</span>
-<span id="cb14-3">})</span>
-<span id="cb14-4"></span>
-<span id="cb14-5">clogit_predictions <span class="ot" style="color: #003B4F;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#555c60"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_equal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expand =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate y"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/candidate-positions-1.png" class="img-fluid figure-img" width="556"></p>
+<figcaption>Candidate locations generated from a two-dimensional Halton sequence.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="attractors" class="level2">
+<h2 data-anchor-id="attractors">Attractors</h2>
+<p>The location assignment has two kinds of attractors. Each group has its own group-specific center. Younger actors also feel a pull toward a central youth attractor. The youth pull declines with age.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(</span>
+<span id="cb15-3">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> candidate_positions,</span>
+<span id="cb15-4">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y),</span>
+<span id="cb15-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>,</span>
+<span id="cb15-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.28</span>,</span>
+<span id="cb15-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#9aa0a3"</span></span>
+<span id="cb15-8">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(</span>
+<span id="cb15-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>group_attractors,</span>
+<span id="cb15-11">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(group_x, group_y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> group),</span>
+<span id="cb15-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span></span>
+<span id="cb15-13">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(</span>
+<span id="cb15-15">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>youth_attractor,</span>
+<span id="cb15-16">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y),</span>
+<span id="cb15-17">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>,</span>
+<span id="cb15-18">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>,</span>
+<span id="cb15-19">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#1d2224"</span></span>
+<span id="cb15-20">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span>(</span>
+<span id="cb15-22">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>group_attractors,</span>
+<span id="cb15-23">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(group_x, group_y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"group"</span>, group)),</span>
+<span id="cb15-24">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nudge_y =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.055</span>,</span>
+<span id="cb15-25">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.4</span></span>
+<span id="cb15-26">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.50</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.57</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"youth"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.4</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-28">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_equal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expand =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-29">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> group_colors) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-30">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate y"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Group"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-31">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/attractor-plot-1.png" class="img-fluid figure-img" width="556"></p>
+<figcaption>Group-specific attractors and the central youth attractor.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For each actor-position pair, the simulation computes a spatial utility. Actors prefer positions closer to their group attractor. Younger actors also prefer positions closer to the youth attractor. Then all person-position pairs are ranked by utility, with a small random tie-breaker, and the simulation walks down the ranked list accepting a pair only when both the person and position are still unassigned.</p>
+<p>This is intentionally simpler than a full housing-market model. It creates structured spatial exposure while keeping the assignment mechanism inspectable.</p>
+</section>
+<section id="assigned-locations" class="level2">
+<h2 data-anchor-id="assigned-locations">Assigned Locations</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(singles, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> sex, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> age)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.72</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_equal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expand =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> group_colors) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_size_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">range =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.2</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate y"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Group"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sex"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Age"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/assigned-location-plot-1.png" class="img-fluid figure-img" width="604"></p>
+<figcaption>Assigned locations. Point size increases with age.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The result is a population with group structure, age structure, and spatial structure. The next note uses these actors and locations to create two-sided partner preferences and stable matches.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Confusingly, this is also referred to as the conditional logistic regression model. This model actually nests what sociologists and political scientists often refer as multinomial logistic regression.↩︎</p></li>
+<li id="fn2"><p>Haandrikman, K., &amp; van Wissen, L. J. G. (2012). Explaining the Flight of Cupid’s Arrow: A Spatial Random Utility Model of Partner Choice. European Journal of Population, 28(4), 417–439.↩︎</p></li>
+<li id="fn3"><p>Gullickson, A. (2021). A counterfactual choice approach to the study of partner selection. Demographic Research, 44, 513–536. https://doi.org/10.4054/DemRes.2021.44.22↩︎</p></li>
+<li id="fn4"><p>Lindmarker, J., &amp; Jarvis, B. F. (2025). However Far Away? The Spatial Contingencies of Assortative Mating (4tq8z_v1). SocArXiv. https://doi.org/10.31235/osf.io/4tq8z_v1↩︎</p></li>
+<li id="fn5"><p>Logan, J. A. (1983). A Multivariate Model for Mobility Tables. American Journal of Sociology, 89(2), 324–349.↩︎</p></li>
+<li id="fn6"><p>Breen, R. (1994). Individual Level Models for Mobility Tables and other Cross-Classifications. Sociological Methods &amp; Research, 23(2), 147–173. https://doi.org/10.1177/0049124194023002001↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>assortative mating</category>
+  <category>simulation</category>
+  <category>spatial models</category>
+  <guid>https://bfjarvis.github.io/blog/actors-and-locations/</guid>
+  <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>What Conditional Logit Can Use That a Group Table Cannot</title>
+  <dc:creator>Benjamin F. Jarvis</dc:creator>
+  <link>https://bfjarvis.github.io/blog/clogit-beyond-loglinear/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="beyond-the-group-table" class="level2">
+<h2 data-anchor-id="beyond-the-group-table">Beyond the Group Table</h2>
+<p>A conventional group-by-group table is useful, but it is also intentionally compressed. Once the data have been reduced to group counts, information about age gaps, spatial distance, and individual attractiveness is no longer available.</p>
+<p>The conditional-logit representation can keep those pair-level covariates because the rows are possible partners, not only table cells.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../_matching-simulation.R"</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival)</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">market <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">lapply</span>(clogit_models, <span class="cf" style="color: #003B4F;
+font-style: inherit;">simulate_actors_and_locations</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(x) {</span>
-<span id="cb14-6">  <span class="cf" style="color: #003B4F;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+font-style: inherit;">543</span>)</span>
+<span id="cb1-5">partner_market <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">is.null</span>(x)) {</span>
-<span id="cb14-7">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">return</span>(<span class="cn" style="color: #8f5902;
+font-style: inherit;">match_partners</span>(market<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">NULL</span>)</span>
-<span id="cb14-8">  }</span>
-<span id="cb14-9"></span>
-<span id="cb14-10">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">bind_cols</span>(cset, <span class="at" style="color: #657422;
+font-style: inherit;">$</span>women)</span>
+<span id="cb1-6">choice_sets <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">eta =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">predict</span>(x)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">make_choice_sets</span>(market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women, partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matched_pairs)</span></code></pre></div>
+</div>
+</section>
+<section id="a-richer-choice-model" class="level2">
+<h2 data-anchor-id="a-richer-choice-model">A Richer Choice Model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">group_only <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">clogit</span>(</span>
+<span id="cb2-2">  choice <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> same_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(candidate_group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strata</span>(chooser_id),</span>
+<span id="cb2-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> choice_sets</span>
+<span id="cb2-4">)</span>
+<span id="cb2-5"></span>
+<span id="cb2-6">with_pair_covariates <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">clogit</span>(</span>
+<span id="cb2-7">  choice <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> same_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> age_gap <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(distance <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(candidate_group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strata</span>(chooser_id),</span>
+<span id="cb2-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> choice_sets</span>
+<span id="cb2-9">)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbind</span>(</span>
+<span id="cb2-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group_only =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">AIC</span>(group_only),</span>
+<span id="cb2-13">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">with_pair_covariates =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">AIC</span>(with_pair_covariates)</span>
+<span id="cb2-14">)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        [,1]
+group_only           916.637
+with_pair_covariates 782.314</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(with_pair_covariates)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                coef exp(coef)   se(coef)           z
+same_group                0.04832654 1.0495133 0.22618804   0.2136565
+age_gap                  -0.17178030 0.8421642 0.02929788  -5.8632323
+log(distance + 0.01)     -1.37694392 0.2523486 0.13254439 -10.3885492
+factor(candidate_group)b  0.10652979 1.1124111 0.25013151   0.4258951
+factor(candidate_group)c  0.53926851 1.7147521 0.30624433   1.7609094
+                             Pr(&gt;|z|)
+same_group               8.308149e-01
+age_gap                  4.539423e-09
+log(distance + 0.01)     2.795732e-25
+factor(candidate_group)b 6.701843e-01
+factor(candidate_group)c 7.825374e-02</code></pre>
+</div>
+</div>
+<p>The richer model uses the same matched outcome, but it asks a more detailed question. Are same-group partners more likely to be chosen net of age gaps and geographic distance? That question is difficult to pose once the data have been collapsed to a group table.</p>
+</section>
+<section id="what-the-loglinear-table-misses" class="level2">
+<h2 data-anchor-id="what-the-loglinear-table-misses">What the Loglinear Table Misses</h2>
+<p>The loglinear model can be extended by adding more dimensions to the table, but doing so quickly creates sparse cells. Age gaps and distances are continuous. Turning them into table dimensions requires binning, and each bin multiplies the number of cells.</p>
+<p>This is one reason the conditional-logit representation can be attractive. It keeps the pair-level structure while preserving the choice-set interpretation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">choice_sets <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb14-11">    <span class="fu" style="color: #4758AB;
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">group_by</span>(m_id) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">group_by</span>(choice) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb14-12">    <span class="fu" style="color: #4758AB;
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarize</span>(</span>
+<span id="cb6-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean_same_group =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(same_group),</span>
+<span id="cb6-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean_age_gap =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(age_gap),</span>
+<span id="cb6-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean_distance =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(distance),</span>
+<span id="cb6-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"drop"</span></span>
+<span id="cb6-8">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">across</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">where</span>(is.numeric), \(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  choice mean_same_group mean_age_gap mean_distance
+  &lt;lgl&gt;            &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;
+1 FALSE            0.378         7.25         0.523
+2 TRUE             0.53          4.03         0.302</code></pre>
+</div>
+</div>
+<p>The next question is more delicate: even if the conditional logit uses more of the data, does it represent the underlying two-sided matching process that generated the matches?</p>
+
+
+</section>
+
+ ]]></description>
+  <category>conditional logit</category>
+  <category>loglinear models</category>
+  <category>assortative mating</category>
+  <guid>https://bfjarvis.github.io/blog/clogit-beyond-loglinear/</guid>
+  <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Does Conditional Logit Represent a Two-Sided Matching Process?</title>
+  <dc:creator>Benjamin F. Jarvis</dc:creator>
+  <link>https://bfjarvis.github.io/blog/clogit-two-sided-process/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="the-tension" class="level2">
+<h2 data-anchor-id="the-tension">The Tension</h2>
+<p>The simulated matches were generated by a two-sided process. Men ranked women, women ranked men, and the final pairings reflected stable matching under mutual preferences. A conditional-logit model, however, represents the data as if each observed man selected one woman from a choice set.</p>
+<p>That representation can be useful. It is also incomplete.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../_matching-simulation.R"</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival)</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">simulate_actors_and_locations</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">543</span>)</span>
+<span id="cb1-5">partner_market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">match_partners</span>(market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women)</span>
+<span id="cb1-6">choice_sets <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">make_choice_sets</span>(market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women, partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matched_pairs)</span></code></pre></div>
+</div>
+</section>
+<section id="what-the-choice-model-sees" class="level2">
+<h2 data-anchor-id="what-the-choice-model-sees">What the Choice Model Sees</h2>
+<p>The choice model sees the alternatives available to each man and the partner who was ultimately matched with him.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">choice_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">clogit</span>(</span>
+<span id="cb2-2">  choice <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> same_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> age_gap <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(distance <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(candidate_group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strata</span>(chooser_id),</span>
+<span id="cb2-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> choice_sets</span>
+<span id="cb2-4">)</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(choice_fit)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                coef exp(coef)   se(coef)           z
+same_group                0.04832654 1.0495133 0.22618804   0.2136565
+age_gap                  -0.17178030 0.8421642 0.02929788  -5.8632323
+log(distance + 0.01)     -1.37694392 0.2523486 0.13254439 -10.3885492
+factor(candidate_group)b  0.10652979 1.1124111 0.25013151   0.4258951
+factor(candidate_group)c  0.53926851 1.7147521 0.30624433   1.7609094
+                             Pr(&gt;|z|)
+same_group               8.308149e-01
+age_gap                  4.539423e-09
+log(distance + 0.01)     2.795732e-25
+factor(candidate_group)b 6.701843e-01
+factor(candidate_group)c 7.825374e-02</code></pre>
+</div>
+</div>
+<p>This is a valid description of the observed pairing pattern from one side of the market. But it does not explicitly model the fact that some alternatives were unavailable in equilibrium because they preferred someone else.</p>
+</section>
+<section id="a-simple-diagnostic" class="level2">
+<h2 data-anchor-id="a-simple-diagnostic">A Simple Diagnostic</h2>
+<p>One way to see the tension is to compare chosen partners with the highest-utility partner from the male side alone. If matching were purely one-sided, these would often coincide. In a two-sided process, they need not.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">male_rankings <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men_to_women <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(chooser_id) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">desc</span>(utility), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.by_group =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-4">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">p =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">male_side_rank =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">exp</span>(eta) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ungroup</span>()</span>
+<span id="cb4-6"></span>
+<span id="cb4-7">partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matched_pairs <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(man_id, woman_id) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span>(</span>
+<span id="cb4-10">    male_rankings,</span>
+<span id="cb4-11">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"man_id"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"chooser_id"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"woman_id"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"candidate_id"</span>)</span>
+<span id="cb4-12">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarize</span>(</span>
+<span id="cb4-14">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean_male_side_rank =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(male_side_rank),</span>
+<span id="cb4-15">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">median_male_side_rank =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(male_side_rank),</span>
+<span id="cb4-16">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">share_first_choice =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(male_side_rank <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb4-17">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">across</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">everything</span>(), \(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  mean_male_side_rank median_male_side_rank share_first_choice
+                &lt;dbl&gt;                 &lt;dbl&gt;              &lt;dbl&gt;
+1                8.31                     6               0.19</code></pre>
+</div>
+</div>
+<p>If many matched partners are not first choices from the male side, that is not a failure of the algorithm. It is the point of two-sided matching: other actors’ preferences matter.</p>
+</section>
+<section id="where-this-leaves-the-conditional-logit" class="level2">
+<h2 data-anchor-id="where-this-leaves-the-conditional-logit">Where This Leaves the Conditional Logit</h2>
+<p>The conditional-logit model can be a useful descriptive model of assortative matching, especially when the goal is to keep pair-level covariates in view. But it should not be mistaken for the full data-generating process when the underlying process is two-sided.</p>
+<p>The practical question is not whether the conditional logit is “true.” It is what part of the matching pattern it summarizes, and whether that summary is adequate for the research question.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>conditional logit</category>
+  <category>matching</category>
+  <category>assortative mating</category>
+  <guid>https://bfjarvis.github.io/blog/clogit-two-sided-process/</guid>
+  <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Conditional Logit and Loglinear Models for Group-Level Assortative Mating</title>
+  <dc:creator>Benjamin F. Jarvis</dc:creator>
+  <link>https://bfjarvis.github.io/blog/clogit-vs-loglinear/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="same-matches-two-representations" class="level2">
+<h2 data-anchor-id="same-matches-two-representations">Same Matches, Two Representations</h2>
+<p>The first two notes created a synthetic population and then used a two-sided matching process to assign partners. This note starts from the resulting matches and compares two ways of describing the group-level pattern.</p>
+<p>The conditional-logit representation treats each matched man as choosing among possible women. The loglinear representation treats the observed matches as counts in a table. To keep the comparison focused, this note uses only group-level covariates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../_matching-simulation.R"</span>)</span>
+<span id="cb1-2"></span>
+<span id="cb1-3">market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">simulate_actors_and_locations</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">543</span>)</span>
+<span id="cb1-4">partner_market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">match_partners</span>(market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women)</span>
+<span id="cb1-5">matched_pairs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matched_pairs</span>
+<span id="cb1-6">choice_sets <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">make_choice_sets</span>(market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men, market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women, matched_pairs)</span>
+<span id="cb1-7">group_counts <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_pair_counts</span>(matched_pairs)</span></code></pre></div>
+</div>
+</section>
+<section id="the-group-table" class="level2">
+<h2 data-anchor-id="the-group-table">The Group Table</h2>
+<p>The observed group-pairing table is compact. It is also the natural object for a loglinear model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">group_counts <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> woman_group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_fill =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  man_group same_group     a     b     c
+  &lt;chr&gt;          &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+1 a                  1    31     0     0
+2 a                  0     0    12     7
+3 b                  0    13     0     4
+4 b                  1     0    13     0
+5 c                  0     6     5     0
+6 c                  1     0     0     9</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(group_counts, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(woman_group, man_group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> n)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_tile</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> n), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_gradient</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">low =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#9aa0a3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#c73535"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Woman's group"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Man's group"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Matches"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/clogit-vs-loglinear/index_files/figure-html/group-heatmap-1.png" class="img-fluid figure-img" width="556"></p>
+<figcaption>Observed matched pairs by male and female group.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conditional-logit" class="level2">
+<h2 data-anchor-id="conditional-logit">Conditional Logit</h2>
+<p>For the conditional-logit model, each man has a choice set containing all women. The model asks whether women from the same group are more likely to be selected, controlling for the availability of women in each candidate group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival)</span>
+<span id="cb5-2"></span>
+<span id="cb5-3">clogit_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">clogit</span>(</span>
+<span id="cb5-4">  choice <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> same_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(candidate_group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strata</span>(chooser_id),</span>
+<span id="cb5-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> choice_sets</span>
+<span id="cb5-6">)</span>
+<span id="cb5-7"></span>
+<span id="cb5-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(clogit_fit)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                              coef exp(coef)  se(coef)         z    Pr(&gt;|z|)
+same_group               0.6798549  1.973591 0.2085784 3.2594684 0.001116212
+factor(candidate_group)b 0.1089737  1.115133 0.2409037 0.4523538 0.651014109
+factor(candidate_group)c 0.1778241  1.194615 0.2752827 0.6459691 0.518299394</code></pre>
+</div>
+</div>
+<p>The coefficient on <code>same_group</code> is the group-level assortative-mating term in this one-sided choice representation. It compares same-group alternatives with different-group alternatives within each man’s choice set.</p>
+</section>
+<section id="loglinear-model" class="level2">
+<h2 data-anchor-id="loglinear-model">Loglinear Model</h2>
+<p>The loglinear model works directly with the count table. A simple parallel specification controls the male and female group margins, then adds a same-group association term.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">loglinear_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(</span>
+<span id="cb7-2">  n <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> man_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> woman_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> same_group,</span>
+<span id="cb7-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> poisson,</span>
+<span id="cb7-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> group_counts</span>
+<span id="cb7-5">)</span>
+<span id="cb7-6"></span>
+<span id="cb7-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(loglinear_fit)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Estimate Std. Error   z value     Pr(&gt;|z|)
+(Intercept)   2.7740243  0.2161093 12.836211 1.027829e-37
+man_groupb   -0.4018519  0.2409037 -1.668102 9.529557e-02
+man_groupc   -0.7384666  0.2752827 -2.682576 7.305759e-03
+woman_groupb -0.4018519  0.2409037 -1.668102 9.529557e-02
+woman_groupc -0.7384666  0.2752827 -2.682576 7.305759e-03
+same_group    0.6798549  0.2085784  3.259468 1.116212e-03</code></pre>
+</div>
+</div>
+<p>The loglinear same-group coefficient describes the association structure in the table. It is not literally the same estimand as the conditional-logit coefficient, because the two models condition on different things and treat the data differently. But the two estimates are describing a related pattern: same-group matching is more common than expected from group availability alone.</p>
+</section>
+<section id="predicted-group-counts" class="level2">
+<h2 data-anchor-id="predicted-group-counts">Predicted Group Counts</h2>
+<p>The two models can both be converted back to predicted group counts. For the conditional-logit model, fitted choice probabilities are summed over all men and women in the relevant group pairing. For the loglinear model, predicted counts come directly from the fitted Poisson means.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">clogit_pred <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> choice_sets <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linear_predictor =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(clogit_fit, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lp"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(chooser_id) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probability =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(linear_predictor) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">exp</span>(eta))) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">exp</span>(linear_predictor))) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb14-13">    <span class="fu" style="color: #4758AB;
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ungroup</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb14-14">    <span class="fu" style="color: #4758AB;
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">group_by</span>(m, f) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">group_by</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">man_group =</span> chooser_group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">woman_group =</span> candidate_group) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb14-15">    <span class="fu" style="color: #4758AB;
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">n_hat =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">clogit =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sum</span>(p), <span class="at" style="color: #657422;
+font-style: inherit;">sum</span>(probability), <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"drop"</span>)</span>
-<span id="cb14-16">})</span></code></pre></div>
-</div>
-<p>The paired predictions can then be compared cell by cell.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">compare_predictions <span class="ot" style="color: #003B4F;
+<span id="cb9-8"></span>
+<span id="cb9-9">loglinear_pred <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(model_id) {</span>
-<span id="cb15-2">  loglin <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> loglin_predictions[[model_id]] <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">&lt;-</span> group_counts <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb15-3">    <span class="fu" style="color: #4758AB;
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">rename</span>(<span class="at" style="color: #657422;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">loglinear =</span> n_hat)</span>
-<span id="cb15-4"></span>
-<span id="cb15-5">  clogit <span class="ot" style="color: #003B4F;
+font-style: inherit;">loglinear =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">&lt;-</span> clogit_predictions[[model_id]]</span>
-<span id="cb15-6"></span>
-<span id="cb15-7">  <span class="cf" style="color: #003B4F;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+font-style: inherit;">predict</span>(loglinear_fit, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">is.null</span>(clogit)) {</span>
-<span id="cb15-8">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">return</span>(loglin)</span>
-<span id="cb15-9">  }</span>
-<span id="cb15-10"></span>
-<span id="cb15-11">  loglin <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"response"</span>))) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb15-12">    <span class="fu" style="color: #4758AB;
+<span id="cb9-11">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">left_join</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">select</span>(man_group, woman_group, loglinear)</span>
+<span id="cb9-12"></span>
+<span id="cb9-13">group_counts <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">rename</span>(clogit, <span class="at" style="color: #657422;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-14">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">conditional_logit =</span> n_hat), <span class="at" style="color: #657422;
+font-style: inherit;">select</span>(man_group, woman_group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">observed =</span> n) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span>(clogit_pred, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"m"</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"man_group"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"f"</span>)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"woman_group"</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb15-13">    <span class="fu" style="color: #4758AB;
+<span id="cb9-16">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+font-style: inherit;">left_join</span>(loglinear_pred, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">difference =</span> loglinear <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">-</span> conditional_logit)</span>
-<span id="cb15-14">}</span>
-<span id="cb15-15"></span>
-<span id="cb15-16"><span class="fu" style="color: #4758AB;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">compare_predictions</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">"man_group"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"1c"</span>)</span></code></pre></div>
+font-style: inherit;">"woman_group"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">across</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(clogit, loglinear), \(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 5
-  m     f     loglinear conditional_logit difference
-  &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;             &lt;dbl&gt;      &lt;dbl&gt;
-1 a     a         40.0              40.0    7.36e-11
-2 a     b          8.00              8.00   3.29e-12
-3 a     c          2.00              2.00  -7.39e-11
-4 b     a          8.00              8.00   1.15e-11
-5 b     b         14.0              14.0    1.01e-12
-6 b     c          8.00              8.00  -1.26e-11
-7 c     a          2.00              2.00  -6.04e-11
-8 c     b          8.00              8.00   3.28e-11
-9 c     c         10.00             10.00   2.82e-11</code></pre>
+  man_group woman_group observed clogit loglinear
+  &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+1 a         a                 31  31.6      31.6 
+2 a         b                 12  10.7      10.7 
+3 a         c                  7   7.66      7.66
+4 b         a                 13  10.7      10.7 
+5 b         b                 13  14.2      14.2 
+6 b         c                  4   5.12      5.12
+7 c         a                  6   7.66      7.66
+8 c         b                  5   5.12      5.12
+9 c         c                  9   7.22      7.22</code></pre>
 </div>
 </div>
 </section>
-<section id="interpretation" class="level2">
-<h2 data-anchor-id="interpretation">Interpretation</h2>
-<p>The comparison is useful because the two model families emphasize different parts of the same setup. The loglinear model treats the table cells as the observations. The conditional logit model treats each observed male case as a choice among possible female cases. With the right conditioning and offsets, the fitted implications can line up closely, but the route to those fitted counts is different.</p>
-<p>For this toy table, the most interesting comparisons are not the saturated model, but the reduced specifications that keep the broad marginal structure and then ask how much is added by category-specific homogamy terms.</p>
+<section id="what-this-comparison-does-not-yet-use" class="level2">
+<h2 data-anchor-id="what-this-comparison-does-not-yet-use">What This Comparison Does Not Yet Use</h2>
+<p>This first comparison deliberately ignores age, distance, and attractiveness. That keeps the bookkeeping visible, but it also discards much of what was built into the simulation. The next note asks what the conditional-logit representation can use once those individual-level and pair-level covariates are allowed into the model.</p>
 
 
 </section>
 
  ]]></description>
   <category>matching</category>
-  <category>loglinear models</category>
   <category>conditional logit</category>
+  <category>loglinear models</category>
+  <category>assortative mating</category>
   <guid>https://bfjarvis.github.io/blog/clogit-vs-loglinear/</guid>
-  <pubDate>Thu, 02 Jul 2026 22:00:00 GMT</pubDate>
+  <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Assigning Partners With Gale-Shapley Matching</title>
+  <dc:creator>Benjamin F. Jarvis</dc:creator>
+  <link>https://bfjarvis.github.io/blog/stable-matching-partners/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="from-actors-to-preferences" class="level2">
+<h2 data-anchor-id="from-actors-to-preferences">From Actors to Preferences</h2>
+<p>The previous note created actors and locations. This note turns those actors into a two-sided matching market. Men and women evaluate potential partners using the same broad ingredients: group membership, age gap, geographic distance, and a person-specific attractiveness component.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../_matching-simulation.R"</span>)</span>
+<span id="cb1-2"></span>
+<span id="cb1-3">market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">simulate_actors_and_locations</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">543</span>)</span>
+<span id="cb1-4">men <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men</span>
+<span id="cb1-5">women <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>women</span>
+<span id="cb1-6">partner_market <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">match_partners</span>(men, women)</span>
+<span id="cb1-7">matched_pairs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matched_pairs</span></code></pre></div>
+</div>
+</section>
+<section id="partner-utility" class="level2">
+<h2 data-anchor-id="partner-utility">Partner Utility</h2>
+<p>The utility construction is deliberately simple. A potential partner is more attractive when they are from the same group, closer in age, closer in space, and higher on an individual attractiveness term. The attractiveness term is observed by actors in the simulation, but it is useful to think of it as partly unobserved from the analyst’s point of view.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb2-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">component =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(preference_weights),</span>
+<span id="cb2-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unlist</span>(preference_weights)</span>
+<span id="cb2-4">)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  component      weight
+  &lt;chr&gt;           &lt;dbl&gt;
+1 same_group        0.5
+2 age_gap          -0.1
+3 distance         -1  
+4 attractiveness    1  
+5 noise             2  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>men_to_women <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transmute</span>(</span>
+<span id="cb4-3">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">same_group =</span> preference_weights<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>same_group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(same_group),</span>
+<span id="cb4-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">age_gap =</span> preference_weights<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>age_gap <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> age_gap,</span>
+<span id="cb4-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">distance =</span> preference_weights<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>distance <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(distance <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>),</span>
+<span id="cb4-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">attractiveness =</span> preference_weights<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>attractiveness <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> candidate_attractiveness</span>
+<span id="cb4-7">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">everything</span>(), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"component"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"value"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(component) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(value), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"drop"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">desc</span>(sd))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  component         sd
+  &lt;chr&gt;          &lt;dbl&gt;
+1 distance       0.574
+2 age_gap        0.522
+3 attractiveness 0.358
+4 same_group     0.243</code></pre>
+</div>
+</div>
+</section>
+<section id="gale-shapley-matching" class="level2">
+<h2 data-anchor-id="gale-shapley-matching">Gale-Shapley Matching</h2>
+<p>The simulation uses <code>matchingR::galeShapley.marriageMarket()</code>. Men propose in this version. Women rank potential male partners and may trade up as proposals arrive. The algorithm ends when no proposer can improve by continuing to propose.</p>
+<p>One informal way to read the algorithm is:</p>
+<ol type="1">
+<li>Each man proposes to his highest-ranked woman who has not yet rejected him.</li>
+<li>Each woman provisionally keeps her favorite proposal so far.</li>
+<li>Rejected men propose again.</li>
+<li>The process stops when no man remains unmatched and able to propose.</li>
+</ol>
+<p>The resulting matching is stable in the Gale-Shapley sense.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb6-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">men =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n_distinct</span>(partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matches<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>man_id),</span>
+<span id="cb6-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">women =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n_distinct</span>(partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matches<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>woman_id),</span>
+<span id="cb6-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">matches =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nrow</span>(partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matches),</span>
+<span id="cb6-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stable =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">galeShapley.checkStability</span>(</span>
+<span id="cb6-6">    partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>male_utilities,</span>
+<span id="cb6-7">    partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>female_utilities,</span>
+<span id="cb6-8">    partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matching<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>proposals,</span>
+<span id="cb6-9">    partner_market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>matching<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>engagements</span>
+<span id="cb6-10">  )</span>
+<span id="cb6-11">)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+    men women matches stable
+  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;lgl&gt; 
+1   100   100     100 TRUE  </code></pre>
+</div>
+</div>
+</section>
+<section id="what-matching-changes" class="level2">
+<h2 data-anchor-id="what-matching-changes">What Matching Changes</h2>
+<p>The matched pairs are much more similar than all possible man-woman pairs. This is partly because people prefer similar and nearby partners, and partly because two-sided competition determines who is actually available to whom.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">matched_pairs <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(same_group, age_gap, distance) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   same_group      age_gap            distance      
+ Min.   :0.00   Min.   : 0.04811   Min.   :0.03495  
+ 1st Qu.:0.00   1st Qu.: 0.99378   1st Qu.:0.13796  
+ Median :1.00   Median : 2.62286   Median :0.23896  
+ Mean   :0.53   Mean   : 4.02566   Mean   :0.30212  
+ 3rd Qu.:1.00   3rd Qu.: 5.19851   3rd Qu.:0.41170  
+ Max.   :1.00   Max.   :21.44226   Max.   :0.88399  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">all_possible_pairs</span>(men, women) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(same_group, age_gap, distance) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   same_group      age_gap             distance      
+ Min.   :0.00   Min.   :2.982e-04   Min.   :0.02368  
+ 1st Qu.:0.00   1st Qu.:2.959e+00   1st Qu.:0.33148  
+ Median :0.00   Median :6.177e+00   Median :0.50874  
+ Mean   :0.38   Mean   :7.215e+00   Mean   :0.52105  
+ 3rd Qu.:1.00   3rd Qu.:1.074e+01   3rd Qu.:0.70416  
+ Max.   :1.00   Max.   :2.481e+01   Max.   :1.26079  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">matched_pairs <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">count</span>(man_group, woman_group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> woman_group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_fill =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  man_group     a     b     c
+  &lt;chr&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt;
+1 a            31    12     7
+2 b            13    13     4
+3 c             6     5     9</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_segment</span>(</span>
+<span id="cb14-3">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> matched_pairs,</span>
+<span id="cb14-4">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> man_x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> man_y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xend =</span> woman_x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yend =</span> woman_y),</span>
+<span id="cb14-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#555c60"</span>,</span>
+<span id="cb14-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.18</span>,</span>
+<span id="cb14-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.35</span></span>
+<span id="cb14-8">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(</span>
+<span id="cb14-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> market<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>singles,</span>
+<span id="cb14-11">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> sex),</span>
+<span id="cb14-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.72</span>,</span>
+<span id="cb14-13">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.8</span></span>
+<span id="cb14-14">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_equal</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expand =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-16">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> group_colors) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Spatial coordinate y"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Group"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sex"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/stable-matching-partners/index_files/figure-html/match-plot-1.png" class="img-fluid figure-img" width="624"></p>
+<figcaption>Matched pairs in geographic space. Lines connect partners after Gale-Shapley matching.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The next note starts from the matched pairs and asks a more statistical question: how do conditional-logit and loglinear models describe the group-level association pattern?</p>
+
+
+</section>
+
+ ]]></description>
+  <category>assortative mating</category>
+  <category>matching</category>
+  <category>simulation</category>
+  <guid>https://bfjarvis.github.io/blog/stable-matching-partners/</guid>
+  <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Example Segregation Note</title>

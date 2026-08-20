@@ -153,6 +153,11 @@ a {
   grid-template-columns: minmax(150px, 220px) 1fr;
 }
 
+.publication-card.has-media {
+  column-gap: clamp(1.5rem, 3vw, 2.4rem);
+  row-gap: 1.15rem;
+}
+
 .content-card-media img,
 .publication-media img {
   width: 100%;
@@ -562,6 +567,10 @@ section.cv-subheading {
   .cv-entry,
   .cv-layout {
     grid-template-columns: 1fr;
+  }
+
+  .publication-card.has-media {
+    row-gap: 1.25rem;
   }
 
   .cv-layout {

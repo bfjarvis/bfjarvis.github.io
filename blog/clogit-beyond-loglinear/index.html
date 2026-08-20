@@ -8,9 +8,9 @@
 
 <meta name="author" content="Benjamin F. Jarvis">
 <meta name="dcterms.date" content="2026-07-17">
-<meta name="description" content="The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates.">
+<meta name="description" content="The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis.">
 
-<title>Conditional Logit and Loglinear Models for Group-Level Assortative Mating – Benjamin F. Jarvis</title>
+<title>What Conditional Logit Can Use That a Group Table Cannot – Benjamin F. Jarvis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -162,12 +162,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#same-matches-two-representations" id="toc-same-matches-two-representations" class="nav-link active" data-scroll-target="#same-matches-two-representations">Same Matches, Two Representations</a></li>
-  <li><a href="#the-group-table" id="toc-the-group-table" class="nav-link" data-scroll-target="#the-group-table">The Group Table</a></li>
-  <li><a href="#conditional-logit" id="toc-conditional-logit" class="nav-link" data-scroll-target="#conditional-logit">Conditional Logit</a></li>
-  <li><a href="#loglinear-model" id="toc-loglinear-model" class="nav-link" data-scroll-target="#loglinear-model">Loglinear Model</a></li>
-  <li><a href="#predicted-group-counts" id="toc-predicted-group-counts" class="nav-link" data-scroll-target="#predicted-group-counts">Predicted Group Counts</a></li>
-  <li><a href="#what-this-comparison-does-not-yet-use" id="toc-what-this-comparison-does-not-yet-use" class="nav-link" data-scroll-target="#what-this-comparison-does-not-yet-use">What This Comparison Does Not Yet Use</a></li>
+  <li><a href="#beyond-the-group-table" id="toc-beyond-the-group-table" class="nav-link active" data-scroll-target="#beyond-the-group-table">Beyond the Group Table</a></li>
+  <li><a href="#a-richer-choice-model" id="toc-a-richer-choice-model" class="nav-link" data-scroll-target="#a-richer-choice-model">A Richer Choice Model</a></li>
+  <li><a href="#what-the-loglinear-table-misses" id="toc-what-the-loglinear-table-misses" class="nav-link" data-scroll-target="#what-the-loglinear-table-misses">What the Loglinear Table Misses</a></li>
   </ul>
 </nav>
     </div>
@@ -176,9 +173,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Conditional Logit and Loglinear Models for Group-Level Assortative Mating</h1>
+<h1 class="title">What Conditional Logit Can Use That a Group Table Cannot</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">matching</div>
     <div class="quarto-category">conditional logit</div>
     <div class="quarto-category">loglinear models</div>
     <div class="quarto-category">assortative mating</div>
@@ -187,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div>
   <div class="description">
-    The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates.
+    The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis.
   </div>
 </div>
 
@@ -216,139 +212,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="same-matches-two-representations" class="level2">
-<h2 data-anchor-id="same-matches-two-representations">Same Matches, Two Representations</h2>
-<p>The first two notes created a synthetic population and then used a two-sided matching process to assign partners. This note starts from the resulting matches and compares two ways of describing the group-level pattern.</p>
-<p>The conditional-logit representation treats each matched man as choosing among possible women. The loglinear representation treats the observed matches as counts in a table. To keep the comparison focused, this note uses only group-level covariates.</p>
+<section id="beyond-the-group-table" class="level2">
+<h2 data-anchor-id="beyond-the-group-table">Beyond the Group Table</h2>
+<p>A conventional group-by-group table is useful, but it is also intentionally compressed. Once the data have been reduced to group counts, information about age gaps, spatial distance, and individual attractiveness is no longer available.</p>
+<p>The conditional-logit representation can keep those pair-level covariates because the rows are possible partners, not only table cells.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"../_matching-simulation.R"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">simulate_actors_and_locations</span>(<span class="at">seed =</span> <span class="dv">543</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>partner_market <span class="ot">&lt;-</span> <span class="fu">match_partners</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>matched_pairs <span class="ot">&lt;-</span> partner_market<span class="sc">$</span>matched_pairs</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>choice_sets <span class="ot">&lt;-</span> <span class="fu">make_choice_sets</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women, matched_pairs)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>group_counts <span class="ot">&lt;-</span> <span class="fu">group_pair_counts</span>(matched_pairs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">simulate_actors_and_locations</span>(<span class="at">seed =</span> <span class="dv">543</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>partner_market <span class="ot">&lt;-</span> <span class="fu">match_partners</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>choice_sets <span class="ot">&lt;-</span> <span class="fu">make_choice_sets</span>(market<span class="sc">$</span>men, market<span class="sc">$</span>women, partner_market<span class="sc">$</span>matched_pairs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="the-group-table" class="level2">
-<h2 data-anchor-id="the-group-table">The Group Table</h2>
-<p>The observed group-pairing table is compact. It is also the natural object for a loglinear model.</p>
+<section id="a-richer-choice-model" class="level2">
+<h2 data-anchor-id="a-richer-choice-model">A Richer Choice Model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>group_counts <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> woman_group, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>group_only <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  choice <span class="sc">~</span> same_group <span class="sc">+</span> <span class="fu">factor</span>(candidate_group) <span class="sc">+</span> <span class="fu">strata</span>(chooser_id),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> choice_sets</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>with_pair_covariates <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  choice <span class="sc">~</span> same_group <span class="sc">+</span> age_gap <span class="sc">+</span> <span class="fu">log</span>(distance <span class="sc">+</span> <span class="fl">0.01</span>) <span class="sc">+</span> <span class="fu">factor</span>(candidate_group) <span class="sc">+</span> <span class="fu">strata</span>(chooser_id),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> choice_sets</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_only =</span> <span class="fu">AIC</span>(group_only),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">with_pair_covariates =</span> <span class="fu">AIC</span>(with_pair_covariates)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  man_group same_group     a     b     c
-  &lt;chr&gt;          &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-1 a                  1    31     0     0
-2 a                  0     0    12     7
-3 b                  0    13     0     4
-4 b                  1     0    13     0
-5 c                  0     6     5     0
-6 c                  1     0     0     9</code></pre>
+<pre><code>                        [,1]
+group_only           916.637
+with_pair_covariates 782.314</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(group_counts, <span class="fu">aes</span>(woman_group, man_group, <span class="at">fill =</span> n)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> n), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#9aa0a3"</span>, <span class="at">high =</span> <span class="st">"#c73535"</span>) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Woman's group"</span>, <span class="at">y =</span> <span class="st">"Man's group"</span>, <span class="at">fill =</span> <span class="st">"Matches"</span>) <span class="sc">+</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/group-heatmap-1.png" class="img-fluid figure-img" width="556"></p>
-<figcaption>Observed matched pairs by male and female group.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="conditional-logit" class="level2">
-<h2 data-anchor-id="conditional-logit">Conditional Logit</h2>
-<p>For the conditional-logit model, each man has a choice set containing all women. The model asks whether women from the same group are more likely to be selected, controlling for the availability of women in each candidate group.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>clogit_fit <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  choice <span class="sc">~</span> same_group <span class="sc">+</span> <span class="fu">factor</span>(candidate_group) <span class="sc">+</span> <span class="fu">strata</span>(chooser_id),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> choice_sets</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(clogit_fit)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(with_pair_covariates)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                              coef exp(coef)  se(coef)         z    Pr(&gt;|z|)
-same_group               0.6798549  1.973591 0.2085784 3.2594684 0.001116212
-factor(candidate_group)b 0.1089737  1.115133 0.2409037 0.4523538 0.651014109
-factor(candidate_group)c 0.1778241  1.194615 0.2752827 0.6459691 0.518299394</code></pre>
+<pre><code>                                coef exp(coef)   se(coef)           z
+same_group                0.04832654 1.0495133 0.22618804   0.2136565
+age_gap                  -0.17178030 0.8421642 0.02929788  -5.8632323
+log(distance + 0.01)     -1.37694392 0.2523486 0.13254439 -10.3885492
+factor(candidate_group)b  0.10652979 1.1124111 0.25013151   0.4258951
+factor(candidate_group)c  0.53926851 1.7147521 0.30624433   1.7609094
+                             Pr(&gt;|z|)
+same_group               8.308149e-01
+age_gap                  4.539423e-09
+log(distance + 0.01)     2.795732e-25
+factor(candidate_group)b 6.701843e-01
+factor(candidate_group)c 7.825374e-02</code></pre>
 </div>
 </div>
-<p>The coefficient on <code>same_group</code> is the group-level assortative-mating term in this one-sided choice representation. It compares same-group alternatives with different-group alternatives within each man’s choice set.</p>
+<p>The richer model uses the same matched outcome, but it asks a more detailed question. Are same-group partners more likely to be chosen net of age gaps and geographic distance? That question is difficult to pose once the data have been collapsed to a group table.</p>
 </section>
-<section id="loglinear-model" class="level2">
-<h2 data-anchor-id="loglinear-model">Loglinear Model</h2>
-<p>The loglinear model works directly with the count table. A simple parallel specification controls the male and female group margins, then adds a same-group association term.</p>
+<section id="what-the-loglinear-table-misses" class="level2">
+<h2 data-anchor-id="what-the-loglinear-table-misses">What the Loglinear Table Misses</h2>
+<p>The loglinear model can be extended by adding more dimensions to the table, but doing so quickly creates sparse cells. Age gaps and distances are continuous. Turning them into table dimensions requires binning, and each bin multiplies the number of cells.</p>
+<p>This is one reason the conditional-logit representation can be attractive. It keeps the pair-level structure while preserving the choice-set interpretation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>loglinear_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  n <span class="sc">~</span> man_group <span class="sc">+</span> woman_group <span class="sc">+</span> same_group,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> poisson,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> group_counts</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(loglinear_fit)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>choice_sets <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(choice) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_same_group =</span> <span class="fu">mean</span>(same_group),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_age_gap =</span> <span class="fu">mean</span>(age_gap),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_distance =</span> <span class="fu">mean</span>(distance),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               Estimate Std. Error   z value     Pr(&gt;|z|)
-(Intercept)   2.7740243  0.2161093 12.836211 1.027829e-37
-man_groupb   -0.4018519  0.2409037 -1.668102 9.529557e-02
-man_groupc   -0.7384666  0.2752827 -2.682576 7.305759e-03
-woman_groupb -0.4018519  0.2409037 -1.668102 9.529557e-02
-woman_groupc -0.7384666  0.2752827 -2.682576 7.305759e-03
-same_group    0.6798549  0.2085784  3.259468 1.116212e-03</code></pre>
+<pre><code># A tibble: 2 × 4
+  choice mean_same_group mean_age_gap mean_distance
+  &lt;lgl&gt;            &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;
+1 FALSE            0.378         7.25         0.523
+2 TRUE             0.53          4.03         0.302</code></pre>
 </div>
 </div>
-<p>The loglinear same-group coefficient describes the association structure in the table. It is not literally the same estimand as the conditional-logit coefficient, because the two models condition on different things and treat the data differently. But the two estimates are describing a related pattern: same-group matching is more common than expected from group availability alone.</p>
-</section>
-<section id="predicted-group-counts" class="level2">
-<h2 data-anchor-id="predicted-group-counts">Predicted Group Counts</h2>
-<p>The two models can both be converted back to predicted group counts. For the conditional-logit model, fitted choice probabilities are summed over all men and women in the relevant group pairing. For the loglinear model, predicted counts come directly from the fitted Poisson means.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>clogit_pred <span class="ot">&lt;-</span> choice_sets <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">linear_predictor =</span> <span class="fu">predict</span>(clogit_fit, <span class="at">type =</span> <span class="st">"lp"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(chooser_id) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">probability =</span> <span class="fu">exp</span>(linear_predictor) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(linear_predictor))) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">man_group =</span> chooser_group, <span class="at">woman_group =</span> candidate_group) <span class="sc">|&gt;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">clogit =</span> <span class="fu">sum</span>(probability), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>loglinear_pred <span class="ot">&lt;-</span> group_counts <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loglinear =</span> <span class="fu">as.numeric</span>(<span class="fu">predict</span>(loglinear_fit, <span class="at">type =</span> <span class="st">"response"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(man_group, woman_group, loglinear)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>group_counts <span class="sc">|&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(man_group, woman_group, <span class="at">observed =</span> n) <span class="sc">|&gt;</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(clogit_pred, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"man_group"</span>, <span class="st">"woman_group"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(loglinear_pred, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"man_group"</span>, <span class="st">"woman_group"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(clogit, loglinear), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 5
-  man_group woman_group observed clogit loglinear
-  &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;dbl&gt;     &lt;dbl&gt;
-1 a         a                 31  31.6      31.6 
-2 a         b                 12  10.7      10.7 
-3 a         c                  7   7.66      7.66
-4 b         a                 13  10.7      10.7 
-5 b         b                 13  14.2      14.2 
-6 b         c                  4   5.12      5.12
-7 c         a                  6   7.66      7.66
-8 c         b                  5   5.12      5.12
-9 c         c                  9   7.22      7.22</code></pre>
-</div>
-</div>
-</section>
-<section id="what-this-comparison-does-not-yet-use" class="level2">
-<h2 data-anchor-id="what-this-comparison-does-not-yet-use">What This Comparison Does Not Yet Use</h2>
-<p>This first comparison deliberately ignores age, distance, and attractiveness. That keeps the bookkeeping visible, but it also discards much of what was built into the simulation. The next note asks what the conditional-logit representation can use once those individual-level and pair-level covariates are allowed into the model.</p>
+<p>The next question is more delicate: even if the conditional logit uses more of the data, does it represent the underlying two-sided matching process that generated the matches?</p>
 
 
 </section>

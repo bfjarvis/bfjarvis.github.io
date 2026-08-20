@@ -2,7 +2,11 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/actors-and-locations/index.html",
+      "/blog/clogit-beyond-loglinear/index.html",
+      "/blog/clogit-two-sided-process/index.html",
       "/blog/clogit-vs-loglinear/index.html",
+      "/blog/stable-matching-partners/index.html",
       "/blog/example-segregation-note/index.html"
     ]
   }
