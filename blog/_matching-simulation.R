@@ -9,15 +9,27 @@ suppressPackageStartupMessages({
 group_colors <- c(a = "#c73535", b = "#555c60", c = "#287fc4")
 
 scale_beta <- function(n, mean, precision, min_value = 0, max_value = 1) {
-  shape1 <- mean * precision
-  shape2 <- (1 - mean) * precision
+  if (max_value <= min_value) {
+    stop("max_value must be greater than min_value.", call. = FALSE)
+  }
+
+  if (mean <= min_value || mean >= max_value) {
+    stop(
+      "mean must fall strictly between min_value and max_value.",
+      call. = FALSE
+    )
+  }
+
+  scaled_mean <- (mean - min_value) / (max_value - min_value)
+  shape1 <- scaled_mean * precision
+  shape2 <- (1 - scaled_mean) * precision
   min_value + (max_value - min_value) * rbeta(n, shape1, shape2)
 }
 
 make_people <- function() {
   group_specs <- tibble(
     group = c("a", "b", "c"),
-    age_mean = c(0.30, 0.50, 0.68),
+    age_mean = c(26.1, 31.5, 36.4),
     n = c(50, 30, 20)
   ) |>
     expand_grid(tibble(sex = c("man", "woman")))
@@ -25,7 +37,13 @@ make_people <- function() {
   group_specs |>
     reframe(
       person = seq_len(n),
-      age = scale_beta(n, age_mean, precision = 7, min_value = 18, max_value = 45),
+      age = scale_beta(
+        n,
+        age_mean,
+        precision = 7,
+        min_value = 18,
+        max_value = 45
+      ),
       attractiveness = rnorm(n, mean = 0, sd = 0.35),
       .by = c(group, age_mean, sex)
     ) |>
@@ -66,13 +84,15 @@ assign_positions <- function(people, noise_scale = 1) {
     mutate(
       youth_x = youth_attractor$x,
       youth_y = youth_attractor$y,
-      youth_pull = (45 - age) / (45 - 18),
+      youth_pull = (max(age) - age) / (max(age) - min(age)),
       group_distance = log(sqrt((x - group_x)^2 + (y - group_y)^2) + 0.01),
       youth_distance = log(sqrt((x - youth_x)^2 + (y - youth_y)^2) + 0.01),
       utility = -1 * group_distance - 2 * youth_pull * youth_distance
     ) |>
     ungroup() |>
-    mutate(utility = utility + noise_scale * rnorm(n(), mean = 0, sd = sd(utility))) |>
+    mutate(
+      utility = utility + noise_scale * rnorm(n(), mean = 0, sd = sd(utility))
+    ) |>
     mutate(
       preference_rank = min_rank(desc(utility)),
       tie_break = runif(n()),
@@ -88,7 +108,11 @@ assign_positions <- function(people, noise_scale = 1) {
   for (row_index in seq_len(nrow(spatial_utilities))) {
     option <- spatial_utilities[row_index, ]
 
-    if (option$id %in% assigned_people || option$position_id %in% assigned_locations) {
+    if (
+      option$id %in%
+        assigned_people ||
+        option$position_id %in% assigned_locations
+    ) {
       next
     }
 
@@ -152,16 +176,20 @@ make_utilities <- function(choosers, candidates, weights = preference_weights) {
       candidate_group = candidate_group,
       same_group = chooser_group == candidate_group,
       age_gap = abs(chooser_age - candidate_age),
-      distance = sqrt((chooser_x - candidate_x)^2 + (chooser_y - candidate_y)^2),
+      distance = sqrt(
+        (chooser_x - candidate_x)^2 + (chooser_y - candidate_y)^2
+      ),
       candidate_attractiveness = candidate_attractiveness,
-      utility =
-        weights$same_group * as.numeric(same_group) +
+      utility = weights$same_group *
+        as.numeric(same_group) +
         weights$age_gap * age_gap +
         weights$distance * log(distance + 0.01) +
         weights$attractiveness * candidate_attractiveness
     ) |>
     group_by(chooser_group) |>
-    mutate(utility = utility + weights$noise * rnorm(n(), mean = 0, sd = sd(utility))) |>
+    mutate(
+      utility = utility + weights$noise * rnorm(n(), mean = 0, sd = sd(utility))
+    ) |>
     ungroup()
 }
 
@@ -174,7 +202,10 @@ make_utility_matrix <- function(utilities, row_ids, column_ids) {
   )
 
   utility_matrix[
-    cbind(match(utilities$candidate_id, row_ids), match(utilities$chooser_id, column_ids))
+    cbind(
+      match(utilities$candidate_id, row_ids),
+      match(utilities$chooser_id, column_ids)
+    )
   ] <- utilities$utility
 
   utility_matrix
@@ -210,8 +241,14 @@ match_partners <- function(men, women) {
   )
 
   matched_pairs <- matches |>
-    left_join(men |> rename_with(\(x) paste0("man_", x)), by = c("man_id" = "man_id")) |>
-    left_join(women |> rename_with(\(x) paste0("woman_", x)), by = c("woman_id" = "woman_id")) |>
+    left_join(
+      men |> rename_with(\(x) paste0("man_", x)),
+      by = c("man_id" = "man_id")
+    ) |>
+    left_join(
+      women |> rename_with(\(x) paste0("woman_", x)),
+      by = c("woman_id" = "woman_id")
+    ) |>
     mutate(
       same_group = 1L * (man_group == woman_group),
       age_gap = abs(man_age - woman_age),
@@ -248,7 +285,8 @@ make_choice_sets <- function(men, women, matched_pairs) {
       same_group = 1L * (group_man == group_woman),
       age_gap,
       distance,
-      choice = paste(id_man, id_woman) %in% paste(matched_pairs$man_id, matched_pairs$woman_id)
+      choice = paste(id_man, id_woman) %in%
+        paste(matched_pairs$man_id, matched_pairs$woman_id)
     )
 }
 

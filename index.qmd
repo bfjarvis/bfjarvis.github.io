@@ -396,10 +396,10 @@ This course engages with classical and contemporary research on inequality and s
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
-2026 • assortative mating, simulation, spatial models
+2026 • assortative mating, discrete choice models, log-linear models, simulation, spatial analysis
 :::
 
-### [Discrete Choice Models for Assortative Mating, Part 1: Simulating Actors and Locations for a Matching Model](blog/actors-and-locations/)
+### [Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simulating a Marriage Market](blog/actors-and-locations/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
