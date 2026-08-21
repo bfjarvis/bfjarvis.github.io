@@ -91,7 +91,7 @@ make_positions <- function(n) {
 xy<-make_positions(n)
 ```
 
-## Actors
+### Actors
 
 For the actors, I assume they are split into two genders, men and women, with sebsequent unions constituted by opposite gendered pairs. I'll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. Beyond gender and (eventually) position, I stipulate that each actor is characterized by just two other attributes: group membership, proxying something like race or ethnicity, and age, with the possibility of different age distributions for each group.
 
@@ -149,7 +149,7 @@ ggplot(actors, aes(age, fill = group)) +
   theme_minimal(base_size = 12)
 ```
 
-## Assigning actors to locations
+### Assigning actors to locations
 
 I want to introduce some group and age segregation into the simulated marriage market. I accomplish this by designating a set of attraction points. A point in the center pulls in younger actors. Then a set of three, group-specific poles outside the center pull in members of the respective group. 
 
@@ -248,6 +248,7 @@ actors<-
 
 ```
 
+## The final marriage market
 The resulting distribution of actors can be visualized as follows:
 
 ```{r}
