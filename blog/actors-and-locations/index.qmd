@@ -3,20 +3,15 @@ title: "Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simula
 description: "The first note in a small series: create actors, quasi-random locations, group attractors, and a utility-based residential assignment."
 date: "2026-07-17"
 author: "Benjamin F. Jarvis"
+metadata-files:
+  - ../_post-defaults.yml
 categories:
   - "assortative mating"
   - "discrete choice models"
   - "log-linear models"
   - "simulation"
   - "spatial analysis"
-toc: true
-toc-location: right
-link-citations: true
 bibliography: references.bib
-execute:
-  message: false
-  warning: false
-  freeze: auto
 ---
 
 ## Introduction
@@ -50,7 +45,11 @@ We can generate and compare the pseudo- and quasi-random positions as follows:
 
 ```{r}
 #| label: halton-vs-uniform
-#| caption: quasi-geographic positions generated from halton sequences and draws from a uniform distribution
+#| fig-cap: "Quasi-geographic positions generated from Halton sequences and draws from a uniform distribution."
+#| fig-align: center
+#| fig-width: 8
+#| fig-height: 4.2
+#| out-width: 100%
 
 n<-800
 
@@ -72,9 +71,14 @@ tibble(
 )
 
 ggplot(xy,aes(x=x,y=y)) +
-  geom_point() +
+  geom_point(size = 0.75) +
   facet_wrap(vars(type),nrow = 1) +
-  theme_void() + theme(aspect.ratio=1)
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = TRUE) +
+  theme_void() + 
+  theme(
+    aspect.ratio = 1,
+    plot.margin = margin(3, 3, 3, 3)
+  )
 
 ```
 
@@ -141,6 +145,10 @@ The differing sampled age distributions, broken down separately for men and wome
 ```{r}
 #| label: age-plot
 #| fig-cap: "Groups differ in mean age, but the simulated age distributions overlap."
+#| fig-align: center
+#| fig-width: 8
+#| fig-height: 4.6
+#| out-width: 100%
 group_colors <- c(a = "#c73535", b = "#555c60", c = "#287fc4")
 ggplot(actors, aes(age, fill = group)) +
   geom_density(alpha = 0.45, color = NA) +
@@ -157,6 +165,10 @@ I want to introduce some group and age segregation into the simulated marriage m
 ```{r}
 #| label: attractor-plot
 #| fig-cap: "Group-specific attractors and the central youth attractor."
+#| fig-align: center
+#| fig-width: 6.6
+#| fig-height: 6.6
+#| out-width: 86%
 
 poles <- tibble(
   group = c("a", "b", "c","youth"),
@@ -184,11 +196,14 @@ ggplot() +
     size = 8,
     show.legend = FALSE
   ) +
-  coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+  coord_equal(xlim = c(-0.03, 1.03), ylim = c(-0.03, 1.03), expand = FALSE) +
   scale_color_manual(values = group_colors) +
   labs(x = "Spatial coordinate x", y = "Spatial coordinate y", color = "Group") +
   theme_void(base_size = 12) + 
-  theme(legend.position="none")
+  theme(
+    legend.position="none",
+    plot.margin = margin(4, 4, 4, 4)
+  )
 ```
 
 
@@ -255,14 +270,19 @@ The resulting distribution of actors can be visualized as follows:
 ```{r}
 #| label: assigned-location-plot
 #| fig-cap: "Assigned locations. Point size increases with age."
+#| fig-align: center
+#| fig-width: 6.6
+#| fig-height: 6.6
+#| out-width: 86%
 
 ggplot(actors, aes(x, y, color = group, shape = sex, size = age)) +
   geom_point(alpha = 0.72) +
-  coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+  coord_equal(xlim = c(-0.03, 1.03), ylim = c(-0.03, 1.03), expand = FALSE) +
   scale_color_manual(values = group_colors) +
   scale_size_continuous(range = c(1.1, 3.2)) +
   labs(x = "Spatial coordinate x", y = "Spatial coordinate y", color = "Group", shape = "Sex", size = "Age") +
-  theme_void(base_size = 12)
+  theme_void(base_size = 12) +
+  theme(plot.margin = margin(4, 4, 4, 4))
 ```
 
 The result is a population with group structure, age structure, and spatial structure. In the next post, I'll uses these actors and locations to create unions based on two-sided partner preferences and a stable matching approach.

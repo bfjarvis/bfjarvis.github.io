@@ -3,13 +3,13 @@ title: "Conditional Logit and Loglinear Models for Group-Level Assortative Matin
 description: "The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates."
 date: "2026-07-17"
 author: "Benjamin F. Jarvis"
+metadata-files:
+  - ../_post-defaults.yml
 categories:
   - "matching"
   - "conditional logit"
   - "loglinear models"
   - "assortative mating"
-toc: true
-toc-location: right
 draft: true
 ---
 

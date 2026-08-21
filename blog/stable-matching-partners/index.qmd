@@ -3,12 +3,12 @@ title: "Assigning Partners With Gale-Shapley Matching"
 description: "The second note in the series: construct two-sided partner utilities and use Gale-Shapley matching to create stable pairs."
 date: "2026-07-17"
 author: "Benjamin F. Jarvis"
+metadata-files:
+  - ../_post-defaults.yml
 categories:
   - "assortative mating"
   - "matching"
   - "simulation"
-toc: true
-toc-location: right
 draft: true
 ---
 

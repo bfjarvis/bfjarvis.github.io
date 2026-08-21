@@ -3,12 +3,12 @@ title: "What Conditional Logit Can Use That a Group Table Cannot"
 description: "The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis."
 date: "2026-07-17"
 author: "Benjamin F. Jarvis"
+metadata-files:
+  - ../_post-defaults.yml
 categories:
   - "conditional logit"
   - "loglinear models"
   - "assortative mating"
-toc: true
-toc-location: right
 draft: true
 ---
 

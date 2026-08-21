@@ -3,12 +3,12 @@ title: "Does Conditional Logit Represent a Two-Sided Matching Process?"
 description: "The fifth note in the series: revisit what a one-sided choice model can and cannot recover from a two-sided stable matching process."
 date: "2026-07-17"
 author: "Benjamin F. Jarvis"
+metadata-files:
+  - ../_post-defaults.yml
 categories:
   - "conditional logit"
   - "matching"
   - "assortative mating"
-toc: true
-toc-location: right
 draft: true
 ---
 
