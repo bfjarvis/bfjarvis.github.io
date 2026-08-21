@@ -1,7 +1,7 @@
 ---
 title: "Discrete Choice Models of Assortative Mating, Part 1: Simulating a Marriage Market"
 description: "The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set "
-date: "2026-08-21T13:45:00+02:00"
+date: "2026-08-21T23:00:00+02:00"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
@@ -400,4 +400,246 @@ ggplot(data=union_utils,aes(x=age_gap,fill=matched)) +
   theme_minimal()
 ```
 
+## Reusable data generator
 
+For convenience, the full simulation can be wrapped into a small set of functions. The main function, `simulate_marriage_market()`, returns the exploded man-woman pair data, with one row for every possible union and a logical `matched` variable identifying the Gale-Shapley matches.
+
+```{r}
+#| label: reusable-data-generator
+
+scale_beta <- function(n, mean, precision, min_value = 0, max_value = 1) {
+  if (max_value <= min_value) {
+    stop("max_value must be greater than min_value.", call. = FALSE)
+  }
+
+  if (mean <= min_value || mean >= max_value) {
+    stop("mean must fall strictly between min_value and max_value.", call. = FALSE)
+  }
+
+  scaled_mean <- (mean - min_value) / (max_value - min_value)
+  shape1 <- scaled_mean * precision
+  shape2 <- (1 - scaled_mean) * precision
+
+  min_value + (max_value - min_value) * rbeta(n, shape1, shape2)
+}
+
+make_positions <- function(n) {
+  xy_sequence <- mnorm::halton(n = n, base = c(2, 3), start = 1L)
+
+  tibble(
+    position_id = seq_len(n),
+    x = xy_sequence[, 1],
+    y = xy_sequence[, 2]
+  )
+}
+
+make_group_counts <- function(n, group_shares) {
+  if (n %% 2 != 0) {
+    stop("n must be even so the market can be split equally by sex.", call. = FALSE)
+  }
+
+  if (any(group_shares < 0)) {
+    stop("group_shares cannot contain negative values.", call. = FALSE)
+  }
+
+  if (sum(group_shares) <= 0) {
+    stop("group_shares must have a positive sum.", call. = FALSE)
+  }
+
+  group_shares <- group_shares / sum(group_shares)
+  raw_counts <- (n / 2) * group_shares
+  group_counts <- floor(raw_counts)
+  remainder <- (n / 2) - sum(group_counts)
+
+  if (remainder > 0) {
+    add_to <- order(raw_counts - group_counts, decreasing = TRUE)[seq_len(remainder)]
+    group_counts[add_to] <- group_counts[add_to] + 1L
+  }
+
+  group_counts
+}
+
+make_actors <- function(
+  n = 800,
+  group_shares = c(a = 0.50, b = 0.30, c = 0.20),
+  age_means = c(a = 25, b = 30, c = 35),
+  age_precision = 7,
+  min_age = 18,
+  max_age = 45
+) {
+  group_counts <- make_group_counts(n, group_shares)
+
+  tibble(
+    group = names(group_counts),
+    age_mean = unname(age_means[group]),
+    n = unname(group_counts)
+  ) |>
+    expand_grid(tibble(sex = c("man", "woman"))) |>
+    reframe(
+      person = seq_len(n),
+      age = scale_beta(
+        n,
+        age_mean,
+        precision = age_precision,
+        min_value = min_age,
+        max_value = max_age
+      ),
+      .by = c(group, age_mean, sex)
+    ) |>
+    ungroup() |>
+    mutate(id = row_number()) |>
+    select(id, sex, group, age)
+}
+
+assign_locations <- function(
+  actors,
+  xy,
+  poles,
+  noise_scale = 2
+) {
+  youth_pole <- poles |> filter(group == "youth")
+  group_poles <- poles |> filter(group != "youth")
+
+  utilities <- actors |>
+    select(id, group, age) |>
+    crossing(xy) |>
+    left_join(group_poles, by = "group") |>
+    mutate(
+      youth_x = youth_pole$group_x,
+      youth_y = youth_pole$group_y,
+      youth_pull = (max(age) - age) / (max(age) - min(age)),
+      group_distance = log(sqrt((x - group_x)^2 + (y - group_y)^2) + 0.01),
+      youth_distance = log(sqrt((x - youth_x)^2 + (y - youth_y)^2) + 0.01),
+      utility = -1 * group_distance - 2 * youth_pull * youth_distance,
+      utility = utility + noise_scale * rnorm(n(), mean = 0, sd = sd(utility))
+    ) |>
+    arrange(desc(utility))
+
+  assigned_actors <- integer()
+  assigned_locations <- integer()
+  assignments <- vector("list", nrow(actors))
+  n_assigned <- 0L
+
+  for (row_index in seq_len(nrow(utilities))) {
+    option <- utilities[row_index, ]
+
+    if (
+      option$id %in% assigned_actors ||
+        option$position_id %in% assigned_locations
+    ) {
+      next
+    }
+
+    n_assigned <- n_assigned + 1L
+    assignments[[n_assigned]] <- option |>
+      select(id, position_id)
+
+    assigned_actors <- c(assigned_actors, option$id)
+    assigned_locations <- c(assigned_locations, option$position_id)
+
+    if (n_assigned == nrow(actors)) {
+      break
+    }
+  }
+
+  actors |>
+    left_join(bind_rows(assignments), by = "id") |>
+    left_join(xy, by = "position_id") |>
+    select(-position_id)
+}
+
+make_pair_utilities <- function(actors, coefs) {
+  cross_join(
+    actors |> filter(sex == "man") |> rename_with(\(x) paste0(x, "_man")),
+    actors |> filter(sex == "woman") |> rename_with(\(x) paste0(x, "_woman"))
+  ) |>
+    mutate(
+      age_gap = abs(age_man - age_woman),
+      distance = sqrt((x_man - x_woman)^2 + (y_man - y_woman)^2),
+      same_group = 1L * (group_man == group_woman),
+      utility = coefs$same_group * same_group +
+        coefs$age_gap * age_gap +
+        coefs$distance * log(distance + 0.01),
+      utility = utility + coefs$noise * rnorm(n(), mean = 0, sd = sd(utility))
+    ) |>
+    arrange(id_man, id_woman)
+}
+
+match_pairs <- function(union_utils) {
+  men <- sort(unique(union_utils$id_man))
+  women <- sort(unique(union_utils$id_woman))
+
+  utility_matrix <- matrix(
+    NA_real_,
+    nrow = length(women),
+    ncol = length(men),
+    dimnames = list(women, men)
+  )
+
+  utility_matrix[
+    cbind(
+      match(union_utils$id_woman, women),
+      match(union_utils$id_man, men)
+    )
+  ] <- union_utils$utility
+
+  unions <- matchingR::galeShapley.marriageMarket(
+    proposerUtils = utility_matrix,
+    reviewerUtils = t(utility_matrix)
+  )
+
+  tibble(
+    id_man = men,
+    id_woman = women[as.integer(unions$proposals)],
+    matched = TRUE
+  )
+}
+
+simulate_marriage_market <- function(
+  seed = 543,
+  n = 800,
+  group_shares = c(a = 0.50, b = 0.30, c = 0.20),
+  age_means = c(a = 25, b = 30, c = 35),
+  age_precision = 7,
+  min_age = 18,
+  max_age = 45,
+  location_noise = 2,
+  union_noise = 0.5,
+  poles = tibble(
+    group = c("a", "b", "c", "youth"),
+    group_x = c(0.25, 0.50, 0.75, 0.5),
+    group_y = c(0.25, 0.75, 0.25, 0.5)
+  ),
+  coefs = list(
+    same_group = 0.5,
+    age_gap = -0.1,
+    distance = -1,
+    noise = union_noise
+  )
+) {
+  set.seed(seed)
+
+  actors <- make_actors(
+    n = n,
+    group_shares = group_shares,
+    age_means = age_means,
+    age_precision = age_precision,
+    min_age = min_age,
+    max_age = max_age
+  )
+  xy <- make_positions(n)
+  actors <- assign_locations(actors, xy, poles, noise_scale = location_noise)
+
+  union_utils <- make_pair_utilities(actors, coefs)
+  matches <- match_pairs(union_utils)
+
+  union_utils |>
+    left_join(matches, by = c("id_man", "id_woman")) |>
+    mutate(matched = if_else(is.na(matched), FALSE, matched))
+}
+
+simulated_pairs <- simulate_marriage_market(seed = 543)
+
+simulated_pairs |>
+  count(matched)
+```
