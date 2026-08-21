@@ -186,9 +186,10 @@ div.csl-indent {
   <li><a href="#building-a-simulated-marriage-market" id="toc-building-a-simulated-marriage-market" class="nav-link" data-scroll-target="#building-a-simulated-marriage-market">Building a simulated marriage market</a>
   <ul class="collapse">
   <li><a href="#positions" id="toc-positions" class="nav-link" data-scroll-target="#positions">Positions</a></li>
-  </ul></li>
   <li><a href="#actors" id="toc-actors" class="nav-link" data-scroll-target="#actors">Actors</a></li>
   <li><a href="#assigning-actors-to-locations" id="toc-assigning-actors-to-locations" class="nav-link" data-scroll-target="#assigning-actors-to-locations">Assigning actors to locations</a></li>
+  </ul></li>
+  <li><a href="#the-final-marriage-market" id="toc-the-final-marriage-market" class="nav-link" data-scroll-target="#the-final-marriage-market">The final marriage market</a></li>
   </ul>
 </nav>
     </div>
@@ -304,9 +305,8 @@ div.csl-indent {
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>xy<span class="ot">&lt;-</span><span class="fu">make_positions</span>(n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="actors" class="level2">
-<h2 data-anchor-id="actors">Actors</h2>
+<section id="actors" class="level3">
+<h3 data-anchor-id="actors">Actors</h3>
 <p>For the actors, I assume they are split into two genders, men and women, with sebsequent unions constituted by opposite gendered pairs. I’ll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. Beyond gender and (eventually) position, I stipulate that each actor is characterized by just two other attributes: group membership, proxying something like race or ethnicity, and age, with the possibility of different age distributions for each group.</p>
 <p>I use scaled beta distributions to generate the ages. This allows me to constrain the ages to fall between two bounds. This is represented in the following function:</p>
 <div class="cell">
@@ -347,16 +347,16 @@ div.csl-indent {
 <pre><code># A tibble: 10 × 4
       id sex   group   age
    &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
- 1   458 man   b      26.4
- 2   442 man   b      23.6
- 3    17 man   a      25.3
- 4   698 man   c      37.7
- 5   400 woman a      24.0
- 6   339 woman a      27.5
- 7    98 man   a      19.5
- 8   654 man   c      25.0
- 9   321 woman a      22.8
-10   154 man   a      34.9</code></pre>
+ 1   163 man   a      29.7
+ 2   280 woman a      21.2
+ 3     7 man   a      22.9
+ 4   566 woman b      25.3
+ 5   520 man   b      22.1
+ 6   329 woman a      32.3
+ 7   744 woman c      33.7
+ 8    79 man   a      21.9
+ 9   614 woman b      31.0
+10   630 woman b      30.1</code></pre>
 </div>
 </div>
 <p>The differing sampled age distributions, broken down separately for men and women, can be visualized using a density plot:</p>
@@ -378,8 +378,8 @@ div.csl-indent {
 </div>
 </div>
 </section>
-<section id="assigning-actors-to-locations" class="level2">
-<h2 data-anchor-id="assigning-actors-to-locations">Assigning actors to locations</h2>
+<section id="assigning-actors-to-locations" class="level3">
+<h3 data-anchor-id="assigning-actors-to-locations">Assigning actors to locations</h3>
 <p>I want to introduce some group and age segregation into the simulated marriage market. I accomplish this by designating a set of attraction points. A point in the center pulls in younger actors. Then a set of three, group-specific poles outside the center pull in members of the respective group.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>poles <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
@@ -476,6 +476,10 @@ div.csl-indent {
 <span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(xy, <span class="at">by =</span> <span class="st">"position_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>position_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+<section id="the-final-marriage-market" class="level2">
+<h2 data-anchor-id="the-final-marriage-market">The final marriage market</h2>
 <p>The resulting distribution of actors can be visualized as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(actors, <span class="fu">aes</span>(x, y, <span class="at">color =</span> group, <span class="at">shape =</span> sex, <span class="at">size =</span> age)) <span class="sc">+</span></span>
