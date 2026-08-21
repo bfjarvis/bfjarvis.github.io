@@ -1,7 +1,7 @@
 ---
-title: "Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simulating a Marriage Market"
-description: "The first note in a small series: create actors, quasi-random locations, group attractors, and a utility-based residential assignment."
-date: "2026-07-17"
+title: "Discrete Choice Models of Assortative Mating, Part 1: Simulating a Marriage Market"
+description: "The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set "
+date: "2026-08-21T13:45:00+02:00"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
@@ -16,7 +16,7 @@ bibliography: references.bib
 
 ## Introduction
 
-There's a been a percolating trend in assortative mating research, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on Daniel McFadden's multinomial logit model.^[Confusingly, this is also referred to as the conditional logistic regression model. This model actually nests what sociologists and political scientists often call "multinomial logistic regression."] Examples include the work of Karen Haandrikman [-@haandrikmanExplainingFlightCupids2012], Aaron Gullickson [-@gullicksonCounterfactualChoiceApproach2021], and my colleague and student, Jesper Lindmarker [-@lindmarkerHoweverFarAway2025]. That the conditional logit model offers a more general formulation of the log-linear models that have served as the bread and butter of mobility and assortative mating research has been known for quite some time. John A. Logan showed as much in the 1980s [-@loganMultivariateModelMobility1983], as did Richard Breen in the 1990s [-@breenIndividualLevelModels1994]. Logan even points to knowledge of the equivalence dating back to the 1970s.
+There's a been a percolating trend in sociological research on assortative mating, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on McFadden's conditinoal logit model [-@mcfaddenConditionalLogitAnalysis1974].^[Confusingly, this is also sometimes referred to as the multinomial logistic regression model. In fact, the conditional logit model nests what sociologists and political scientists often call the multinomial model.] Examples include the work of Karen Haandrikman [-@haandrikmanExplainingFlightCupids2012], Aaron Gullickson [-@gullicksonCounterfactualChoiceApproach2021], and my colleague and student, Jesper Lindmarker [-@lindmarkerHoweverFarAway2025]. That the conditional logit model offers a more general formulation of the log-linear models that have served as the bread and butter of mobility and assortative mating research has been known for quite some time. John A. Logan showed as much in the 1980s [-@loganMultivariateModelMobility1983], as did Richard Breen in the 1990s [-@breenIndividualLevelModels1994]. Logan even points to knowledge of the equivalence dating back to the 1970s.
 
 That the tiny revolution in assortative mating research away from traditional log-linear modeling to discrete choice modeling is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren't so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.
 
@@ -39,6 +39,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)  
 library(mnorm)
+library(matchingR)
 ```
 
 We can generate and compare the pseudo- and quasi-random positions as follows:
@@ -51,6 +52,7 @@ We can generate and compare the pseudo- and quasi-random positions as follows:
 #| fig-height: 4.2
 #| out-width: 100%
 
+set.seed(543)
 n<-800
 
 xy_sequence <- halton(n = n, base = c(2, 3), start = 1L)
@@ -264,7 +266,6 @@ actors<-
 
 ```
 
-## The final marriage market
 The resulting distribution of actors can be visualized as follows:
 
 ```{r}
@@ -286,3 +287,117 @@ ggplot(actors, aes(x, y, color = group, shape = sex, size = age)) +
 ```
 
 The result is a population with group structure, age structure, and spatial structure. In the next post, I'll uses these actors and locations to create unions based on two-sided partner preferences and a stable matching approach.
+
+## Forming unions 
+
+To generate unions from this set of singles, I use a utility-based, stable matching frame work that makes use the of the Gale-Shapley algorithm. For the time being, I forego a two-sided approach. So men and women don't have separate utility functions for each other. Rather, I assume that every possible pair has a single utility. This assumption could be relaxed later.
+
+### Calculating utilities for possible unions
+
+I first ennumerate all possible combinations of men and women. I calculate utilities as a linear combination of 
+
+```{r}
+coefs <- list(
+  same_group = 0.5,
+  age_gap = -0.1,
+  distance = -1,
+  noise = 0.5
+)
+
+union_utils<-
+  cross_join(
+    actors |> filter(sex=="man") |> rename_with(\(x) paste0(x, "_man")),
+    actors |> filter(sex=="woman") |> rename_with(\(x) paste0(x, "_woman"))
+  ) |>
+  mutate(
+    age_gap = abs(age_man - age_woman),
+    distance = sqrt((x_man - x_woman)^2 + (y_man - y_woman)^2),
+    same_group = 1L*(group_man==group_woman),
+    utility = coefs$same_group*same_group +
+        coefs$age_gap*age_gap +
+        coefs$distance*log(distance + 0.01),
+    utility = utility+coefs$noise*rnorm(n(),mean=0,sd=sd(utility))
+  ) |> 
+  arrange(id_man,id_woman)
+```
+
+We can plot the distribution of utilities by group, which shows, unsurprisingly, that utilities are higher for within group pairings, but with substantial heterogeneity and distributional overlap.
+
+```{r}
+#| label: union-utility-plot
+#| fig-cap: "Simulated match utilities by man and woman's group membership."
+ggplot(data=union_utils, aes(x=utility,fill=group_woman)) + 
+  geom_density(alpha = 0.45, color = NA) +
+  facet_wrap(~group_man) +
+  labs(fill="woman's\ngroup")
+```
+
+### Tranforming utilities into unions
+
+To run the Gale-Shapley algorithm, we have to create matrices of union utilities from the perspective of men and women. This matrix can be fed into a Gale-Shapley algorithm to generate stable matches, where the overall utility of the matches cannot be improved by changing any of the unions. This matching is performed using the `matchingR` package. The package expects a matrix of proposer utilities, i.e., the utility the proposer would obtain from being matched with a given reviewer, where the columns indicate the proposers, and the rows indicate the reviewers. It also requires a corresponding matrix of reviewer utilities, i.e., the utility the reviewer gets from matching with the proposer, where the columns indicate the reviewers, and the rows indicate the proposers. In our case, these two matrices are just transposes of each other, but these matrices could differ more substantially. This would occur if, for example, men had different preferences than women. In this case, I treat the men as the proposers, and women as the reviewers.
+
+```{r}
+men<-sort(filter(actors,sex=="man")$id)
+women<-sort(filter(actors,sex=="woman")$id)
+
+utility_matrix<-matrix(
+    NA_real_,
+    nrow = length(women),
+    ncol = length(men),
+    dimnames = list(women, men)
+  )
+utility_matrix[
+    cbind(
+      match(union_utils$id_woman, women),
+      match(union_utils$id_man, men)
+    )
+  ] <- union_utils$utility
+```
+
+With the matrices in hand, the Gale-Shapley algorithm can be applied and results extracted. I join a variable identifying matched pairs to the fully exploded data of all possible man-woman pairs.
+
+```{r}
+unions <- galeShapley.marriageMarket(
+    proposerUtils = utility_matrix,
+    reviewerUtils = t(utility_matrix)
+  )
+
+matches <- tibble(
+  id_man = men,
+  id_woman = women[as.integer(unions$proposals)]
+) |> mutate(matched=TRUE)
+
+union_utils <-
+  union_utils |> 
+  left_join(matches) |> 
+  mutate(matched = if_else(is.na(matched),FALSE,TRUE))
+```
+
+
+A quick glance suggests that the final matches align with what might be expected based on the utility functions used for simulation: The simulated matches are closer together in distance and age, and are more likely to share group membership.
+
+```{r}
+union_utils |> 
+  group_by(matched) |> 
+  summarize(across(c(distance,age_gap,same_group),~mean(.x)))
+```
+
+And we can compare matches to non-matches graphically for distance and age gap
+
+```{r}
+#| label: match-vs-no-distance
+#| fig-cap: "Distance to opposite sex in matched vs. non-matched pairs"
+ggplot(data=union_utils,aes(x=distance,fill=matched)) +
+  geom_density(alpha=0.4,color=NA) +
+  theme_minimal()
+```
+
+```{r}
+#| label: match-vs-no-agegap
+#| fig-cap: "Absolute age difference from opposite sex in matched vs. non-matched pairs"
+ggplot(data=union_utils,aes(x=age_gap,fill=matched)) +
+  geom_density(alpha=0.4,color=NA) +
+  theme_minimal()
+```
+
+

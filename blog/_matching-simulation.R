@@ -9,17 +9,6 @@ suppressPackageStartupMessages({
 group_colors <- c(a = "#c73535", b = "#555c60", c = "#287fc4")
 
 scale_beta <- function(n, mean, precision, min_value = 0, max_value = 1) {
-  if (max_value <= min_value) {
-    stop("max_value must be greater than min_value.", call. = FALSE)
-  }
-
-  if (mean <= min_value || mean >= max_value) {
-    stop(
-      "mean must fall strictly between min_value and max_value.",
-      call. = FALSE
-    )
-  }
-
   scaled_mean <- (mean - min_value) / (max_value - min_value)
   shape1 <- scaled_mean * precision
   shape2 <- (1 - scaled_mean) * precision
@@ -203,7 +192,7 @@ make_utility_matrix <- function(utilities, row_ids, column_ids) {
 
   utility_matrix[
     cbind(
-      match(utilities$candidate_id, row_ids),
+      match(utilities$id_man, row_ids),
       match(utilities$chooser_id, column_ids)
     )
   ] <- utilities$utility

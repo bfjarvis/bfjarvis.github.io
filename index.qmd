@@ -399,14 +399,14 @@ This course engages with classical and contemporary research on inequality and s
 2026 • assortative mating, discrete choice models, log-linear models, simulation, spatial analysis
 :::
 
-### [Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simulating a Marriage Market](blog/actors-and-locations/)
+### [Discrete Choice Models of Assortative Mating, Part 1: Simulating a Marriage Market](blog/actors-and-locations/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
 :::
 
 ::: {.content-card-description}
-The first note in a small series: create actors, quasi-random locations, group attractors, and a utility-based residential assignment.
+The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set
 :::
 
 :::
