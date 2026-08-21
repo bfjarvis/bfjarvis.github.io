@@ -16,6 +16,7 @@ bibliography: references.bib
 execute:
   message: false
   warning: false
+  freeze: auto
 ---
 
 ## Introduction
