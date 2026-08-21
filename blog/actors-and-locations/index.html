@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-07-17">
 <meta name="description" content="The first note in a small series: create actors, quasi-random locations, group attractors, and a utility-based residential assignment.">
 
-<title>Discrete Choice Models for Assortative Mating, Part 1: Simulating Actors and Locations for a Matching Model – Benjamin F. Jarvis</title>
+<title>Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simulating a Marriage Market – Benjamin F. Jarvis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,7 +57,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -162,16 +182,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro-conditional-logit-models-for-assortative-mating-research" id="toc-intro-conditional-logit-models-for-assortative-mating-research" class="nav-link active" data-scroll-target="#intro-conditional-logit-models-for-assortative-mating-research">Intro: Conditional logit models for assortative mating research</a></li>
-  <li><a href="#building-a-simulated-marriage-market" id="toc-building-a-simulated-marriage-market" class="nav-link" data-scroll-target="#building-a-simulated-marriage-market">Building a simulated marriage market</a></li>
-  <li><a href="#positions" id="toc-positions" class="nav-link" data-scroll-target="#positions">Positions</a></li>
-  <li><a href="#actors" id="toc-actors" class="nav-link" data-scroll-target="#actors">Actors</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#building-a-simulated-marriage-market" id="toc-building-a-simulated-marriage-market" class="nav-link" data-scroll-target="#building-a-simulated-marriage-market">Building a simulated marriage market</a>
   <ul class="collapse">
-  <li><a href="#actors-1" id="toc-actors-1" class="nav-link" data-scroll-target="#actors-1">Actors</a></li>
-  <li><a href="#candidate-locations" id="toc-candidate-locations" class="nav-link" data-scroll-target="#candidate-locations">Candidate Locations</a></li>
-  <li><a href="#attractors" id="toc-attractors" class="nav-link" data-scroll-target="#attractors">Attractors</a></li>
-  <li><a href="#assigned-locations" id="toc-assigned-locations" class="nav-link" data-scroll-target="#assigned-locations">Assigned Locations</a></li>
+  <li><a href="#positions" id="toc-positions" class="nav-link" data-scroll-target="#positions">Positions</a></li>
   </ul></li>
+  <li><a href="#actors" id="toc-actors" class="nav-link" data-scroll-target="#actors">Actors</a></li>
+  <li><a href="#assigning-actors-to-locations" id="toc-assigning-actors-to-locations" class="nav-link" data-scroll-target="#assigning-actors-to-locations">Assigning actors to locations</a></li>
   </ul>
 </nav>
     </div>
@@ -180,11 +197,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Discrete Choice Models for Assortative Mating, Part 1: Simulating Actors and Locations for a Matching Model</h1>
+<h1 class="title">Discrete Choice Models (DCM) for Assortative Mating (AM), Part 1: Simulating a Marriage Market</h1>
   <div class="quarto-categories">
     <div class="quarto-category">assortative mating</div>
+    <div class="quarto-category">discrete choice models</div>
+    <div class="quarto-category">log-linear models</div>
     <div class="quarto-category">simulation</div>
-    <div class="quarto-category">spatial models</div>
+    <div class="quarto-category">spatial analysis</div>
   </div>
   </div>
 
@@ -219,66 +238,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="intro-conditional-logit-models-for-assortative-mating-research" class="level1">
-<h1>Intro: Conditional logit models for assortative mating research</h1>
-<p>There’s a been a trend in assortative mating research, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on Daniel McFadden’s multinomial logit model.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Examples include the work of Karen Haandrikman<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, Aaron Gullickson<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, and my colleague and student, Jesper Lindmarker<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
-<p>That the conditional logit model offers a more general formulation of the log-linear models that have been the “bread and butter” of mobility and assortative mating research has been known, but was not widely acknowledged or leveraged until relatively recently. John A. Logan showed as much in the 1980s<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, as did Richard Breen in the 1990s<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
-<p>That this tiny revolution in assortative mating research is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are more willing to play fast and loose with statistical methods that have descriptive utility, while not always being so concerned with identification and equilibrium, particularly the stable matching assumptions that often underlie economists work in this area. Using a discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
-<p>So, this research note. My goal is to demonstrate, yet again, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis, for relatively simple model specifications. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some intuitive ideas about the factors affecting assortative mating.</p>
-<p>This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I’ll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the ``deeper’’ parameters that actually drive union formation in the simulated data.</p>
+<section id="introduction" class="level2">
+<h2 data-anchor-id="introduction">Introduction</h2>
+<p>There’s a been a percolating trend in assortative mating research, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on Daniel McFadden’s multinomial logit model.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Examples include the work of Karen Haandrikman <span class="citation" data-cites="haandrikmanExplainingFlightCupids2012">(<a href="#ref-haandrikmanExplainingFlightCupids2012" role="doc-biblioref">2012</a>)</span>, Aaron Gullickson <span class="citation" data-cites="gullicksonCounterfactualChoiceApproach2021">(<a href="#ref-gullicksonCounterfactualChoiceApproach2021" role="doc-biblioref">2021</a>)</span>, and my colleague and student, Jesper Lindmarker <span class="citation" data-cites="lindmarkerHoweverFarAway2025">(<a href="#ref-lindmarkerHoweverFarAway2025" role="doc-biblioref">2025</a>)</span>. That the conditional logit model offers a more general formulation of the log-linear models that have served as the bread and butter of mobility and assortative mating research has been known for quite some time. John A. Logan showed as much in the 1980s <span class="citation" data-cites="loganMultivariateModelMobility1983">(<a href="#ref-loganMultivariateModelMobility1983" role="doc-biblioref">1983</a>)</span>, as did Richard Breen in the 1990s <span class="citation" data-cites="breenIndividualLevelModels1994">(<a href="#ref-breenIndividualLevelModels1994" role="doc-biblioref">1994</a>)</span>. Logan even points to knowledge of the equivalence dating back to the 1970s.</p>
+<p>That the tiny revolution in assortative mating research away from traditional log-linear modeling to discrete choice modeling is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
+<p>So, this research note. My goal is to demonstrate, yet again, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis for relatively simple model specifications. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some intuitive ideas about the factors affecting assortative mating.</p>
+<p>This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I’ll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the “deeper” parameters that actually drive union formation in the simulated data.</p>
 </section>
-<section id="building-a-simulated-marriage-market" class="level1">
-<h1>Building a simulated marriage market</h1>
-<p>The marriage market we will work with will be characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.</p>
-</section>
-<section id="positions" class="level1">
-<h1>Positions</h1>
-<p>My goal is to create a semi-regular grid of what might be construed as housing units for actors to occupy. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn’t look “right” to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced that pseudo-random numbers, which feels right for this fictive quasi-geographic set-up.</p>
+<section id="building-a-simulated-marriage-market" class="level2">
+<h2 data-anchor-id="building-a-simulated-marriage-market">Building a simulated marriage market</h2>
+<p>I consider a marriage market characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.</p>
+<section id="positions" class="level3">
+<h3 data-anchor-id="positions">Positions</h3>
+<p>My goal is to create a semi-regular arrangement of what might be construed as housing units or residential positions for actors to occupy. These positions are static, and so the actors are conceived of as static. Their mobility is implicit in how space determines union formation, which I cover in the next post. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn’t look “right” to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced than pseudo-random numbers, which feels right for this fictive geography.</p>
 <p>First things first a few libraries. I prefer <code>dplyr</code> for data handling and <code>ggplot</code> for plotting. I use <code>mnorm</code> for its halton sequence generation:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)  </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mnorm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)  </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)  </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mnorm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can generate and compare the pseudo- and quasi-random positions as follows:</p>
 <div class="cell" data-caption="quasi-geographic positions generated from halton sequences and draws from a uniform distribution">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">400</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>xy_sequence <span class="ot">&lt;-</span> <span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>xy<span class="ot">&lt;-</span><span class="fu">bind_rows</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> xy_sequence[, <span class="dv">1</span>],</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> xy_sequence[, <span class="dv">2</span>],</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">type=</span><span class="st">"halton"</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>),</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">x=</span><span class="fu">runif</span>(n),</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">y=</span><span class="fu">runif</span>(n),</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">type=</span><span class="st">"uniform"</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(xy,<span class="fu">aes</span>(<span class="at">x=</span>x,<span class="at">y=</span>y)) <span class="sc">+</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type),<span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">aspect.ratio=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">800</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>xy_sequence <span class="ot">&lt;-</span> <span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>xy<span class="ot">&lt;-</span><span class="fu">bind_rows</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> xy_sequence[, <span class="dv">1</span>],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> xy_sequence[, <span class="dv">2</span>],</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">type=</span><span class="st">"halton"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">x=</span><span class="fu">runif</span>(n),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">y=</span><span class="fu">runif</span>(n),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">type=</span><span class="st">"uniform"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(xy,<span class="fu">aes</span>(<span class="at">x=</span>x,<span class="at">y=</span>y)) <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type),<span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">aspect.ratio=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -287,79 +291,83 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 </div>
 </div>
-<p>As I said, the Halton draws just look a bit better for the present purposes. It resembles a sort of <code>social distancing</code> heuristic, with positions filling out the space in an irregular, but not overly clumpy way. I save the position generator in a function as follows:</p>
+<p>As I said, the Halton draws just look a bit better for the present purposes. It resembles a sort of <code>social distancing</code> heuristic, with positions filling out the space in an irregular, but not overly clumpy way. I save the position generator in a function, and then call it to produce positions.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>make_positions <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  xy_sequence <span class="ot">&lt;-</span> <span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> position_sequence[, <span class="dv">1</span>],</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> position_sequence[, <span class="dv">2</span>]</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>make_positions <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  xy_sequence <span class="ot">&lt;-</span> mnorm<span class="sc">::</span><span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> xy_sequence[, <span class="dv">1</span>],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> xy_sequence[, <span class="dv">2</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>xy<span class="ot">&lt;-</span><span class="fu">make_positions</span>(n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="actors" class="level1">
-<h1>Actors</h1>
-<p>For the actors, I assume they are split into two gendered groups, men and women, with sebsequent unions constituted by opposite gendered pairs. I’ll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. I stipulate that each partner is characterized by just handful of attributes. First, there will be a group membership, proxying something like race or ethnicity, I’ll just use primary colors for the different groups. There will also be age, with the possibility of differences in ages between groups.</p>
-<p>Assortative mating is usually described through attributes of the partners: education, ethnicity, class background, age, religion, or other characteristics. But meetings and choices are also spatial. People do not choose from an abstract population. They choose from people they encounter, and encounters are structured by where people live, study, work, and socialize.</p>
-<p>This note builds the first part of a small simulation: actors with group membership, age, sex, attractiveness, and a position in a two-dimensional unit square. The point is not realism. The point is to create a simple data-generating process with enough structure to make later modeling choices visible.</p>
+</section>
+<section id="actors" class="level2">
+<h2 data-anchor-id="actors">Actors</h2>
+<p>For the actors, I assume they are split into two genders, men and women, with sebsequent unions constituted by opposite gendered pairs. I’ll make the market gender balanced for the sake of simplicity, and when all is said and done, each actor will be paired with one and only one opposite gender partner. Beyond gender and (eventually) position, I stipulate that each actor is characterized by just two other attributes: group membership, proxying something like race or ethnicity, and age, with the possibility of different age distributions for each group.</p>
+<p>I use scaled beta distributions to generate the ages. This allows me to constrain the ages to fall between two bounds. This is represented in the following function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"../_matching-simulation.R"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">simulate_actors_and_locations</span>(<span class="at">seed =</span> <span class="dv">543</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>singles <span class="ot">&lt;-</span> market<span class="sc">$</span>singles</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>candidate_positions <span class="ot">&lt;-</span> market<span class="sc">$</span>candidate_positions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scale_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, mean, precision, <span class="at">min_value =</span> <span class="dv">0</span>, <span class="at">max_value =</span> <span class="dv">1</span>) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  scaled_mean <span class="ot">&lt;-</span> (mean <span class="sc">-</span> min_value) <span class="sc">/</span> (max_value <span class="sc">-</span> min_value)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  shape1 <span class="ot">&lt;-</span> scaled_mean <span class="sc">*</span> precision</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  shape2 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> scaled_mean) <span class="sc">*</span> precision</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  min_value <span class="sc">+</span> (max_value <span class="sc">-</span> min_value) <span class="sc">*</span> <span class="fu">rbeta</span>(n, shape1, shape2)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="actors-1" class="level2">
-<h2 data-anchor-id="actors-1">Actors</h2>
-<p>There are three groups, labeled <code>a</code>, <code>b</code>, and <code>c</code>. The groups differ in size and in mean age. Group <code>a</code> is larger and younger; group <code>c</code> is smaller and older. The age distributions overlap, however, so group membership is not simply a proxy for age.</p>
+<p>With this function in hand, I can create a dataset of simulated actors, for whom I also generate identifiers, which will be convenient in subsequent posts. The mean ages of the groups differ, but the age ranges are the same.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>singles <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sex, group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>scale_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, mean, precision, <span class="at">min_value =</span> <span class="dv">0</span>, <span class="at">max_value =</span> <span class="dv">1</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  scaled_mean <span class="ot">&lt;-</span> (mean <span class="sc">-</span> min_value) <span class="sc">/</span> (max_value <span class="sc">-</span> min_value)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  shape1 <span class="ot">&lt;-</span> scaled_mean <span class="sc">*</span> precision</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  shape2 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> scaled_mean) <span class="sc">*</span> precision</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  min_value <span class="sc">+</span> (max_value <span class="sc">-</span> min_value) <span class="sc">*</span> <span class="fu">rbeta</span>(n, shape1, shape2)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>actors <span class="ot">&lt;-</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_mean =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">35</span>),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">120</span>, <span class="dv">80</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_grid</span>(<span class="fu">tibble</span>(<span class="at">sex =</span> <span class="fu">c</span>(<span class="st">"man"</span>, <span class="st">"woman"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">person =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">scale_beta</span>(n, age_mean, <span class="at">precision =</span> <span class="dv">7</span>, <span class="at">min_value =</span> <span class="dv">18</span>, <span class="at">max_value =</span> <span class="dv">45</span>),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> <span class="fu">c</span>(group, age_mean, sex)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, sex, group, age)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_sample</span>(actors,<span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  sex   group     n
-  &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
-1 man   a        50
-2 man   b        30
-3 man   c        20
-4 woman a        50
-5 woman b        30
-6 woman c        20</code></pre>
+<pre><code># A tibble: 10 × 4
+      id sex   group   age
+   &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+ 1   458 man   b      26.4
+ 2   442 man   b      23.6
+ 3    17 man   a      25.3
+ 4   698 man   c      37.7
+ 5   400 woman a      24.0
+ 6   339 woman a      27.5
+ 7    98 man   a      19.5
+ 8   654 man   c      25.0
+ 9   321 woman a      22.8
+10   154 man   a      34.9</code></pre>
 </div>
 </div>
+<p>The differing sampled age distributions, broken down separately for men and women, can be visualized using a density plot:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>singles <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex, group) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_age =</span> <span class="fu">mean</span>(age),</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_age =</span> <span class="fu">sd</span>(age),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_age =</span> <span class="fu">min</span>(age),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_age =</span> <span class="fu">max</span>(age),</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 7
-  sex   group     n mean_age sd_age min_age max_age
-  &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-1 man   a        50     25.5    3.3    19.3    33.3
-2 man   b        30     30.2    5.3    21      43.5
-3 man   c        20     36.1    4.1    28.5    44.3
-4 woman a        50     26.7    4.9    19.5    37.5
-5 woman b        30     31.1    5.1    21.7    41.4
-6 woman c        20     38.8    4.1    29.1    43.5</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(singles, <span class="fu">aes</span>(age, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> sex) <span class="sc">+</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>group_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="st">"#c73535"</span>, <span class="at">b =</span> <span class="st">"#555c60"</span>, <span class="at">c =</span> <span class="st">"#287fc4"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(actors, <span class="fu">aes</span>(age, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> sex) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -370,107 +378,149 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 </div>
 </section>
-<section id="candidate-locations" class="level2">
-<h2 data-anchor-id="candidate-locations">Candidate Locations</h2>
-<p>Rather than drawing locations with ordinary pseudo-random numbers, the simulation starts with a quasi-random Halton sequence. This gives a more even coverage of the unit square. The locations are not yet assigned to people. They are just available positions.</p>
+<section id="assigning-actors-to-locations" class="level2">
+<h2 data-anchor-id="assigning-actors-to-locations">Assigning actors to locations</h2>
+<p>I want to introduce some group and age segregation into the simulated marriage market. I accomplish this by designating a set of attraction points. A point in the center pulls in younger actors. Then a set of three, group-specific poles outside the center pull in members of the respective group.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(candidate_positions, <span class="fu">aes</span>(x, y)) <span class="sc">+</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">alpha =</span> <span class="fl">0.72</span>, <span class="at">color =</span> <span class="st">"#555c60"</span>) <span class="sc">+</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>) <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>poles <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>,<span class="st">"youth"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_x =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_y =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> xy,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(x, y),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.28</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#9aa0a3"</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> poles,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(group_x, group_y, <span class="at">color =</span> group),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">5</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> poles,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(group_x, group_y, <span class="at">label =</span> group, <span class="at">color=</span>group),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.055</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">8</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>, <span class="at">color =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span> </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/candidate-positions-1.png" class="img-fluid figure-img" width="556"></p>
-<figcaption>Candidate locations generated from a two-dimensional Halton sequence.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="attractors" class="level2">
-<h2 data-anchor-id="attractors">Attractors</h2>
-<p>The location assignment has two kinds of attractors. Each group has its own group-specific center. Younger actors also feel a pull toward a central youth attractor. The youth pull declines with age.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> candidate_positions,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(x, y),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.28</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#9aa0a3"</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> market<span class="sc">$</span>group_attractors,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(group_x, group_y, <span class="at">color =</span> group),</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">5</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> market<span class="sc">$</span>youth_attractor,</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(x, y),</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">8</span>,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">5</span>,</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#1d2224"</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> market<span class="sc">$</span>group_attractors,</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(group_x, group_y, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"group"</span>, group)),</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.055</span>,</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.4</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.50</span>, <span class="at">y =</span> <span class="fl">0.57</span>, <span class="at">label =</span> <span class="st">"youth"</span>, <span class="at">size =</span> <span class="fl">3.4</span>) <span class="sc">+</span></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>, <span class="at">color =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/attractor-plot-1.png" class="img-fluid figure-img" width="556"></p>
+<p><img src="index_files/figure-html/attractor-plot-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Group-specific attractors and the central youth attractor.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>For each actor-position pair, the simulation computes a spatial utility. Actors prefer positions closer to their group attractor. Younger actors also prefer positions closer to the youth attractor. Then all person-position pairs are ranked by utility, with a small random tie-breaker, and the simulation walks down the ranked list accepting a pair only when both the person and position are still unassigned.</p>
-<p>This is intentionally simpler than a full housing-market model. It creates structured spatial exposure while keeping the assignment mechanism inspectable.</p>
-</section>
-<section id="assigned-locations" class="level2">
-<h2 data-anchor-id="assigned-locations">Assigned Locations</h2>
+<p>To assign actors to location, I use utility-based probabilistic assignment approach. The utility function for each actor is based on the distance to the actor’s respective group pole and on the distance to the youth attraction point, with the latter depending on the age of the actor him/herself. A small, random noise term is also added to each utility. Then iterate through locations, assigning</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(singles, <span class="fu">aes</span>(x, y, <span class="at">color =</span> group, <span class="at">shape =</span> sex, <span class="at">size =</span> age)) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.72</span>) <span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">1.1</span>, <span class="fl">3.2</span>)) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>, <span class="at">color =</span> <span class="st">"Group"</span>, <span class="at">shape =</span> <span class="st">"Sex"</span>, <span class="at">size =</span> <span class="st">"Age"</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>noise_scale<span class="ot">&lt;-</span><span class="dv">2</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>utilities <span class="ot">&lt;-</span> actors <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, group, age) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(xy) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(poles, <span class="at">by =</span> <span class="st">"group"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">youth_x =</span> <span class="fl">0.5</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">youth_y =</span> <span class="fl">0.5</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">youth_pull =</span> (<span class="fu">max</span>(age) <span class="sc">-</span> age) <span class="sc">/</span> (<span class="fu">max</span>(age) <span class="sc">-</span> <span class="fu">min</span>(age)),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> group_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> group_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">youth_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> youth_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> youth_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">utility =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> group_distance <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> youth_pull <span class="sc">*</span> youth_distance</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">utility =</span> utility <span class="sc">+</span> noise_scale <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(utility))</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(utility))</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>assigned_actors <span class="ot">&lt;-</span> <span class="fu">integer</span>()</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>assigned_locations <span class="ot">&lt;-</span> <span class="fu">integer</span>()</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>assignments <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">nrow</span>(actors))</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>n_assigned <span class="ot">&lt;-</span> <span class="dv">0</span>L</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (row_index <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(utilities))) {</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  option <span class="ot">&lt;-</span> utilities[row_index, ]</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    option<span class="sc">$</span>id <span class="sc">%in%</span> assigned_actors <span class="sc">||</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>      option<span class="sc">$</span>position_id <span class="sc">%in%</span> assigned_locations</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  n_assigned <span class="ot">&lt;-</span> n_assigned <span class="sc">+</span> <span class="dv">1</span>L</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  assignments[[n_assigned]] <span class="ot">&lt;-</span> option <span class="sc">|&gt;</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, position_id)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  assigned_actors <span class="ot">&lt;-</span> <span class="fu">c</span>(assigned_actors, option<span class="sc">$</span>id)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  assigned_locations <span class="ot">&lt;-</span> <span class="fu">c</span>(assigned_locations, option<span class="sc">$</span>position_id)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n_assigned <span class="sc">==</span> <span class="fu">nrow</span>(actors)) {</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>actors<span class="ot">&lt;-</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  actors <span class="sc">|&gt;</span> <span class="fu">select</span>(id,sex,group,age) <span class="sc">|&gt;</span> </span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">bind_rows</span>(assignments), <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(xy, <span class="at">by =</span> <span class="st">"position_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>position_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The resulting distribution of actors can be visualized as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(actors, <span class="fu">aes</span>(x, y, <span class="at">color =</span> group, <span class="at">shape =</span> sex, <span class="at">size =</span> age)) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.72</span>) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">1.1</span>, <span class="fl">3.2</span>)) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>, <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>, <span class="at">color =</span> <span class="st">"Group"</span>, <span class="at">shape =</span> <span class="st">"Sex"</span>, <span class="at">size =</span> <span class="st">"Age"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/assigned-location-plot-1.png" class="img-fluid figure-img" width="604"></p>
+<p><img src="index_files/figure-html/assigned-location-plot-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Assigned locations. Point size increases with age.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The result is a population with group structure, age structure, and spatial structure. The next note uses these actors and locations to create two-sided partner preferences and stable matches.</p>
+<p>The result is a population with group structure, age structure, and spatial structure. In the next post, I’ll uses these actors and locations to create unions based on two-sided partner preferences and a stable matching approach.</p>
+
 
 
 </section>
-</section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-breenIndividualLevelModels1994" class="csl-entry" role="listitem">
+Breen, Richard. 1994. <span>“Individual <span>Level</span> <span>Models</span> for <span>Mobility</span> <span>Tables</span> and Other <span>Cross</span>-<span>Classifications</span>.”</span> <em>Sociological Methods &amp; Research</em> 23 (2): 147–73. <a href="https://doi.org/10.1177/0049124194023002001">https://doi.org/10.1177/0049124194023002001</a>.
+</div>
+<div id="ref-gullicksonCounterfactualChoiceApproach2021" class="csl-entry" role="listitem">
+Gullickson, Aaron. 2021. <span>“A Counterfactual Choice Approach to the Study of Partner Selection.”</span> <em>Demographic Research</em> 44: 513–36. <a href="https://doi.org/10.4054/DemRes.2021.44.22">https://doi.org/10.4054/DemRes.2021.44.22</a>.
+</div>
+<div id="ref-haandrikmanExplainingFlightCupids2012" class="csl-entry" role="listitem">
+Haandrikman, Karen, and Leo J. G. van Wissen. 2012. <span>“Explaining the <span>Flight</span> of <span>Cupid</span>’s <span>Arrow</span>: <span>A</span> <span>Spatial</span> <span>Random</span> <span>Utility</span> <span>Model</span> of <span>Partner</span> <span>Choice</span>.”</span> <em>European Journal of Population</em> 28 (4): 417–39. <a href="http://www.jstor.org/stable/23274970">http://www.jstor.org/stable/23274970</a>.
+</div>
+<div id="ref-lindmarkerHoweverFarAway2025" class="csl-entry" role="listitem">
+Lindmarker, Jesper, and Benjamin F. Jarvis. 2025. <span>“However <span>Far</span> <span>Away</span>? <span>The</span> <span>Spatial</span> <span>Contingencies</span> of <span>Assortative</span> <span>Mating</span>.”</span> SocArXiv. <a href="https://doi.org/10.31235/osf.io/4tq8z_v1">https://doi.org/10.31235/osf.io/4tq8z_v1</a>.
+</div>
+<div id="ref-loganMultivariateModelMobility1983" class="csl-entry" role="listitem">
+Logan, John A. 1983. <span>“A <span>Multivariate</span> <span>Model</span> for <span>Mobility</span> <span>Tables</span>.”</span> <em>American Journal of Sociology</em> 89 (2): 324–49. <a href="http://www.jstor.org/stable/2779144">http://www.jstor.org/stable/2779144</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Confusingly, this is also referred to as the conditional logistic regression model. This model actually nests what sociologists and political scientists often refer as multinomial logistic regression.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Haandrikman, K., &amp; van Wissen, L. J. G. (2012). Explaining the Flight of Cupid’s Arrow: A Spatial Random Utility Model of Partner Choice. European Journal of Population, 28(4), 417–439.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Gullickson, A. (2021). A counterfactual choice approach to the study of partner selection. Demographic Research, 44, 513–536. https://doi.org/10.4054/DemRes.2021.44.22<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Lindmarker, J., &amp; Jarvis, B. F. (2025). However Far Away? The Spatial Contingencies of Assortative Mating (4tq8z_v1). SocArXiv. https://doi.org/10.31235/osf.io/4tq8z_v1<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Logan, J. A. (1983). A Multivariate Model for Mobility Tables. American Journal of Sociology, 89(2), 324–349.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>Breen, R. (1994). Individual Level Models for Mobility Tables and other Cross-Classifications. Sociological Methods &amp; Research, 23(2), 147–173. https://doi.org/10.1177/0049124194023002001<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Confusingly, this is also referred to as the conditional logistic regression model. This model actually nests what sociologists and political scientists often call “multinomial logistic regression.”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

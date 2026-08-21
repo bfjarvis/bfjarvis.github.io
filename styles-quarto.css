@@ -94,7 +94,7 @@ a {
   display: grid;
   min-height: clamp(300px, 44vw, 620px);
   align-items: end;
-  margin: -1.5rem calc(50% - 50vw) 3rem;
+  margin: calc(-1.5rem - 6px) calc(50% - 50vw) 3rem;
   padding: clamp(2rem, 5vw, 5rem);
   color: var(--white);
   background:
@@ -376,18 +376,12 @@ main.content.column-page-left:has(> .page-hero) h2 {
 }
 
 main.content > header.quarto-title-block.default {
+  margin-top: 1.5rem;
   margin-bottom: 2.5rem;
 }
 
 main.content > header.quarto-title-block.default::before {
-  display: block;
-  height: clamp(72px, 12vw, 130px);
-  margin: -0.5rem 0 2rem;
-  border-radius: 6px;
-  background:
-    linear-gradient(90deg, rgba(18, 22, 23, 0.38), rgba(18, 22, 23, 0.02) 72%),
-    var(--hero-image) left center / cover no-repeat;
-  content: "";
+  display: none;
 }
 
 main.content > header.quarto-title-block.default .title {
@@ -401,6 +395,13 @@ main.content > header.quarto-title-block.default .description {
   color: var(--ink-soft);
   font-size: 1.02rem;
   line-height: 1.55;
+}
+
+body #quarto-margin-sidebar {
+  top: calc(var(--navbar-height) + 1rem) !important;
+  height: auto !important;
+  max-height: calc(100vh - var(--navbar-height) - 5rem) !important;
+  overflow-y: auto !important;
 }
 
 main.content:has(> header.quarto-title-block.default) h2 {
@@ -441,7 +442,7 @@ main.content:has(> header.quarto-title-block.default) h3 {
   gap: 1rem;
   min-height: clamp(150px, 22vh, 240px);
   align-content: start;
-  margin: -1.5rem calc(50% - 50vw) 3rem;
+  margin: calc(-1.5rem - 6px) calc(50% - 50vw) 3rem;
   padding: clamp(2rem, 5vw, 4rem);
   color: var(--white);
   background:
