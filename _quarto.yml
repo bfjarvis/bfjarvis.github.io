@@ -8,6 +8,7 @@ project:
     - python3 scripts/generate_site.py
   resources:
     - .nojekyll
+    - CNAME
     - assets/
     - cv/Benjamin-F-Jarvis-CV.pdf
 
