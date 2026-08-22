@@ -183,7 +183,7 @@ div.csl-indent {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#building-a-simulated-marriage-market" id="toc-building-a-simulated-marriage-market" class="nav-link" data-scroll-target="#building-a-simulated-marriage-market">Building a simulated marriage market</a>
+  <li><a href="#generating-the-marriage-market" id="toc-generating-the-marriage-market" class="nav-link" data-scroll-target="#generating-the-marriage-market">Generating the marriage market</a>
   <ul class="collapse">
   <li><a href="#positions" id="toc-positions" class="nav-link" data-scroll-target="#positions">Positions</a></li>
   <li><a href="#actors" id="toc-actors" class="nav-link" data-scroll-target="#actors">Actors</a></li>
@@ -194,7 +194,7 @@ div.csl-indent {
   <li><a href="#calculating-utilities-for-possible-unions" id="toc-calculating-utilities-for-possible-unions" class="nav-link" data-scroll-target="#calculating-utilities-for-possible-unions">Calculating utilities for possible unions</a></li>
   <li><a href="#tranforming-utilities-into-unions" id="toc-tranforming-utilities-into-unions" class="nav-link" data-scroll-target="#tranforming-utilities-into-unions">Tranforming utilities into unions</a></li>
   </ul></li>
-  <li><a href="#reusable-data-generator" id="toc-reusable-data-generator" class="nav-link" data-scroll-target="#reusable-data-generator">Reusable data generator</a></li>
+  <li><a href="#a-reusable-data-generating-function" id="toc-a-reusable-data-generating-function" class="nav-link" data-scroll-target="#a-reusable-data-generating-function">A reusable data generating function</a></li>
   </ul>
 </nav>
     </div>
@@ -246,14 +246,14 @@ div.csl-indent {
 
 <section id="introduction" class="level2">
 <h2 data-anchor-id="introduction">Introduction</h2>
-<p>There’s a been a percolating trend in sociological research on assortative mating, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on McFadden’s conditinoal logit model <span class="citation" data-cites="mcfaddenConditionalLogitAnalysis1974">(<a href="#ref-mcfaddenConditionalLogitAnalysis1974" role="doc-biblioref">1974</a>)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Examples include the work of Karen Haandrikman <span class="citation" data-cites="haandrikmanExplainingFlightCupids2012">(<a href="#ref-haandrikmanExplainingFlightCupids2012" role="doc-biblioref">2012</a>)</span>, Aaron Gullickson <span class="citation" data-cites="gullicksonCounterfactualChoiceApproach2021">(<a href="#ref-gullicksonCounterfactualChoiceApproach2021" role="doc-biblioref">2021</a>)</span>, and my colleague and student, Jesper Lindmarker <span class="citation" data-cites="lindmarkerHoweverFarAway2025">(<a href="#ref-lindmarkerHoweverFarAway2025" role="doc-biblioref">2025</a>)</span>. That the conditional logit model offers a more general formulation of the log-linear models that have served as the bread and butter of mobility and assortative mating research has been known for quite some time. John A. Logan showed as much in the 1980s <span class="citation" data-cites="loganMultivariateModelMobility1983">(<a href="#ref-loganMultivariateModelMobility1983" role="doc-biblioref">1983</a>)</span>, as did Richard Breen in the 1990s <span class="citation" data-cites="breenIndividualLevelModels1994">(<a href="#ref-breenIndividualLevelModels1994" role="doc-biblioref">1994</a>)</span>. Logan even points to knowledge of the equivalence dating back to the 1970s.</p>
-<p>That the tiny revolution in assortative mating research away from traditional log-linear modeling to discrete choice modeling is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
-<p>So, this research note. My goal is to demonstrate, yet again, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis for relatively simple model specifications. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some intuitive ideas about the factors affecting assortative mating.</p>
-<p>This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I’ll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the “deeper” parameters that actually drive union formation in the simulated data.</p>
+<p>There’s a been a percolating trend in sociological research on assortative mating away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on McFadden’s conditional logit model <span class="citation" data-cites="mcfaddenConditionalLogitAnalysis1974">(<a href="#ref-mcfaddenConditionalLogitAnalysis1974" role="doc-biblioref">1974</a>)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Examples include the work of Karen Haandrikman <span class="citation" data-cites="haandrikmanExplainingFlightCupids2012">(<a href="#ref-haandrikmanExplainingFlightCupids2012" role="doc-biblioref">2012</a>)</span>, Aaron Gullickson <span class="citation" data-cites="gullicksonCounterfactualChoiceApproach2021">(<a href="#ref-gullicksonCounterfactualChoiceApproach2021" role="doc-biblioref">2021</a>)</span>, and my colleague and student, Jesper Lindmarker <span class="citation" data-cites="lindmarkerHoweverFarAway2025">(<a href="#ref-lindmarkerHoweverFarAway2025" role="doc-biblioref">2025</a>)</span>. That the tiny revolution in assortative mating research is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that often preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
+<p>But something that I think remains underappreciated is that the conditional logit model actually nests, and provides a more general formulation of, the log-linear models that have served as the bread and butter of mobility and assortative mating research. In other words, you can use the conditional logit model to obtain <em>identical</em> parameter estimates and standard errors as equivalently specified log-linear models. This knowledge is not really new: Richard Breen <span class="citation" data-cites="breenIndividualLevelModels1994">(<a href="#ref-breenIndividualLevelModels1994" role="doc-biblioref">1994</a>)</span> has shown this, as has John A. Logan <span class="citation" data-cites="loganMultivariateModelMobility1983">(<a href="#ref-loganMultivariateModelMobility1983" role="doc-biblioref">1983</a>)</span>. And Logan even points to knowledge of the equivalence dating back to the 1970s. Beyond producing identical estimates as log-linear models for count data, Logan and Breen make the point that conditional logit model allow for the inclusion of idiosyncratic individual- and union-level covariates that correspond to the theorizing and claims making that sociologists and demographers are most interested in. So a goal of these posts is to set down an easily searchable and digestible beacon for future researchers seeking to integrate these models into their analytic practice, perhaps as an alternative or supplement to traditional log-linear modeling.</p>
+<p>So, this series of research notes. My goal is to demonstrate, yet again, but in concrete, data-centric terms, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some stylized but essential features of assortative mating and marriage markets.</p>
+<p>This is just part one in a series. I won’t make it to model fitting here. This post just sets the scene using simulation, stipulating and then allocating singles to social and spatial positions in a stylized marriage market and then forming unions between those singles using an econometric matching algorithm. In subsequent posts, I’ll show how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the “deeper” parameters that may drive union formation in simulated and real-world data sets.</p>
 </section>
-<section id="building-a-simulated-marriage-market" class="level2">
-<h2 data-anchor-id="building-a-simulated-marriage-market">Building a simulated marriage market</h2>
-<p>I consider a marriage market characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.</p>
+<section id="generating-the-marriage-market" class="level2">
+<h2 data-anchor-id="generating-the-marriage-market">Generating the marriage market</h2>
+<p>I consider a marriage market characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with a narrow set of attributes. So constructing the marriage market entails constructing a set of positions for singles to occupy, generating the singles that will occupy those positions, and finally assigning those singles to positions. I detail these steps in the sections below.</p>
 <section id="positions" class="level3">
 <h3 data-anchor-id="positions">Positions</h3>
 <p>My goal is to create a semi-regular arrangement of what might be construed as housing units or residential positions for actors to occupy. These positions are static, and so the actors are conceived of as static. Their mobility is implicit in how space determines union formation, which I cover in the next post. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn’t look “right” to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced than pseudo-random numbers, which feels right for this fictive geography.</p>
@@ -562,46 +562,33 @@ div.csl-indent {
 </section>
 <section id="tranforming-utilities-into-unions" class="level3">
 <h3 data-anchor-id="tranforming-utilities-into-unions">Tranforming utilities into unions</h3>
-<p>To run the Gale-Shapley algorithm, we have to create matrices of union utilities from the perspective of men and women. This matrix can be fed into a Gale-Shapley algorithm to generate stable matches, where the overall utility of the matches cannot be improved by changing any of the unions. This matching is performed using the <code>matchingR</code> package. The package expects a matrix of proposer utilities, i.e., the utility the proposer would obtain from being matched with a given reviewer, where the columns indicate the proposers, and the rows indicate the reviewers. It also requires a corresponding matrix of reviewer utilities, i.e., the utility the reviewer gets from matching with the proposer, where the columns indicate the reviewers, and the rows indicate the proposers. In our case, these two matrices are just transposes of each other, but these matrices could differ more substantially. This would occur if, for example, men had different preferences than women. In this case, I treat the men as the proposers, and women as the reviewers.</p>
+<p>I use the the Gale-Shapley algorithm implemented in the <code>matchingR</code> package to transform the complete set of utilities into one-to-one dyadic matches. The package expects matrices of proposer utilities and reviewer utilities, where I treat the men as proposers and the women as reviewers. The proposer matrix contains the utilities men (in columns) would obtain from being matched with a given woman (in rows). The reviewer matrix contains the utilities the women (now in columns) would obtain from being matched with each man (in rows). In our case, we calculate a single utility for each union, and men’s and women’s matrices are transposes of each other. But in principle these matrices could differ more substantially in their elements. For example, the utility function that men use to evaluate women could differ from the function that women use to evaluate men. That’s a wrinkle to consider in a different post. In any case, the code to construct the matrices and make the matches is as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>men<span class="ot">&lt;-</span><span class="fu">sort</span>(<span class="fu">filter</span>(actors,sex<span class="sc">==</span><span class="st">"man"</span>)<span class="sc">$</span>id)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>women<span class="ot">&lt;-</span><span class="fu">sort</span>(<span class="fu">filter</span>(actors,sex<span class="sc">==</span><span class="st">"woman"</span>)<span class="sc">$</span>id)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>utility_matrix<span class="ot">&lt;-</span><span class="fu">matrix</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA_real_</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrow =</span> <span class="fu">length</span>(women),</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="fu">length</span>(men),</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimnames =</span> <span class="fu">list</span>(women, men)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>utility_matrix[</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">match</span>(union_utils<span class="sc">$</span>id_woman, women),</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">match</span>(union_utils<span class="sc">$</span>id_man, men)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  ] <span class="ot">&lt;-</span> union_utils<span class="sc">$</span>utility</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>utility_matrix<span class="ot">&lt;-</span><span class="fu">xtabs</span>(utility<span class="sc">~</span>id_woman<span class="sc">+</span>id_man, <span class="at">data=</span>union_utils)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>unions <span class="ot">&lt;-</span> matchingR<span class="sc">::</span><span class="fu">galeShapley.marriageMarket</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">proposerUtils =</span> utility_matrix,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">reviewerUtils =</span> <span class="fu">t</span>(utility_matrix)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_man =</span> <span class="fu">as.integer</span>(<span class="fu">colnames</span>(utility_matrix)),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_woman =</span> <span class="fu">as.integer</span>(<span class="fu">rownames</span>(utility_matrix)[<span class="fu">as.integer</span>(unions<span class="sc">$</span>proposals)]),</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> <span class="cn">TRUE</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>union_utils <span class="ot">&lt;-</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="sc">|&gt;</span> </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(matches) <span class="sc">|&gt;</span> </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched),<span class="cn">FALSE</span>,<span class="cn">TRUE</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>With the matrices in hand, the Gale-Shapley algorithm can be applied and results extracted. I join a variable identifying matched pairs to the fully exploded data of all possible man-woman pairs.</p>
+<p>A quick glance suggests that the final matches align with what might be expected based on the utility functions used for simulation: The simulated matches are closer together in distance and age, and are more likely to share group membership, compared to the non-matches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>unions <span class="ot">&lt;-</span> <span class="fu">galeShapley.marriageMarket</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">proposerUtils =</span> utility_matrix,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">reviewerUtils =</span> <span class="fu">t</span>(utility_matrix)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_man =</span> men,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_woman =</span> women[<span class="fu">as.integer</span>(unions<span class="sc">$</span>proposals)]</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">matched=</span><span class="cn">TRUE</span>)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>union_utils <span class="ot">&lt;-</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="sc">|&gt;</span> </span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(matches) <span class="sc">|&gt;</span> </span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched),<span class="cn">FALSE</span>,<span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>A quick glance suggests that the final matches align with what might be expected based on the utility functions used for simulation: The simulated matches are closer together in distance and age, and are more likely to share group membership.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>union_utils <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(matched) <span class="sc">|&gt;</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(distance,age_gap,same_group),<span class="sc">~</span><span class="fu">mean</span>(.x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>union_utils <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(matched) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(distance,age_gap,same_group),<span class="sc">~</span><span class="fu">mean</span>(.x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   matched distance age_gap same_group
@@ -612,9 +599,9 @@ div.csl-indent {
 </div>
 <p>And we can compare matches to non-matches graphically for distance and age gap</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>union_utils,<span class="fu">aes</span>(<span class="at">x=</span>distance,<span class="at">fill=</span>matched)) <span class="sc">+</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.4</span>,<span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>union_utils,<span class="fu">aes</span>(<span class="at">x=</span>distance,<span class="at">fill=</span>matched)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.4</span>,<span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -625,9 +612,9 @@ div.csl-indent {
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>union_utils,<span class="fu">aes</span>(<span class="at">x=</span>age_gap,<span class="at">fill=</span>matched)) <span class="sc">+</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.4</span>,<span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>union_utils,<span class="fu">aes</span>(<span class="at">x=</span>age_gap,<span class="at">fill=</span>matched)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.4</span>,<span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -639,252 +626,204 @@ div.csl-indent {
 </div>
 </section>
 </section>
-<section id="reusable-data-generator" class="level2">
-<h2 data-anchor-id="reusable-data-generator">Reusable data generator</h2>
-<p>For convenience, the full simulation can be wrapped into a small set of functions. The main function, <code>simulate_marriage_market()</code>, returns the exploded man-woman pair data, with one row for every possible union and a logical <code>matched</code> variable identifying the Gale-Shapley matches.</p>
+<section id="a-reusable-data-generating-function" class="level2">
+<h2 data-anchor-id="a-reusable-data-generating-function">A reusable data generating function</h2>
+<p>For convenience, the full simulated data generator can be made into a function wrapper for other functions that create actors, positions, position assignments, and matches. The main function, <code>simulate_marriage_market()</code>, returns the exploded man-woman pair data, with one row for every possible union and a logical <code>matched</code> variable identifying the Gale-Shapley matches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>scale_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, mean, precision, <span class="at">min_value =</span> <span class="dv">0</span>, <span class="at">max_value =</span> <span class="dv">1</span>) {</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (max_value <span class="sc">&lt;=</span> min_value) {</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"max_value must be greater than min_value."</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mean <span class="sc">&lt;=</span> min_value <span class="sc">||</span> mean <span class="sc">&gt;=</span> max_value) {</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"mean must fall strictly between min_value and max_value."</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  scaled_mean <span class="ot">&lt;-</span> (mean <span class="sc">-</span> min_value) <span class="sc">/</span> (max_value <span class="sc">-</span> min_value)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  shape1 <span class="ot">&lt;-</span> scaled_mean <span class="sc">*</span> precision</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  shape2 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> scaled_mean) <span class="sc">*</span> precision</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  min_value <span class="sc">+</span> (max_value <span class="sc">-</span> min_value) <span class="sc">*</span> <span class="fu">rbeta</span>(n, shape1, shape2)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>make_positions <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  xy_sequence <span class="ot">&lt;-</span> mnorm<span class="sc">::</span><span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> xy_sequence[, <span class="dv">1</span>],</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> xy_sequence[, <span class="dv">2</span>]</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>make_group_counts <span class="ot">&lt;-</span> <span class="cf">function</span>(n, group_shares) {</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">!=</span> <span class="dv">0</span>) {</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"n must be even so the market can be split equally by sex."</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(group_shares <span class="sc">&lt;</span> <span class="dv">0</span>)) {</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"group_shares cannot contain negative values."</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">sum</span>(group_shares) <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"group_shares must have a positive sum."</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>  group_shares <span class="ot">&lt;-</span> group_shares <span class="sc">/</span> <span class="fu">sum</span>(group_shares)</span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>  raw_counts <span class="ot">&lt;-</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> group_shares</span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>  group_counts <span class="ot">&lt;-</span> <span class="fu">floor</span>(raw_counts)</span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>  remainder <span class="ot">&lt;-</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">-</span> <span class="fu">sum</span>(group_counts)</span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (remainder <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>    add_to <span class="ot">&lt;-</span> <span class="fu">order</span>(raw_counts <span class="sc">-</span> group_counts, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="fu">seq_len</span>(remainder)]</span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    group_counts[add_to] <span class="ot">&lt;-</span> group_counts[add_to] <span class="sc">+</span> <span class="dv">1</span>L</span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>  group_counts</span>
-<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>make_actors <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">800</span>,</span>
-<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_shares =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="fl">0.50</span>, <span class="at">b =</span> <span class="fl">0.30</span>, <span class="at">c =</span> <span class="fl">0.20</span>),</span>
-<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_means =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">25</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="dv">35</span>),</span>
-<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_precision =</span> <span class="dv">7</span>,</span>
-<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_age =</span> <span class="dv">18</span>,</span>
-<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_age =</span> <span class="dv">45</span></span>
-<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>  group_counts <span class="ot">&lt;-</span> <span class="fu">make_group_counts</span>(n, group_shares)</span>
-<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">names</span>(group_counts),</span>
-<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_mean =</span> <span class="fu">unname</span>(age_means[group]),</span>
-<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">unname</span>(group_counts)</span>
-<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="fu">tibble</span>(<span class="at">sex =</span> <span class="fu">c</span>(<span class="st">"man"</span>, <span class="st">"woman"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">reframe</span>(</span>
-<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a>      <span class="at">person =</span> <span class="fu">seq_len</span>(n),</span>
-<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a>      <span class="at">age =</span> <span class="fu">scale_beta</span>(</span>
-<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>        n,</span>
-<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a>        age_mean,</span>
-<span id="cb19-74"><a href="#cb19-74" aria-hidden="true" tabindex="-1"></a>        <span class="at">precision =</span> age_precision,</span>
-<span id="cb19-75"><a href="#cb19-75" aria-hidden="true" tabindex="-1"></a>        <span class="at">min_value =</span> min_age,</span>
-<span id="cb19-76"><a href="#cb19-76" aria-hidden="true" tabindex="-1"></a>        <span class="at">max_value =</span> max_age</span>
-<span id="cb19-77"><a href="#cb19-77" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a>      <span class="at">.by =</span> <span class="fu">c</span>(group, age_mean, sex)</span>
-<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-81"><a href="#cb19-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb19-82"><a href="#cb19-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, sex, group, age)</span>
-<span id="cb19-83"><a href="#cb19-83" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-84"><a href="#cb19-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-85"><a href="#cb19-85" aria-hidden="true" tabindex="-1"></a>assign_locations <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb19-86"><a href="#cb19-86" aria-hidden="true" tabindex="-1"></a>  actors,</span>
-<span id="cb19-87"><a href="#cb19-87" aria-hidden="true" tabindex="-1"></a>  xy,</span>
-<span id="cb19-88"><a href="#cb19-88" aria-hidden="true" tabindex="-1"></a>  poles,</span>
-<span id="cb19-89"><a href="#cb19-89" aria-hidden="true" tabindex="-1"></a>  <span class="at">noise_scale =</span> <span class="dv">2</span></span>
-<span id="cb19-90"><a href="#cb19-90" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb19-91"><a href="#cb19-91" aria-hidden="true" tabindex="-1"></a>  youth_pole <span class="ot">&lt;-</span> poles <span class="sc">|&gt;</span> <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"youth"</span>)</span>
-<span id="cb19-92"><a href="#cb19-92" aria-hidden="true" tabindex="-1"></a>  group_poles <span class="ot">&lt;-</span> poles <span class="sc">|&gt;</span> <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"youth"</span>)</span>
-<span id="cb19-93"><a href="#cb19-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-94"><a href="#cb19-94" aria-hidden="true" tabindex="-1"></a>  utilities <span class="ot">&lt;-</span> actors <span class="sc">|&gt;</span></span>
-<span id="cb19-95"><a href="#cb19-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, group, age) <span class="sc">|&gt;</span></span>
-<span id="cb19-96"><a href="#cb19-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crossing</span>(xy) <span class="sc">|&gt;</span></span>
-<span id="cb19-97"><a href="#cb19-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(group_poles, <span class="at">by =</span> <span class="st">"group"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-98"><a href="#cb19-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb19-99"><a href="#cb19-99" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_x =</span> youth_pole<span class="sc">$</span>group_x,</span>
-<span id="cb19-100"><a href="#cb19-100" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_y =</span> youth_pole<span class="sc">$</span>group_y,</span>
-<span id="cb19-101"><a href="#cb19-101" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_pull =</span> (<span class="fu">max</span>(age) <span class="sc">-</span> age) <span class="sc">/</span> (<span class="fu">max</span>(age) <span class="sc">-</span> <span class="fu">min</span>(age)),</span>
-<span id="cb19-102"><a href="#cb19-102" aria-hidden="true" tabindex="-1"></a>      <span class="at">group_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> group_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> group_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
-<span id="cb19-103"><a href="#cb19-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> youth_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> youth_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
-<span id="cb19-104"><a href="#cb19-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> group_distance <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> youth_pull <span class="sc">*</span> youth_distance,</span>
-<span id="cb19-105"><a href="#cb19-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> utility <span class="sc">+</span> noise_scale <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(utility))</span>
-<span id="cb19-106"><a href="#cb19-106" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb19-107"><a href="#cb19-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(utility))</span>
-<span id="cb19-108"><a href="#cb19-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-109"><a href="#cb19-109" aria-hidden="true" tabindex="-1"></a>  assigned_actors <span class="ot">&lt;-</span> <span class="fu">integer</span>()</span>
-<span id="cb19-110"><a href="#cb19-110" aria-hidden="true" tabindex="-1"></a>  assigned_locations <span class="ot">&lt;-</span> <span class="fu">integer</span>()</span>
-<span id="cb19-111"><a href="#cb19-111" aria-hidden="true" tabindex="-1"></a>  assignments <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">nrow</span>(actors))</span>
-<span id="cb19-112"><a href="#cb19-112" aria-hidden="true" tabindex="-1"></a>  n_assigned <span class="ot">&lt;-</span> <span class="dv">0</span>L</span>
-<span id="cb19-113"><a href="#cb19-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-114"><a href="#cb19-114" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (row_index <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(utilities))) {</span>
-<span id="cb19-115"><a href="#cb19-115" aria-hidden="true" tabindex="-1"></a>    option <span class="ot">&lt;-</span> utilities[row_index, ]</span>
-<span id="cb19-116"><a href="#cb19-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-117"><a href="#cb19-117" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (</span>
-<span id="cb19-118"><a href="#cb19-118" aria-hidden="true" tabindex="-1"></a>      option<span class="sc">$</span>id <span class="sc">%in%</span> assigned_actors <span class="sc">||</span></span>
-<span id="cb19-119"><a href="#cb19-119" aria-hidden="true" tabindex="-1"></a>        option<span class="sc">$</span>position_id <span class="sc">%in%</span> assigned_locations</span>
-<span id="cb19-120"><a href="#cb19-120" aria-hidden="true" tabindex="-1"></a>    ) {</span>
-<span id="cb19-121"><a href="#cb19-121" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
-<span id="cb19-122"><a href="#cb19-122" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb19-123"><a href="#cb19-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-124"><a href="#cb19-124" aria-hidden="true" tabindex="-1"></a>    n_assigned <span class="ot">&lt;-</span> n_assigned <span class="sc">+</span> <span class="dv">1</span>L</span>
-<span id="cb19-125"><a href="#cb19-125" aria-hidden="true" tabindex="-1"></a>    assignments[[n_assigned]] <span class="ot">&lt;-</span> option <span class="sc">|&gt;</span></span>
-<span id="cb19-126"><a href="#cb19-126" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(id, position_id)</span>
-<span id="cb19-127"><a href="#cb19-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-128"><a href="#cb19-128" aria-hidden="true" tabindex="-1"></a>    assigned_actors <span class="ot">&lt;-</span> <span class="fu">c</span>(assigned_actors, option<span class="sc">$</span>id)</span>
-<span id="cb19-129"><a href="#cb19-129" aria-hidden="true" tabindex="-1"></a>    assigned_locations <span class="ot">&lt;-</span> <span class="fu">c</span>(assigned_locations, option<span class="sc">$</span>position_id)</span>
-<span id="cb19-130"><a href="#cb19-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-131"><a href="#cb19-131" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (n_assigned <span class="sc">==</span> <span class="fu">nrow</span>(actors)) {</span>
-<span id="cb19-132"><a href="#cb19-132" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
-<span id="cb19-133"><a href="#cb19-133" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb19-134"><a href="#cb19-134" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-135"><a href="#cb19-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-136"><a href="#cb19-136" aria-hidden="true" tabindex="-1"></a>  actors <span class="sc">|&gt;</span></span>
-<span id="cb19-137"><a href="#cb19-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">bind_rows</span>(assignments), <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-138"><a href="#cb19-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(xy, <span class="at">by =</span> <span class="st">"position_id"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-139"><a href="#cb19-139" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>position_id)</span>
-<span id="cb19-140"><a href="#cb19-140" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-141"><a href="#cb19-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-142"><a href="#cb19-142" aria-hidden="true" tabindex="-1"></a>make_pair_utilities <span class="ot">&lt;-</span> <span class="cf">function</span>(actors, coefs) {</span>
-<span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross_join</span>(</span>
-<span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a>    actors <span class="sc">|&gt;</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span> <span class="fu">rename_with</span>(\(x) <span class="fu">paste0</span>(x, <span class="st">"_man"</span>)),</span>
-<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a>    actors <span class="sc">|&gt;</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span> <span class="fu">rename_with</span>(\(x) <span class="fu">paste0</span>(x, <span class="st">"_woman"</span>))</span>
-<span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb19-148"><a href="#cb19-148" aria-hidden="true" tabindex="-1"></a>      <span class="at">age_gap =</span> <span class="fu">abs</span>(age_man <span class="sc">-</span> age_woman),</span>
-<span id="cb19-149"><a href="#cb19-149" aria-hidden="true" tabindex="-1"></a>      <span class="at">distance =</span> <span class="fu">sqrt</span>((x_man <span class="sc">-</span> x_woman)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y_man <span class="sc">-</span> y_woman)<span class="sc">^</span><span class="dv">2</span>),</span>
-<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a>      <span class="at">same_group =</span> <span class="dv">1</span>L <span class="sc">*</span> (group_man <span class="sc">==</span> group_woman),</span>
-<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> coefs<span class="sc">$</span>same_group <span class="sc">*</span> same_group <span class="sc">+</span></span>
-<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a>        coefs<span class="sc">$</span>age_gap <span class="sc">*</span> age_gap <span class="sc">+</span></span>
-<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a>        coefs<span class="sc">$</span>distance <span class="sc">*</span> <span class="fu">log</span>(distance <span class="sc">+</span> <span class="fl">0.01</span>),</span>
-<span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> utility <span class="sc">+</span> coefs<span class="sc">$</span>noise <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(utility))</span>
-<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb19-156"><a href="#cb19-156" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(id_man, id_woman)</span>
-<span id="cb19-157"><a href="#cb19-157" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-158"><a href="#cb19-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-159"><a href="#cb19-159" aria-hidden="true" tabindex="-1"></a>match_pairs <span class="ot">&lt;-</span> <span class="cf">function</span>(union_utils) {</span>
-<span id="cb19-160"><a href="#cb19-160" aria-hidden="true" tabindex="-1"></a>  men <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(union_utils<span class="sc">$</span>id_man))</span>
-<span id="cb19-161"><a href="#cb19-161" aria-hidden="true" tabindex="-1"></a>  women <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(union_utils<span class="sc">$</span>id_woman))</span>
-<span id="cb19-162"><a href="#cb19-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-163"><a href="#cb19-163" aria-hidden="true" tabindex="-1"></a>  utility_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
-<span id="cb19-164"><a href="#cb19-164" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA_real_</span>,</span>
-<span id="cb19-165"><a href="#cb19-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrow =</span> <span class="fu">length</span>(women),</span>
-<span id="cb19-166"><a href="#cb19-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="fu">length</span>(men),</span>
-<span id="cb19-167"><a href="#cb19-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimnames =</span> <span class="fu">list</span>(women, men)</span>
-<span id="cb19-168"><a href="#cb19-168" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-169"><a href="#cb19-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-170"><a href="#cb19-170" aria-hidden="true" tabindex="-1"></a>  utility_matrix[</span>
-<span id="cb19-171"><a href="#cb19-171" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(</span>
-<span id="cb19-172"><a href="#cb19-172" aria-hidden="true" tabindex="-1"></a>      <span class="fu">match</span>(union_utils<span class="sc">$</span>id_woman, women),</span>
-<span id="cb19-173"><a href="#cb19-173" aria-hidden="true" tabindex="-1"></a>      <span class="fu">match</span>(union_utils<span class="sc">$</span>id_man, men)</span>
-<span id="cb19-174"><a href="#cb19-174" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb19-175"><a href="#cb19-175" aria-hidden="true" tabindex="-1"></a>  ] <span class="ot">&lt;-</span> union_utils<span class="sc">$</span>utility</span>
-<span id="cb19-176"><a href="#cb19-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-177"><a href="#cb19-177" aria-hidden="true" tabindex="-1"></a>  unions <span class="ot">&lt;-</span> matchingR<span class="sc">::</span><span class="fu">galeShapley.marriageMarket</span>(</span>
-<span id="cb19-178"><a href="#cb19-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">proposerUtils =</span> utility_matrix,</span>
-<span id="cb19-179"><a href="#cb19-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">reviewerUtils =</span> <span class="fu">t</span>(utility_matrix)</span>
-<span id="cb19-180"><a href="#cb19-180" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-181"><a href="#cb19-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-182"><a href="#cb19-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb19-183"><a href="#cb19-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_man =</span> men,</span>
-<span id="cb19-184"><a href="#cb19-184" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_woman =</span> women[<span class="fu">as.integer</span>(unions<span class="sc">$</span>proposals)],</span>
-<span id="cb19-185"><a href="#cb19-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> <span class="cn">TRUE</span></span>
-<span id="cb19-186"><a href="#cb19-186" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-187"><a href="#cb19-187" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-188"><a href="#cb19-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-189"><a href="#cb19-189" aria-hidden="true" tabindex="-1"></a>simulate_marriage_market <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb19-190"><a href="#cb19-190" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">543</span>,</span>
-<span id="cb19-191"><a href="#cb19-191" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">800</span>,</span>
-<span id="cb19-192"><a href="#cb19-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_shares =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="fl">0.50</span>, <span class="at">b =</span> <span class="fl">0.30</span>, <span class="at">c =</span> <span class="fl">0.20</span>),</span>
-<span id="cb19-193"><a href="#cb19-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_means =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">25</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="dv">35</span>),</span>
-<span id="cb19-194"><a href="#cb19-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_precision =</span> <span class="dv">7</span>,</span>
-<span id="cb19-195"><a href="#cb19-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_age =</span> <span class="dv">18</span>,</span>
-<span id="cb19-196"><a href="#cb19-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_age =</span> <span class="dv">45</span>,</span>
-<span id="cb19-197"><a href="#cb19-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_noise =</span> <span class="dv">2</span>,</span>
-<span id="cb19-198"><a href="#cb19-198" aria-hidden="true" tabindex="-1"></a>  <span class="at">union_noise =</span> <span class="fl">0.5</span>,</span>
-<span id="cb19-199"><a href="#cb19-199" aria-hidden="true" tabindex="-1"></a>  <span class="at">poles =</span> <span class="fu">tibble</span>(</span>
-<span id="cb19-200"><a href="#cb19-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"youth"</span>),</span>
-<span id="cb19-201"><a href="#cb19-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_x =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>),</span>
-<span id="cb19-202"><a href="#cb19-202" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_y =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</span>
-<span id="cb19-203"><a href="#cb19-203" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb19-204"><a href="#cb19-204" aria-hidden="true" tabindex="-1"></a>  <span class="at">coefs =</span> <span class="fu">list</span>(</span>
-<span id="cb19-205"><a href="#cb19-205" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_group =</span> <span class="fl">0.5</span>,</span>
-<span id="cb19-206"><a href="#cb19-206" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_gap =</span> <span class="sc">-</span><span class="fl">0.1</span>,</span>
-<span id="cb19-207"><a href="#cb19-207" aria-hidden="true" tabindex="-1"></a>    <span class="at">distance =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
-<span id="cb19-208"><a href="#cb19-208" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> union_noise</span>
-<span id="cb19-209"><a href="#cb19-209" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-210"><a href="#cb19-210" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
-<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-213"><a href="#cb19-213" aria-hidden="true" tabindex="-1"></a>  actors <span class="ot">&lt;-</span> <span class="fu">make_actors</span>(</span>
-<span id="cb19-214"><a href="#cb19-214" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
-<span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_shares =</span> group_shares,</span>
-<span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_means =</span> age_means,</span>
-<span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_precision =</span> age_precision,</span>
-<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_age =</span> min_age,</span>
-<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_age =</span> max_age</span>
-<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a>  xy <span class="ot">&lt;-</span> <span class="fu">make_positions</span>(n)</span>
-<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>  actors <span class="ot">&lt;-</span> <span class="fu">assign_locations</span>(actors, xy, poles, <span class="at">noise_scale =</span> location_noise)</span>
-<span id="cb19-223"><a href="#cb19-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-224"><a href="#cb19-224" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="ot">&lt;-</span> <span class="fu">make_pair_utilities</span>(actors, coefs)</span>
-<span id="cb19-225"><a href="#cb19-225" aria-hidden="true" tabindex="-1"></a>  matches <span class="ot">&lt;-</span> <span class="fu">match_pairs</span>(union_utils)</span>
-<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-227"><a href="#cb19-227" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="sc">|&gt;</span></span>
-<span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(matches, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_man"</span>, <span class="st">"id_woman"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched), <span class="cn">FALSE</span>, matched))</span>
-<span id="cb19-230"><a href="#cb19-230" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-231"><a href="#cb19-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-232"><a href="#cb19-232" aria-hidden="true" tabindex="-1"></a>simulated_pairs <span class="ot">&lt;-</span> <span class="fu">simulate_marriage_market</span>(<span class="at">seed =</span> <span class="dv">543</span>)</span>
-<span id="cb19-233"><a href="#cb19-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-234"><a href="#cb19-234" aria-hidden="true" tabindex="-1"></a>simulated_pairs <span class="sc">|&gt;</span></span>
-<span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(matched)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  matched      n
-  &lt;lgl&gt;    &lt;int&gt;
-1 FALSE   159600
-2 TRUE       400</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>scale_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, mean, precision, <span class="at">min_value =</span> <span class="dv">0</span>, <span class="at">max_value =</span> <span class="dv">1</span>) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(max_value <span class="sc">&gt;</span> min_value, mean <span class="sc">&gt;</span> min_value, mean <span class="sc">&lt;</span> max_value)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  scaled_mean <span class="ot">&lt;-</span> (mean <span class="sc">-</span> min_value) <span class="sc">/</span> (max_value <span class="sc">-</span> min_value)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  shape1 <span class="ot">&lt;-</span> scaled_mean <span class="sc">*</span> precision</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  shape2 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> scaled_mean) <span class="sc">*</span> precision</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  min_value <span class="sc">+</span> (max_value <span class="sc">-</span> min_value) <span class="sc">*</span> <span class="fu">rbeta</span>(n, shape1, shape2)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>make_positions <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  xy_sequence <span class="ot">&lt;-</span> mnorm<span class="sc">::</span><span class="fu">halton</span>(<span class="at">n =</span> n, <span class="at">base =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">start =</span> <span class="dv">1</span>L)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">position_id =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> xy_sequence[, <span class="dv">1</span>],</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> xy_sequence[, <span class="dv">2</span>]</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>make_group_counts <span class="ot">&lt;-</span> <span class="cf">function</span>(n, group_shares) {</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(n <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">0</span>, <span class="fu">all</span>(group_shares <span class="sc">&gt;=</span> <span class="dv">0</span>), <span class="fu">sum</span>(group_shares) <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  group_shares <span class="ot">&lt;-</span> group_shares <span class="sc">/</span> <span class="fu">sum</span>(group_shares)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  raw_counts <span class="ot">&lt;-</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> group_shares</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  group_counts <span class="ot">&lt;-</span> <span class="fu">floor</span>(raw_counts)</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  remainder <span class="ot">&lt;-</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">-</span> <span class="fu">sum</span>(group_counts)</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (remainder <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    add_to <span class="ot">&lt;-</span> <span class="fu">order</span>(raw_counts <span class="sc">-</span> group_counts, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="fu">seq_len</span>(remainder)]</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    group_counts[add_to] <span class="ot">&lt;-</span> group_counts[add_to] <span class="sc">+</span> <span class="dv">1</span>L</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  group_counts</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>make_actors <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">800</span>,</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_shares =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="fl">0.50</span>, <span class="at">b =</span> <span class="fl">0.30</span>, <span class="at">c =</span> <span class="fl">0.20</span>),</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_means =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">25</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="dv">35</span>),</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_precision =</span> <span class="dv">7</span>,</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_age =</span> <span class="dv">18</span>,</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_age =</span> <span class="dv">45</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>  group_counts <span class="ot">&lt;-</span> <span class="fu">make_group_counts</span>(n, group_shares)</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">names</span>(group_counts),</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_mean =</span> <span class="fu">unname</span>(age_means[group]),</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">unname</span>(group_counts)</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="fu">tibble</span>(<span class="at">sex =</span> <span class="fu">c</span>(<span class="st">"man"</span>, <span class="st">"woman"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">reframe</span>(</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">person =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">age =</span> <span class="fu">scale_beta</span>(</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>        n,</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>        age_mean,</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>        <span class="at">precision =</span> age_precision,</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>        <span class="at">min_value =</span> min_age,</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>        <span class="at">max_value =</span> max_age</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>      <span class="at">.by =</span> <span class="fu">c</span>(group, age_mean, sex)</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, sex, group, age)</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>assign_locations <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>  actors,</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>  xy,</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>  poles,</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">noise_scale =</span> <span class="dv">2</span></span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>  youth_pole <span class="ot">&lt;-</span> poles <span class="sc">|&gt;</span> <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"youth"</span>)</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a>  group_poles <span class="ot">&lt;-</span> poles <span class="sc">|&gt;</span> <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"youth"</span>)</span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>  utilities <span class="ot">&lt;-</span> actors <span class="sc">|&gt;</span></span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, group, age) <span class="sc">|&gt;</span></span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crossing</span>(xy) <span class="sc">|&gt;</span></span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(group_poles, <span class="at">by =</span> <span class="st">"group"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_x =</span> youth_pole<span class="sc">$</span>group_x,</span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_y =</span> youth_pole<span class="sc">$</span>group_y,</span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_pull =</span> (<span class="fu">max</span>(age) <span class="sc">-</span> age) <span class="sc">/</span> (<span class="fu">max</span>(age) <span class="sc">-</span> <span class="fu">min</span>(age)),</span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a>      <span class="at">group_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> group_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> group_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a>      <span class="at">youth_distance =</span> <span class="fu">log</span>(<span class="fu">sqrt</span>((x <span class="sc">-</span> youth_x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> youth_y)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> group_distance <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> youth_pull <span class="sc">*</span> youth_distance,</span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> utility <span class="sc">+</span> noise_scale <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(utility))</span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(utility))</span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a>  actor_position <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_integer_</span>, <span class="fu">max</span>(actors<span class="sc">$</span>id))</span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a>  location_taken <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">FALSE</span>, <span class="fu">max</span>(xy<span class="sc">$</span>position_id))</span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a>  n_assigned <span class="ot">&lt;-</span> <span class="dv">0</span>L</span>
+<span id="cb18-96"><a href="#cb18-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-97"><a href="#cb18-97" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (row_index <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(utilities))) {</span>
+<span id="cb18-98"><a href="#cb18-98" aria-hidden="true" tabindex="-1"></a>    actor <span class="ot">&lt;-</span> utilities<span class="sc">$</span>id[row_index]</span>
+<span id="cb18-99"><a href="#cb18-99" aria-hidden="true" tabindex="-1"></a>    location <span class="ot">&lt;-</span> utilities<span class="sc">$</span>position_id[row_index]</span>
+<span id="cb18-100"><a href="#cb18-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-101"><a href="#cb18-101" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.na</span>(actor_position[actor]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span>location_taken[location]) {</span>
+<span id="cb18-102"><a href="#cb18-102" aria-hidden="true" tabindex="-1"></a>      actor_position[actor] <span class="ot">&lt;-</span> location</span>
+<span id="cb18-103"><a href="#cb18-103" aria-hidden="true" tabindex="-1"></a>      location_taken[location] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb18-104"><a href="#cb18-104" aria-hidden="true" tabindex="-1"></a>      n_assigned <span class="ot">&lt;-</span> n_assigned <span class="sc">+</span> <span class="dv">1</span>L</span>
+<span id="cb18-105"><a href="#cb18-105" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb18-106"><a href="#cb18-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-107"><a href="#cb18-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (n_assigned <span class="sc">==</span> <span class="fu">nrow</span>(actors)) <span class="cf">break</span></span>
+<span id="cb18-108"><a href="#cb18-108" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-109"><a href="#cb18-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-110"><a href="#cb18-110" aria-hidden="true" tabindex="-1"></a>  assignments <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb18-111"><a href="#cb18-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> actors<span class="sc">$</span>id,</span>
+<span id="cb18-112"><a href="#cb18-112" aria-hidden="true" tabindex="-1"></a>    <span class="at">position_id =</span> actor_position[actors<span class="sc">$</span>id]</span>
+<span id="cb18-113"><a href="#cb18-113" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-114"><a href="#cb18-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-115"><a href="#cb18-115" aria-hidden="true" tabindex="-1"></a>  actors <span class="sc">|&gt;</span></span>
+<span id="cb18-116"><a href="#cb18-116" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(assignments, <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-117"><a href="#cb18-117" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(xy, <span class="at">by =</span> <span class="st">"position_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-118"><a href="#cb18-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>position_id)</span>
+<span id="cb18-119"><a href="#cb18-119" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-120"><a href="#cb18-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-121"><a href="#cb18-121" aria-hidden="true" tabindex="-1"></a>make_pair_utilities <span class="ot">&lt;-</span> <span class="cf">function</span>(actors, coefs) {</span>
+<span id="cb18-122"><a href="#cb18-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross_join</span>(</span>
+<span id="cb18-123"><a href="#cb18-123" aria-hidden="true" tabindex="-1"></a>    actors <span class="sc">|&gt;</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span> <span class="fu">rename_with</span>(\(x) <span class="fu">paste0</span>(x, <span class="st">"_man"</span>)),</span>
+<span id="cb18-124"><a href="#cb18-124" aria-hidden="true" tabindex="-1"></a>    actors <span class="sc">|&gt;</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span> <span class="fu">rename_with</span>(\(x) <span class="fu">paste0</span>(x, <span class="st">"_woman"</span>))</span>
+<span id="cb18-125"><a href="#cb18-125" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-126"><a href="#cb18-126" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb18-127"><a href="#cb18-127" aria-hidden="true" tabindex="-1"></a>      <span class="at">age_gap =</span> <span class="fu">abs</span>(age_man <span class="sc">-</span> age_woman),</span>
+<span id="cb18-128"><a href="#cb18-128" aria-hidden="true" tabindex="-1"></a>      <span class="at">distance =</span> <span class="fu">sqrt</span>((x_man <span class="sc">-</span> x_woman)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y_man <span class="sc">-</span> y_woman)<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb18-129"><a href="#cb18-129" aria-hidden="true" tabindex="-1"></a>      <span class="at">same_group =</span> <span class="dv">1</span>L <span class="sc">*</span> (group_man <span class="sc">==</span> group_woman),</span>
+<span id="cb18-130"><a href="#cb18-130" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> coefs<span class="sc">$</span>same_group <span class="sc">*</span> same_group <span class="sc">+</span></span>
+<span id="cb18-131"><a href="#cb18-131" aria-hidden="true" tabindex="-1"></a>        coefs<span class="sc">$</span>age_gap <span class="sc">*</span> age_gap <span class="sc">+</span></span>
+<span id="cb18-132"><a href="#cb18-132" aria-hidden="true" tabindex="-1"></a>        coefs<span class="sc">$</span>distance <span class="sc">*</span> <span class="fu">log</span>(distance <span class="sc">+</span> <span class="fl">0.01</span>),</span>
+<span id="cb18-133"><a href="#cb18-133" aria-hidden="true" tabindex="-1"></a>      <span class="at">utility =</span> utility <span class="sc">+</span> coefs<span class="sc">$</span>noise <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(utility))</span>
+<span id="cb18-134"><a href="#cb18-134" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb18-135"><a href="#cb18-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(id_man, id_woman)</span>
+<span id="cb18-136"><a href="#cb18-136" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-137"><a href="#cb18-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-138"><a href="#cb18-138" aria-hidden="true" tabindex="-1"></a>match_pairs <span class="ot">&lt;-</span> <span class="cf">function</span>(union_utils) {</span>
+<span id="cb18-139"><a href="#cb18-139" aria-hidden="true" tabindex="-1"></a>  utility_matrix <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(utility <span class="sc">~</span> id_woman <span class="sc">+</span> id_man, <span class="at">data =</span> union_utils)</span>
+<span id="cb18-140"><a href="#cb18-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-141"><a href="#cb18-141" aria-hidden="true" tabindex="-1"></a>  unions <span class="ot">&lt;-</span> matchingR<span class="sc">::</span><span class="fu">galeShapley.marriageMarket</span>(</span>
+<span id="cb18-142"><a href="#cb18-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">proposerUtils =</span> utility_matrix,</span>
+<span id="cb18-143"><a href="#cb18-143" aria-hidden="true" tabindex="-1"></a>    <span class="at">reviewerUtils =</span> <span class="fu">t</span>(utility_matrix)</span>
+<span id="cb18-144"><a href="#cb18-144" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-145"><a href="#cb18-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-146"><a href="#cb18-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb18-147"><a href="#cb18-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_man =</span> <span class="fu">as.integer</span>(<span class="fu">colnames</span>(utility_matrix)),</span>
+<span id="cb18-148"><a href="#cb18-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_woman =</span> <span class="fu">as.integer</span>(<span class="fu">rownames</span>(utility_matrix)[<span class="fu">as.integer</span>(unions<span class="sc">$</span>proposals)]),</span>
+<span id="cb18-149"><a href="#cb18-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> <span class="cn">TRUE</span></span>
+<span id="cb18-150"><a href="#cb18-150" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-151"><a href="#cb18-151" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-152"><a href="#cb18-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-153"><a href="#cb18-153" aria-hidden="true" tabindex="-1"></a>simulate_marriage_market <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb18-154"><a href="#cb18-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">543</span>,</span>
+<span id="cb18-155"><a href="#cb18-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">800</span>,</span>
+<span id="cb18-156"><a href="#cb18-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_shares =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="fl">0.50</span>, <span class="at">b =</span> <span class="fl">0.30</span>, <span class="at">c =</span> <span class="fl">0.20</span>),</span>
+<span id="cb18-157"><a href="#cb18-157" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_means =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">25</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="dv">35</span>),</span>
+<span id="cb18-158"><a href="#cb18-158" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_precision =</span> <span class="dv">7</span>,</span>
+<span id="cb18-159"><a href="#cb18-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_age =</span> <span class="dv">18</span>,</span>
+<span id="cb18-160"><a href="#cb18-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_age =</span> <span class="dv">45</span>,</span>
+<span id="cb18-161"><a href="#cb18-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_noise =</span> <span class="dv">2</span>,</span>
+<span id="cb18-162"><a href="#cb18-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">union_noise =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-163"><a href="#cb18-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">poles =</span> <span class="fu">tibble</span>(</span>
+<span id="cb18-164"><a href="#cb18-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"youth"</span>),</span>
+<span id="cb18-165"><a href="#cb18-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_x =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>),</span>
+<span id="cb18-166"><a href="#cb18-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_y =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</span>
+<span id="cb18-167"><a href="#cb18-167" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb18-168"><a href="#cb18-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">coefs =</span> <span class="fu">list</span>(</span>
+<span id="cb18-169"><a href="#cb18-169" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_group =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-170"><a href="#cb18-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_gap =</span> <span class="sc">-</span><span class="fl">0.1</span>,</span>
+<span id="cb18-171"><a href="#cb18-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">distance =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb18-172"><a href="#cb18-172" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> union_noise</span>
+<span id="cb18-173"><a href="#cb18-173" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-174"><a href="#cb18-174" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb18-175"><a href="#cb18-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb18-176"><a href="#cb18-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-177"><a href="#cb18-177" aria-hidden="true" tabindex="-1"></a>  actors <span class="ot">&lt;-</span> <span class="fu">make_actors</span>(</span>
+<span id="cb18-178"><a href="#cb18-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
+<span id="cb18-179"><a href="#cb18-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">group_shares =</span> group_shares,</span>
+<span id="cb18-180"><a href="#cb18-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_means =</span> age_means,</span>
+<span id="cb18-181"><a href="#cb18-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_precision =</span> age_precision,</span>
+<span id="cb18-182"><a href="#cb18-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_age =</span> min_age,</span>
+<span id="cb18-183"><a href="#cb18-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_age =</span> max_age</span>
+<span id="cb18-184"><a href="#cb18-184" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-185"><a href="#cb18-185" aria-hidden="true" tabindex="-1"></a>  xy <span class="ot">&lt;-</span> <span class="fu">make_positions</span>(n)</span>
+<span id="cb18-186"><a href="#cb18-186" aria-hidden="true" tabindex="-1"></a>  actors <span class="ot">&lt;-</span> <span class="fu">assign_locations</span>(actors, xy, poles, <span class="at">noise_scale =</span> location_noise)</span>
+<span id="cb18-187"><a href="#cb18-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-188"><a href="#cb18-188" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="ot">&lt;-</span> <span class="fu">make_pair_utilities</span>(actors, coefs)</span>
+<span id="cb18-189"><a href="#cb18-189" aria-hidden="true" tabindex="-1"></a>  matches <span class="ot">&lt;-</span> <span class="fu">match_pairs</span>(union_utils)</span>
+<span id="cb18-190"><a href="#cb18-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-191"><a href="#cb18-191" aria-hidden="true" tabindex="-1"></a>  union_utils <span class="sc">|&gt;</span></span>
+<span id="cb18-192"><a href="#cb18-192" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(matches, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_man"</span>, <span class="st">"id_woman"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb18-193"><a href="#cb18-193" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched), <span class="cn">FALSE</span>, matched))</span>
+<span id="cb18-194"><a href="#cb18-194" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

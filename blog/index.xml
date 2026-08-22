@@ -22,14 +22,14 @@
 
 <section id="introduction" class="level2">
 <h2 data-anchor-id="introduction">Introduction</h2>
-<p>There’s a been a percolating trend in sociological research on assortative mating, particularly in demography and sociology, away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on McFadden’s conditinoal logit model <span class="citation" data-cites="mcfaddenConditionalLogitAnalysis1974">(1974)</span>.<sup>1</sup> Examples include the work of Karen Haandrikman <span class="citation" data-cites="haandrikmanExplainingFlightCupids2012">(2012)</span>, Aaron Gullickson <span class="citation" data-cites="gullicksonCounterfactualChoiceApproach2021">(2021)</span>, and my colleague and student, Jesper Lindmarker <span class="citation" data-cites="lindmarkerHoweverFarAway2025">(2025)</span>. That the conditional logit model offers a more general formulation of the log-linear models that have served as the bread and butter of mobility and assortative mating research has been known for quite some time. John A. Logan showed as much in the 1980s <span class="citation" data-cites="loganMultivariateModelMobility1983">(1983)</span>, as did Richard Breen in the 1990s <span class="citation" data-cites="breenIndividualLevelModels1994">(1994)</span>. Logan even points to knowledge of the equivalence dating back to the 1970s.</p>
-<p>That the tiny revolution in assortative mating research away from traditional log-linear modeling to discrete choice modeling is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
-<p>So, this research note. My goal is to demonstrate, yet again, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis for relatively simple model specifications. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some intuitive ideas about the factors affecting assortative mating.</p>
-<p>This is just part one. This post sets the scene through simulation; stipulating and then allocating singles to social and spatial positions in a stylized marriage market. In subsequent posts, I’ll show how to take these singles and produce matched pairs, how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the “deeper” parameters that actually drive union formation in the simulated data.</p>
+<p>There’s a been a percolating trend in sociological research on assortative mating away from log-linear modeling and towards a more flexible style of discrete choice modeling, primarily based on McFadden’s conditional logit model <span class="citation" data-cites="mcfaddenConditionalLogitAnalysis1974">(1974)</span>.<sup>1</sup> Examples include the work of Karen Haandrikman <span class="citation" data-cites="haandrikmanExplainingFlightCupids2012">(2012)</span>, Aaron Gullickson <span class="citation" data-cites="gullicksonCounterfactualChoiceApproach2021">(2021)</span>, and my colleague and student, Jesper Lindmarker <span class="citation" data-cites="lindmarkerHoweverFarAway2025">(2025)</span>. That the tiny revolution in assortative mating research is taking place outside of economics, where discrete choice models were first developed, is perhaps not too surprising: sociologists are less constrained by issues of causal identification, general equilibrium, and stable matching assumptions that often preoccupy economists. Using an out-of-the-box discrete choice modeling approach largely elides these issues in favor of arriving at parameter estimates that aren’t so readibly interpreted in a causal or structural sense, but at least provide rich fodder for sociological interpretation.</p>
+<p>But something that I think remains underappreciated is that the conditional logit model actually nests, and provides a more general formulation of, the log-linear models that have served as the bread and butter of mobility and assortative mating research. In other words, you can use the conditional logit model to obtain <em>identical</em> parameter estimates and standard errors as equivalently specified log-linear models. This knowledge is not really new: Richard Breen <span class="citation" data-cites="breenIndividualLevelModels1994">(1994)</span> has shown this, as has John A. Logan <span class="citation" data-cites="loganMultivariateModelMobility1983">(1983)</span>. And Logan even points to knowledge of the equivalence dating back to the 1970s. Beyond producing identical estimates as log-linear models for count data, Logan and Breen make the point that conditional logit model allow for the inclusion of idiosyncratic individual- and union-level covariates that correspond to the theorizing and claims making that sociologists and demographers are most interested in. So a goal of these posts is to set down an easily searchable and digestible beacon for future researchers seeking to integrate these models into their analytic practice, perhaps as an alternative or supplement to traditional log-linear modeling.</p>
+<p>So, this series of research notes. My goal is to demonstrate, yet again, but in concrete, data-centric terms, the equivalence between conditional logistic regression (i.e., McFadden’s choice model) and log-linear analysis. But I want to go beyond that and also explore the greater possibilities, as well as the interpretive perils, that go along with this modeling approach. I do so using a simulated dataset representing some stylized but essential features of assortative mating and marriage markets.</p>
+<p>This is just part one in a series. I won’t make it to model fitting here. This post just sets the scene using simulation, stipulating and then allocating singles to social and spatial positions in a stylized marriage market and then forming unions between those singles using an econometric matching algorithm. In subsequent posts, I’ll show how to fit log-linear and conditional logistic regression models to the resulting data, how the parameter estimates compare, and than how these parameter estimates might give us a skewed view of the “deeper” parameters that may drive union formation in simulated and real-world data sets.</p>
 </section>
-<section id="building-a-simulated-marriage-market" class="level2">
-<h2 data-anchor-id="building-a-simulated-marriage-market">Building a simulated marriage market</h2>
-<p>I consider a marriage market characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with varying attributes who will then be paired. The pairing step will be covered in another post. This post is just about building the space, generating actors, and assigning actors to positions based on some simplified assumptions about the uneven distribution of different social groups.</p>
+<section id="generating-the-marriage-market" class="level2">
+<h2 data-anchor-id="generating-the-marriage-market">Generating the marriage market</h2>
+<p>I consider a marriage market characterized by a simplified geometric/geographic space, consisting of quasi-randomly generated positions that are occupied by actors with a narrow set of attributes. So constructing the marriage market entails constructing a set of positions for singles to occupy, generating the singles that will occupy those positions, and finally assigning those singles to positions. I detail these steps in the sections below.</p>
 <section id="positions" class="level3">
 <h3 data-anchor-id="positions">Positions</h3>
 <p>My goal is to create a semi-regular arrangement of what might be construed as housing units or residential positions for actors to occupy. These positions are static, and so the actors are conceived of as static. Their mobility is implicit in how space determines union formation, which I cover in the next post. This gives a geographic position to each actor that will influence subsequent matching. A simple way of doing this would be to use independent draws of a set of x and y coordinates from a uniform distribution. However, this creates a set of positions characterized by unusual gaps and overlaps that just doesn’t look “right” to my eye. So instead of using pseudo-random numbers, I use quasi-random numbers, in this case Halton sequences, to generate the x and y coordinates. Quasi-random numbers tend to be more evenly spaced than pseudo-random numbers, which feels right for this fictive geography.</p>
@@ -1511,7 +1511,7 @@ font-style: inherit;">group"</span>)</span></code></pre></div>
 </section>
 <section id="tranforming-utilities-into-unions" class="level3">
 <h3 data-anchor-id="tranforming-utilities-into-unions">Tranforming utilities into unions</h3>
-<p>To run the Gale-Shapley algorithm, we have to create matrices of union utilities from the perspective of men and women. This matrix can be fed into a Gale-Shapley algorithm to generate stable matches, where the overall utility of the matches cannot be improved by changing any of the unions. This matching is performed using the <code>matchingR</code> package. The package expects a matrix of proposer utilities, i.e., the utility the proposer would obtain from being matched with a given reviewer, where the columns indicate the proposers, and the rows indicate the reviewers. It also requires a corresponding matrix of reviewer utilities, i.e., the utility the reviewer gets from matching with the proposer, where the columns indicate the reviewers, and the rows indicate the proposers. In our case, these two matrices are just transposes of each other, but these matrices could differ more substantially. This would occur if, for example, men had different preferences than women. In this case, I treat the men as the proposers, and women as the reviewers.</p>
+<p>I use the the Gale-Shapley algorithm implemented in the <code>matchingR</code> package to transform the complete set of utilities into one-to-one dyadic matches. The package expects matrices of proposer utilities and reviewer utilities, where I treat the men as proposers and the women as reviewers. The proposer matrix contains the utilities men (in columns) would obtain from being matched with a given woman (in rows). The reviewer matrix contains the utilities the women (now in columns) would obtain from being matched with each man (in rows). In our case, we calculate a single utility for each union, and men’s and women’s matrices are transposes of each other. But in principle these matrices could differ more substantially in their elements. For example, the utility function that men use to evaluate women could differ from the function that women use to evaluate men. That’s a wrinkle to consider in a different post. In any case, the code to construct the matrices and make the matches is as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">men<span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1539,106 +1539,77 @@ background-color: null;
 font-style: inherit;">"woman"</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>id)</span>
-<span id="cb13-3"></span>
-<span id="cb13-4">utility_matrix<span class="ot" style="color: #003B4F;
+<span id="cb13-3">utility_matrix<span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">matrix</span>(</span>
-<span id="cb13-5">    <span class="cn" style="color: #8f5902;
+font-style: inherit;">xtabs</span>(utility<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">NA_real_</span>,</span>
-<span id="cb13-6">    <span class="at" style="color: #657422;
+font-style: inherit;">~</span>id_woman<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">nrow =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">+</span>id_man, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">length</span>(women),</span>
-<span id="cb13-7">    <span class="at" style="color: #657422;
+font-style: inherit;">data=</span>union_utils)</span>
+<span id="cb13-4"></span>
+<span id="cb13-5">unions <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">ncol =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">&lt;-</span> matchingR<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">length</span>(men),</span>
-<span id="cb13-8">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">dimnames =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(women, men)</span>
-<span id="cb13-9">  )</span>
-<span id="cb13-10">utility_matrix[</span>
-<span id="cb13-11">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cbind</span>(</span>
-<span id="cb13-12">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">match</span>(union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id_woman, women),</span>
-<span id="cb13-13">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">match</span>(union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id_man, men)</span>
-<span id="cb13-14">    )</span>
-<span id="cb13-15">  ] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>utility</span></code></pre></div>
-</div>
-<p>With the matrices in hand, the Gale-Shapley algorithm can be applied and results extracted. I join a variable identifying matched pairs to the fully exploded data of all possible man-woman pairs.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">unions <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">galeShapley.marriageMarket</span>(</span>
-<span id="cb14-2">    <span class="at" style="color: #657422;
+<span id="cb13-6">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">proposerUtils =</span> utility_matrix,</span>
-<span id="cb14-3">    <span class="at" style="color: #657422;
+<span id="cb13-7">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">reviewerUtils =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">t</span>(utility_matrix)</span>
-<span id="cb14-4">  )</span>
-<span id="cb14-5"></span>
-<span id="cb14-6">matches <span class="ot" style="color: #003B4F;
+<span id="cb13-8">)</span>
+<span id="cb13-9"></span>
+<span id="cb13-10">matches <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tibble</span>(</span>
-<span id="cb14-7">  <span class="at" style="color: #657422;
+<span id="cb13-11">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">id_man =</span> men,</span>
-<span id="cb14-8">  <span class="at" style="color: #657422;
+font-style: inherit;">id_man =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">id_woman =</span> women[<span class="fu" style="color: #4758AB;
+font-style: inherit;">as.integer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">colnames</span>(utility_matrix)),</span>
+<span id="cb13-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_woman =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.integer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rownames</span>(utility_matrix)[<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">as.integer</span>(unions<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>proposals)]</span>
-<span id="cb14-9">) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">$</span>proposals)]),</span>
+<span id="cb13-13">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">matched =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">matched=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb14-10"></span>
-<span id="cb14-11">union_utils <span class="ot" style="color: #003B4F;
+font-style: inherit;">TRUE</span></span>
+<span id="cb13-14">)</span>
+<span id="cb13-15"></span>
+<span id="cb13-16">union_utils <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span></span>
-<span id="cb14-12">  union_utils <span class="sc" style="color: #5E5E5E;
+<span id="cb13-17">  union_utils <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb14-13">  <span class="fu" style="color: #4758AB;
+<span id="cb13-18">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">left_join</span>(matches) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb14-14">  <span class="fu" style="color: #4758AB;
+<span id="cb13-19">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1650,19 +1621,19 @@ font-style: inherit;">is.na</span>(matched),<span class="cn" style="color: #8f59
 background-color: null;
 font-style: inherit;">FALSE</span>,<span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">TRUE</span>))</span></code></pre></div>
+font-style: inherit;">TRUE</span>)) </span></code></pre></div>
 </div>
-<p>A quick glance suggests that the final matches align with what might be expected based on the utility functions used for simulation: The simulated matches are closer together in distance and age, and are more likely to share group membership.</p>
+<p>A quick glance suggests that the final matches align with what might be expected based on the utility functions used for simulation: The simulated matches are closer together in distance and age, and are more likely to share group membership, compared to the non-matches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">union_utils <span class="sc" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">union_utils <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb15-2">  <span class="fu" style="color: #4758AB;
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">group_by</span>(matched) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">summarize</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1683,7 +1654,7 @@ font-style: inherit;">mean</span>(.x)))</span></code></pre></div>
 </div>
 <p>And we can compare matches to non-matches graphically for distance and age gap</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1692,6 +1663,45 @@ background-color: null;
 font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">x=</span>distance,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span>matched)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/match-vs-no-distance-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Distance to opposite sex in matched vs.&nbsp;non-matched pairs</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data=</span>union_utils,<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>age_gap,<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">fill=</span>matched)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1715,45 +1725,6 @@ font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/match-vs-no-distance-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption>Distance to opposite sex in matched vs.&nbsp;non-matched pairs</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data=</span>union_utils,<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span>age_gap,<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill=</span>matched)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb18-2">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.4</span>,<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NA</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb18-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
 <p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/match-vs-no-agegap-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Absolute age difference from opposite sex in matched vs.&nbsp;non-matched pairs</figcaption>
 </figure>
@@ -1762,11 +1733,11 @@ font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
 </div>
 </section>
 </section>
-<section id="reusable-data-generator" class="level2">
-<h2 data-anchor-id="reusable-data-generator">Reusable data generator</h2>
-<p>For convenience, the full simulation can be wrapped into a small set of functions. The main function, <code>simulate_marriage_market()</code>, returns the exploded man-woman pair data, with one row for every possible union and a logical <code>matched</code> variable identifying the Gale-Shapley matches.</p>
+<section id="a-reusable-data-generating-function" class="level2">
+<h2 data-anchor-id="a-reusable-data-generating-function">A reusable data generating function</h2>
+<p>For convenience, the full simulated data generator can be made into a function wrapper for other functions that create actors, positions, position assignments, and matches. The main function, <code>simulate_marriage_market()</code>, returns the exploded man-woman pair data, with one row for every possible union and a logical <code>matched</code> variable identifying the Gale-Shapley matches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">scale_beta <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">scale_beta <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
@@ -1780,45 +1751,17 @@ background-color: null;
 font-style: inherit;">max_value =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>) {</span>
-<span id="cb19-2">  <span class="cf" style="color: #003B4F;
+<span id="cb18-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (max_value <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">stopifnot</span>(max_value <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&lt;=</span> min_value) {</span>
-<span id="cb19-3">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">&gt;</span> min_value, mean <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">stop</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">&gt;</span> min_value, mean <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"max_value must be greater than min_value."</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">call. =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb19-4">  }</span>
-<span id="cb19-5"></span>
-<span id="cb19-6">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (mean <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;=</span> min_value <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">||</span> mean <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> max_value) {</span>
-<span id="cb19-7">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stop</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"mean must fall strictly between min_value and max_value."</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">call. =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb19-8">  }</span>
-<span id="cb19-9"></span>
-<span id="cb19-10">  scaled_mean <span class="ot" style="color: #003B4F;
+font-style: inherit;">&lt;</span> max_value)</span>
+<span id="cb18-3"></span>
+<span id="cb18-4">  scaled_mean <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> (mean <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1827,12 +1770,12 @@ background-color: null;
 font-style: inherit;">/</span> (max_value <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> min_value)</span>
-<span id="cb19-11">  shape1 <span class="ot" style="color: #003B4F;
+<span id="cb18-5">  shape1 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> scaled_mean <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> precision</span>
-<span id="cb19-12">  shape2 <span class="ot" style="color: #003B4F;
+<span id="cb18-6">  shape2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> (<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1841,8 +1784,8 @@ background-color: null;
 font-style: inherit;">-</span> scaled_mean) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> precision</span>
-<span id="cb19-13"></span>
-<span id="cb19-14">  min_value <span class="sc" style="color: #5E5E5E;
+<span id="cb18-7"></span>
+<span id="cb18-8">  min_value <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> (max_value <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1851,15 +1794,15 @@ background-color: null;
 font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">rbeta</span>(n, shape1, shape2)</span>
-<span id="cb19-15">}</span>
-<span id="cb19-16"></span>
-<span id="cb19-17">make_positions <span class="ot" style="color: #003B4F;
+<span id="cb18-9">}</span>
+<span id="cb18-10"></span>
+<span id="cb18-11">make_positions <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(n) {</span>
-<span id="cb19-18">  xy_sequence <span class="ot" style="color: #003B4F;
+<span id="cb18-12">  xy_sequence <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> mnorm<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1880,107 +1823,66 @@ background-color: null;
 font-style: inherit;">start =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>L)</span>
-<span id="cb19-19"></span>
-<span id="cb19-20">  <span class="fu" style="color: #4758AB;
+<span id="cb18-13"></span>
+<span id="cb18-14">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tibble</span>(</span>
-<span id="cb19-21">    <span class="at" style="color: #657422;
+<span id="cb18-15">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">position_id =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">seq_len</span>(n),</span>
-<span id="cb19-22">    <span class="at" style="color: #657422;
+<span id="cb18-16">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">x =</span> xy_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>],</span>
-<span id="cb19-23">    <span class="at" style="color: #657422;
+<span id="cb18-17">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">y =</span> xy_sequence[, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>]</span>
-<span id="cb19-24">  )</span>
-<span id="cb19-25">}</span>
-<span id="cb19-26"></span>
-<span id="cb19-27">make_group_counts <span class="ot" style="color: #003B4F;
+<span id="cb18-18">  )</span>
+<span id="cb18-19">}</span>
+<span id="cb18-20"></span>
+<span id="cb18-21">make_group_counts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(n, group_shares) {</span>
-<span id="cb19-28">  <span class="cf" style="color: #003B4F;
+<span id="cb18-22">  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (n <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">stopifnot</span>(n <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%%</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span>) {</span>
-<span id="cb19-29">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">0</span>, <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">stop</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">all</span>(group_shares <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"n must be even so the market can be split equally by sex."</span>, <span class="at" style="color: #657422;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">call. =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb19-30">  }</span>
-<span id="cb19-31"></span>
-<span id="cb19-32">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">any</span>(group_shares <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>)) {</span>
-<span id="cb19-33">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stop</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"group_shares cannot contain negative values."</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">call. =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb19-34">  }</span>
-<span id="cb19-35"></span>
-<span id="cb19-36">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+font-style: inherit;">0</span>), <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sum</span>(group_shares) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span>) {</span>
-<span id="cb19-37">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stop</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"group_shares must have a positive sum."</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">call. =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb19-38">  }</span>
-<span id="cb19-39"></span>
-<span id="cb19-40">  group_shares <span class="ot" style="color: #003B4F;
+font-style: inherit;">0</span>)</span>
+<span id="cb18-23"></span>
+<span id="cb18-24">  group_shares <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> group_shares <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sum</span>(group_shares)</span>
-<span id="cb19-41">  raw_counts <span class="ot" style="color: #003B4F;
+<span id="cb18-25">  raw_counts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> (n <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1989,12 +1891,12 @@ background-color: null;
 font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> group_shares</span>
-<span id="cb19-42">  group_counts <span class="ot" style="color: #003B4F;
+<span id="cb18-26">  group_counts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">floor</span>(raw_counts)</span>
-<span id="cb19-43">  remainder <span class="ot" style="color: #003B4F;
+<span id="cb18-27">  remainder <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> (n <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2005,8 +1907,8 @@ background-color: null;
 font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sum</span>(group_counts)</span>
-<span id="cb19-44"></span>
-<span id="cb19-45">  <span class="cf" style="color: #003B4F;
+<span id="cb18-28"></span>
+<span id="cb18-29">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> (remainder <span class="sc" style="color: #5E5E5E;
@@ -2014,7 +1916,7 @@ background-color: null;
 font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>) {</span>
-<span id="cb19-46">    add_to <span class="ot" style="color: #003B4F;
+<span id="cb18-30">    add_to <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2027,30 +1929,30 @@ background-color: null;
 font-style: inherit;">TRUE</span>)[<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">seq_len</span>(remainder)]</span>
-<span id="cb19-47">    group_counts[add_to] <span class="ot" style="color: #003B4F;
+<span id="cb18-31">    group_counts[add_to] <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> group_counts[add_to] <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>L</span>
-<span id="cb19-48">  }</span>
-<span id="cb19-49"></span>
-<span id="cb19-50">  group_counts</span>
-<span id="cb19-51">}</span>
-<span id="cb19-52"></span>
-<span id="cb19-53">make_actors <span class="ot" style="color: #003B4F;
+<span id="cb18-32">  }</span>
+<span id="cb18-33"></span>
+<span id="cb18-34">  group_counts</span>
+<span id="cb18-35">}</span>
+<span id="cb18-36"></span>
+<span id="cb18-37">make_actors <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(</span>
-<span id="cb19-54">  <span class="at" style="color: #657422;
+<span id="cb18-38">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">n =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">800</span>,</span>
-<span id="cb19-55">  <span class="at" style="color: #657422;
+<span id="cb18-39">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_shares =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2067,7 +1969,7 @@ background-color: null;
 font-style: inherit;">c =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.20</span>),</span>
-<span id="cb19-56">  <span class="at" style="color: #657422;
+<span id="cb18-40">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_means =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2084,50 +1986,50 @@ background-color: null;
 font-style: inherit;">c =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">35</span>),</span>
-<span id="cb19-57">  <span class="at" style="color: #657422;
+<span id="cb18-41">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_precision =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">7</span>,</span>
-<span id="cb19-58">  <span class="at" style="color: #657422;
+<span id="cb18-42">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">min_age =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">18</span>,</span>
-<span id="cb19-59">  <span class="at" style="color: #657422;
+<span id="cb18-43">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">max_age =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">45</span></span>
-<span id="cb19-60">) {</span>
-<span id="cb19-61">  group_counts <span class="ot" style="color: #003B4F;
+<span id="cb18-44">) {</span>
+<span id="cb18-45">  group_counts <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make_group_counts</span>(n, group_shares)</span>
-<span id="cb19-62"></span>
-<span id="cb19-63">  <span class="fu" style="color: #4758AB;
+<span id="cb18-46"></span>
+<span id="cb18-47">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tibble</span>(</span>
-<span id="cb19-64">    <span class="at" style="color: #657422;
+<span id="cb18-48">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">names</span>(group_counts),</span>
-<span id="cb19-65">    <span class="at" style="color: #657422;
+<span id="cb18-49">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_mean =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">unname</span>(age_means[group]),</span>
-<span id="cb19-66">    <span class="at" style="color: #657422;
+<span id="cb18-50">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">n =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">unname</span>(group_counts)</span>
-<span id="cb19-67">  ) <span class="sc" style="color: #5E5E5E;
+<span id="cb18-51">  ) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-68">    <span class="fu" style="color: #4758AB;
+<span id="cb18-52">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">expand_grid</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2142,45 +2044,45 @@ background-color: null;
 font-style: inherit;">"woman"</span>))) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-69">    <span class="fu" style="color: #4758AB;
+<span id="cb18-53">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">reframe</span>(</span>
-<span id="cb19-70">      <span class="at" style="color: #657422;
+<span id="cb18-54">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">person =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">seq_len</span>(n),</span>
-<span id="cb19-71">      <span class="at" style="color: #657422;
+<span id="cb18-55">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">scale_beta</span>(</span>
-<span id="cb19-72">        n,</span>
-<span id="cb19-73">        age_mean,</span>
-<span id="cb19-74">        <span class="at" style="color: #657422;
+<span id="cb18-56">        n,</span>
+<span id="cb18-57">        age_mean,</span>
+<span id="cb18-58">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">precision =</span> age_precision,</span>
-<span id="cb19-75">        <span class="at" style="color: #657422;
+<span id="cb18-59">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">min_value =</span> min_age,</span>
-<span id="cb19-76">        <span class="at" style="color: #657422;
+<span id="cb18-60">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">max_value =</span> max_age</span>
-<span id="cb19-77">      ),</span>
-<span id="cb19-78">      <span class="at" style="color: #657422;
+<span id="cb18-61">      ),</span>
+<span id="cb18-62">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">.by =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(group, age_mean, sex)</span>
-<span id="cb19-79">    ) <span class="sc" style="color: #5E5E5E;
+<span id="cb18-63">    ) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-80">    <span class="fu" style="color: #4758AB;
+<span id="cb18-64">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ungroup</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-81">    <span class="fu" style="color: #4758AB;
+<span id="cb18-65">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -2189,27 +2091,27 @@ background-color: null;
 font-style: inherit;">row_number</span>()) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-82">    <span class="fu" style="color: #4758AB;
+<span id="cb18-66">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">select</span>(id, sex, group, age)</span>
-<span id="cb19-83">}</span>
-<span id="cb19-84"></span>
-<span id="cb19-85">assign_locations <span class="ot" style="color: #003B4F;
+<span id="cb18-67">}</span>
+<span id="cb18-68"></span>
+<span id="cb18-69">assign_locations <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(</span>
-<span id="cb19-86">  actors,</span>
-<span id="cb19-87">  xy,</span>
-<span id="cb19-88">  poles,</span>
-<span id="cb19-89">  <span class="at" style="color: #657422;
+<span id="cb18-70">  actors,</span>
+<span id="cb18-71">  xy,</span>
+<span id="cb18-72">  poles,</span>
+<span id="cb18-73">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">noise_scale =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span></span>
-<span id="cb19-90">) {</span>
-<span id="cb19-91">  youth_pole <span class="ot" style="color: #003B4F;
+<span id="cb18-74">) {</span>
+<span id="cb18-75">  youth_pole <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> poles <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2220,7 +2122,7 @@ background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"youth"</span>)</span>
-<span id="cb19-92">  group_poles <span class="ot" style="color: #003B4F;
+<span id="cb18-76">  group_poles <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> poles <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2231,23 +2133,23 @@ background-color: null;
 font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"youth"</span>)</span>
-<span id="cb19-93"></span>
-<span id="cb19-94">  utilities <span class="ot" style="color: #003B4F;
+<span id="cb18-77"></span>
+<span id="cb18-78">  utilities <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> actors <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-95">    <span class="fu" style="color: #4758AB;
+<span id="cb18-79">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">select</span>(id, group, age) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-96">    <span class="fu" style="color: #4758AB;
+<span id="cb18-80">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">crossing</span>(xy) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-97">    <span class="fu" style="color: #4758AB;
+<span id="cb18-81">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">left_join</span>(group_poles, <span class="at" style="color: #657422;
 background-color: null;
@@ -2256,20 +2158,20 @@ background-color: null;
 font-style: inherit;">"group"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-98">    <span class="fu" style="color: #4758AB;
+<span id="cb18-82">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(</span>
-<span id="cb19-99">      <span class="at" style="color: #657422;
+<span id="cb18-83">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">youth_x =</span> youth_pole<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>group_x,</span>
-<span id="cb19-100">      <span class="at" style="color: #657422;
+<span id="cb18-84">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">youth_y =</span> youth_pole<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>group_y,</span>
-<span id="cb19-101">      <span class="at" style="color: #657422;
+<span id="cb18-85">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">youth_pull =</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2284,7 +2186,7 @@ background-color: null;
 font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">min</span>(age)),</span>
-<span id="cb19-102">      <span class="at" style="color: #657422;
+<span id="cb18-86">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_distance =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2309,7 +2211,7 @@ background-color: null;
 font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.01</span>),</span>
-<span id="cb19-103">      <span class="at" style="color: #657422;
+<span id="cb18-87">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">youth_distance =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2334,7 +2236,7 @@ background-color: null;
 font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.01</span>),</span>
-<span id="cb19-104">      <span class="at" style="color: #657422;
+<span id="cb18-88">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">utility =</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2351,7 +2253,7 @@ background-color: null;
 font-style: inherit;">*</span> youth_pull <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> youth_distance,</span>
-<span id="cb19-105">      <span class="at" style="color: #657422;
+<span id="cb18-89">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">utility =</span> utility <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2370,41 +2272,44 @@ background-color: null;
 font-style: inherit;">sd =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sd</span>(utility))</span>
-<span id="cb19-106">    ) <span class="sc" style="color: #5E5E5E;
+<span id="cb18-90">    ) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-107">    <span class="fu" style="color: #4758AB;
+<span id="cb18-91">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">arrange</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">desc</span>(utility))</span>
-<span id="cb19-108"></span>
-<span id="cb19-109">  assigned_actors <span class="ot" style="color: #003B4F;
+<span id="cb18-92"></span>
+<span id="cb18-93">  actor_position <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">integer</span>()</span>
-<span id="cb19-110">  assigned_locations <span class="ot" style="color: #003B4F;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA_integer_</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(actors<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>id))</span>
+<span id="cb18-94">  location_taken <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">integer</span>()</span>
-<span id="cb19-111">  assignments <span class="ot" style="color: #003B4F;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">FALSE</span>, <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">vector</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">max</span>(xy<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"list"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">nrow</span>(actors))</span>
-<span id="cb19-112">  n_assigned <span class="ot" style="color: #003B4F;
+font-style: inherit;">$</span>position_id))</span>
+<span id="cb18-95">  n_assigned <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>L</span>
-<span id="cb19-113"></span>
-<span id="cb19-114">  <span class="cf" style="color: #003B4F;
+<span id="cb18-96"></span>
+<span id="cb18-97">  <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> (row_index <span class="cf" style="color: #003B4F;
@@ -2415,94 +2320,87 @@ background-color: null;
 font-style: inherit;">seq_len</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">nrow</span>(utilities))) {</span>
-<span id="cb19-115">    option <span class="ot" style="color: #003B4F;
+<span id="cb18-98">    actor <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">&lt;-</span> utilities[row_index, ]</span>
-<span id="cb19-116"></span>
-<span id="cb19-117">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">&lt;-</span> utilities<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (</span>
-<span id="cb19-118">      option<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">$</span>id[row_index]</span>
+<span id="cb18-99">    location <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">$</span>id <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">&lt;-</span> utilities<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">%in%</span> assigned_actors <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">||</span></span>
-<span id="cb19-119">        option<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>position_id <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%in%</span> assigned_locations</span>
-<span id="cb19-120">    ) {</span>
-<span id="cb19-121">      <span class="cf" style="color: #003B4F;
+font-style: inherit;">$</span>position_id[row_index]</span>
+<span id="cb18-100"></span>
+<span id="cb18-101">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">next</span></span>
-<span id="cb19-122">    }</span>
-<span id="cb19-123"></span>
-<span id="cb19-124">    n_assigned <span class="ot" style="color: #003B4F;
+font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">is.na</span>(actor_position[actor]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;&amp;</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>location_taken[location]) {</span>
+<span id="cb18-102">      actor_position[actor] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> location</span>
+<span id="cb18-103">      location_taken[location] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span></span>
+<span id="cb18-104">      n_assigned <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> n_assigned <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>L</span>
-<span id="cb19-125">    assignments[[n_assigned]] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> option <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb19-126">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">select</span>(id, position_id)</span>
-<span id="cb19-127"></span>
-<span id="cb19-128">    assigned_actors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(assigned_actors, option<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id)</span>
-<span id="cb19-129">    assigned_locations <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(assigned_locations, option<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>position_id)</span>
-<span id="cb19-130"></span>
-<span id="cb19-131">    <span class="cf" style="color: #003B4F;
+<span id="cb18-105">    }</span>
+<span id="cb18-106"></span>
+<span id="cb18-107">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> (n_assigned <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">nrow</span>(actors)) {</span>
-<span id="cb19-132">      <span class="cf" style="color: #003B4F;
+font-style: inherit;">nrow</span>(actors)) <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">break</span></span>
-<span id="cb19-133">    }</span>
-<span id="cb19-134">  }</span>
-<span id="cb19-135"></span>
-<span id="cb19-136">  actors <span class="sc" style="color: #5E5E5E;
+<span id="cb18-108">  }</span>
+<span id="cb18-109"></span>
+<span id="cb18-110">  assignments <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb18-111">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id =</span> actors<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>id,</span>
+<span id="cb18-112">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position_id =</span> actor_position[actors<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>id]</span>
+<span id="cb18-113">  )</span>
+<span id="cb18-114"></span>
+<span id="cb18-115">  actors <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-137">    <span class="fu" style="color: #4758AB;
+<span id="cb18-116">    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">left_join</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">bind_rows</span>(assignments), <span class="at" style="color: #657422;
+font-style: inherit;">left_join</span>(assignments, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">by =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"id"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-138">    <span class="fu" style="color: #4758AB;
+<span id="cb18-117">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">left_join</span>(xy, <span class="at" style="color: #657422;
 background-color: null;
@@ -2511,23 +2409,23 @@ background-color: null;
 font-style: inherit;">"position_id"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-139">    <span class="fu" style="color: #4758AB;
+<span id="cb18-118">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>position_id)</span>
-<span id="cb19-140">}</span>
-<span id="cb19-141"></span>
-<span id="cb19-142">make_pair_utilities <span class="ot" style="color: #003B4F;
+<span id="cb18-119">}</span>
+<span id="cb18-120"></span>
+<span id="cb18-121">make_pair_utilities <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(actors, coefs) {</span>
-<span id="cb19-143">  <span class="fu" style="color: #4758AB;
+<span id="cb18-122">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cross_join</span>(</span>
-<span id="cb19-144">    actors <span class="sc" style="color: #5E5E5E;
+<span id="cb18-123">    actors <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2544,7 +2442,7 @@ background-color: null;
 font-style: inherit;">paste0</span>(x, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"_man"</span>)),</span>
-<span id="cb19-145">    actors <span class="sc" style="color: #5E5E5E;
+<span id="cb18-124">    actors <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2561,20 +2459,20 @@ background-color: null;
 font-style: inherit;">paste0</span>(x, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"_woman"</span>))</span>
-<span id="cb19-146">  ) <span class="sc" style="color: #5E5E5E;
+<span id="cb18-125">  ) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-147">    <span class="fu" style="color: #4758AB;
+<span id="cb18-126">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(</span>
-<span id="cb19-148">      <span class="at" style="color: #657422;
+<span id="cb18-127">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_gap =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">abs</span>(age_man <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> age_woman),</span>
-<span id="cb19-149">      <span class="at" style="color: #657422;
+<span id="cb18-128">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">distance =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2593,7 +2491,7 @@ background-color: null;
 font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>),</span>
-<span id="cb19-150">      <span class="at" style="color: #657422;
+<span id="cb18-129">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">same_group =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2602,7 +2500,7 @@ background-color: null;
 font-style: inherit;">*</span> (group_man <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> group_woman),</span>
-<span id="cb19-151">      <span class="at" style="color: #657422;
+<span id="cb18-130">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">utility =</span> coefs<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2611,14 +2509,14 @@ background-color: null;
 font-style: inherit;">*</span> same_group <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb19-152">        coefs<span class="sc" style="color: #5E5E5E;
+<span id="cb18-131">        coefs<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>age_gap <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> age_gap <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb19-153">        coefs<span class="sc" style="color: #5E5E5E;
+<span id="cb18-132">        coefs<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>distance <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2629,7 +2527,7 @@ background-color: null;
 font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.01</span>),</span>
-<span id="cb19-154">      <span class="at" style="color: #657422;
+<span id="cb18-133">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">utility =</span> utility <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2650,140 +2548,95 @@ background-color: null;
 font-style: inherit;">sd =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sd</span>(utility))</span>
-<span id="cb19-155">    ) <span class="sc" style="color: #5E5E5E;
+<span id="cb18-134">    ) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-156">    <span class="fu" style="color: #4758AB;
+<span id="cb18-135">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">arrange</span>(id_man, id_woman)</span>
-<span id="cb19-157">}</span>
-<span id="cb19-158"></span>
-<span id="cb19-159">match_pairs <span class="ot" style="color: #003B4F;
+<span id="cb18-136">}</span>
+<span id="cb18-137"></span>
+<span id="cb18-138">match_pairs <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(union_utils) {</span>
-<span id="cb19-160">  men <span class="ot" style="color: #003B4F;
+<span id="cb18-139">  utility_matrix <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sort</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">xtabs</span>(utility <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">unique</span>(union_utils<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">~</span> id_woman <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>id_man))</span>
-<span id="cb19-161">  women <span class="ot" style="color: #003B4F;
+font-style: inherit;">+</span> id_man, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sort</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unique</span>(union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id_woman))</span>
-<span id="cb19-162"></span>
-<span id="cb19-163">  utility_matrix <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matrix</span>(</span>
-<span id="cb19-164">    <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NA_real_</span>,</span>
-<span id="cb19-165">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrow =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(women),</span>
-<span id="cb19-166">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ncol =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(men),</span>
-<span id="cb19-167">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">dimnames =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(women, men)</span>
-<span id="cb19-168">  )</span>
-<span id="cb19-169"></span>
-<span id="cb19-170">  utility_matrix[</span>
-<span id="cb19-171">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cbind</span>(</span>
-<span id="cb19-172">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">match</span>(union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id_woman, women),</span>
-<span id="cb19-173">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">match</span>(union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>id_man, men)</span>
-<span id="cb19-174">    )</span>
-<span id="cb19-175">  ] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> union_utils<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>utility</span>
-<span id="cb19-176"></span>
-<span id="cb19-177">  unions <span class="ot" style="color: #003B4F;
+font-style: inherit;">data =</span> union_utils)</span>
+<span id="cb18-140"></span>
+<span id="cb18-141">  unions <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> matchingR<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">galeShapley.marriageMarket</span>(</span>
-<span id="cb19-178">    <span class="at" style="color: #657422;
+<span id="cb18-142">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">proposerUtils =</span> utility_matrix,</span>
-<span id="cb19-179">    <span class="at" style="color: #657422;
+<span id="cb18-143">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">reviewerUtils =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">t</span>(utility_matrix)</span>
-<span id="cb19-180">  )</span>
-<span id="cb19-181"></span>
-<span id="cb19-182">  <span class="fu" style="color: #4758AB;
+<span id="cb18-144">  )</span>
+<span id="cb18-145"></span>
+<span id="cb18-146">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tibble</span>(</span>
-<span id="cb19-183">    <span class="at" style="color: #657422;
+<span id="cb18-147">    <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">id_man =</span> men,</span>
-<span id="cb19-184">    <span class="at" style="color: #657422;
+font-style: inherit;">id_man =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">id_woman =</span> women[<span class="fu" style="color: #4758AB;
+font-style: inherit;">as.integer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">colnames</span>(utility_matrix)),</span>
+<span id="cb18-148">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_woman =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.integer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rownames</span>(utility_matrix)[<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">as.integer</span>(unions<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>proposals)],</span>
-<span id="cb19-185">    <span class="at" style="color: #657422;
+font-style: inherit;">$</span>proposals)]),</span>
+<span id="cb18-149">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">matched =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span></span>
-<span id="cb19-186">  )</span>
-<span id="cb19-187">}</span>
-<span id="cb19-188"></span>
-<span id="cb19-189">simulate_marriage_market <span class="ot" style="color: #003B4F;
+<span id="cb18-150">  )</span>
+<span id="cb18-151">}</span>
+<span id="cb18-152"></span>
+<span id="cb18-153">simulate_marriage_market <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(</span>
-<span id="cb19-190">  <span class="at" style="color: #657422;
+<span id="cb18-154">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">543</span>,</span>
-<span id="cb19-191">  <span class="at" style="color: #657422;
+<span id="cb18-155">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">n =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">800</span>,</span>
-<span id="cb19-192">  <span class="at" style="color: #657422;
+<span id="cb18-156">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_shares =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2800,7 +2653,7 @@ background-color: null;
 font-style: inherit;">c =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.20</span>),</span>
-<span id="cb19-193">  <span class="at" style="color: #657422;
+<span id="cb18-157">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_means =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2817,37 +2670,37 @@ background-color: null;
 font-style: inherit;">c =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">35</span>),</span>
-<span id="cb19-194">  <span class="at" style="color: #657422;
+<span id="cb18-158">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_precision =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">7</span>,</span>
-<span id="cb19-195">  <span class="at" style="color: #657422;
+<span id="cb18-159">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">min_age =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">18</span>,</span>
-<span id="cb19-196">  <span class="at" style="color: #657422;
+<span id="cb18-160">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">max_age =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">45</span>,</span>
-<span id="cb19-197">  <span class="at" style="color: #657422;
+<span id="cb18-161">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">location_noise =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>,</span>
-<span id="cb19-198">  <span class="at" style="color: #657422;
+<span id="cb18-162">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">union_noise =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>,</span>
-<span id="cb19-199">  <span class="at" style="color: #657422;
+<span id="cb18-163">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">poles =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tibble</span>(</span>
-<span id="cb19-200">    <span class="at" style="color: #657422;
+<span id="cb18-164">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2860,7 +2713,7 @@ background-color: null;
 font-style: inherit;">"c"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"youth"</span>),</span>
-<span id="cb19-201">    <span class="at" style="color: #657422;
+<span id="cb18-165">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_x =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2873,7 +2726,7 @@ background-color: null;
 font-style: inherit;">0.75</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>),</span>
-<span id="cb19-202">    <span class="at" style="color: #657422;
+<span id="cb18-166">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_y =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2886,92 +2739,92 @@ background-color: null;
 font-style: inherit;">0.25</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>)</span>
-<span id="cb19-203">  ),</span>
-<span id="cb19-204">  <span class="at" style="color: #657422;
+<span id="cb18-167">  ),</span>
+<span id="cb18-168">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">coefs =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">list</span>(</span>
-<span id="cb19-205">    <span class="at" style="color: #657422;
+<span id="cb18-169">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">same_group =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>,</span>
-<span id="cb19-206">    <span class="at" style="color: #657422;
+<span id="cb18-170">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_gap =</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.1</span>,</span>
-<span id="cb19-207">    <span class="at" style="color: #657422;
+<span id="cb18-171">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">distance =</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>,</span>
-<span id="cb19-208">    <span class="at" style="color: #657422;
+<span id="cb18-172">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">noise =</span> union_noise</span>
-<span id="cb19-209">  )</span>
-<span id="cb19-210">) {</span>
-<span id="cb19-211">  <span class="fu" style="color: #4758AB;
+<span id="cb18-173">  )</span>
+<span id="cb18-174">) {</span>
+<span id="cb18-175">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set.seed</span>(seed)</span>
-<span id="cb19-212"></span>
-<span id="cb19-213">  actors <span class="ot" style="color: #003B4F;
+<span id="cb18-176"></span>
+<span id="cb18-177">  actors <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make_actors</span>(</span>
-<span id="cb19-214">    <span class="at" style="color: #657422;
+<span id="cb18-178">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">n =</span> n,</span>
-<span id="cb19-215">    <span class="at" style="color: #657422;
+<span id="cb18-179">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group_shares =</span> group_shares,</span>
-<span id="cb19-216">    <span class="at" style="color: #657422;
+<span id="cb18-180">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_means =</span> age_means,</span>
-<span id="cb19-217">    <span class="at" style="color: #657422;
+<span id="cb18-181">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">age_precision =</span> age_precision,</span>
-<span id="cb19-218">    <span class="at" style="color: #657422;
+<span id="cb18-182">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">min_age =</span> min_age,</span>
-<span id="cb19-219">    <span class="at" style="color: #657422;
+<span id="cb18-183">    <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">max_age =</span> max_age</span>
-<span id="cb19-220">  )</span>
-<span id="cb19-221">  xy <span class="ot" style="color: #003B4F;
+<span id="cb18-184">  )</span>
+<span id="cb18-185">  xy <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make_positions</span>(n)</span>
-<span id="cb19-222">  actors <span class="ot" style="color: #003B4F;
+<span id="cb18-186">  actors <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">assign_locations</span>(actors, xy, poles, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">noise_scale =</span> location_noise)</span>
-<span id="cb19-223"></span>
-<span id="cb19-224">  union_utils <span class="ot" style="color: #003B4F;
+<span id="cb18-187"></span>
+<span id="cb18-188">  union_utils <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make_pair_utilities</span>(actors, coefs)</span>
-<span id="cb19-225">  matches <span class="ot" style="color: #003B4F;
+<span id="cb18-189">  matches <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">match_pairs</span>(union_utils)</span>
-<span id="cb19-226"></span>
-<span id="cb19-227">  union_utils <span class="sc" style="color: #5E5E5E;
+<span id="cb18-190"></span>
+<span id="cb18-191">  union_utils <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-228">    <span class="fu" style="color: #4758AB;
+<span id="cb18-192">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">left_join</span>(matches, <span class="at" style="color: #657422;
 background-color: null;
@@ -2984,7 +2837,7 @@ background-color: null;
 font-style: inherit;">"id_woman"</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb19-229">    <span class="fu" style="color: #4758AB;
+<span id="cb18-193">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -2995,31 +2848,7 @@ background-color: null;
 font-style: inherit;">is.na</span>(matched), <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">FALSE</span>, matched))</span>
-<span id="cb19-230">}</span>
-<span id="cb19-231"></span>
-<span id="cb19-232">simulated_pairs <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">simulate_marriage_market</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">543</span>)</span>
-<span id="cb19-233"></span>
-<span id="cb19-234">simulated_pairs <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb19-235">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">count</span>(matched)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  matched      n
-  &lt;lgl&gt;    &lt;int&gt;
-1 FALSE   159600
-2 TRUE       400</code></pre>
-</div>
+<span id="cb18-194">}</span></code></pre></div>
 </div>
 
 
