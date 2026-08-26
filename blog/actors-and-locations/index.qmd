@@ -198,7 +198,7 @@ d2 <- function(x1, y1, x2, y2) {
   sqrt((x1 - x2)^2 + (y1 - y2)^2)
 }
 
-assign_actors_to_locations <- function(
+locate_actors <- function(
   actors,
   locations,
   poles,
@@ -212,7 +212,7 @@ assign_actors_to_locations <- function(
     mutate(
       x_youth = poles[poles$pole == "youth", ]$x_pole,
       y_youth = poles[poles$pole == "youth", ]$y_pole,
-      scale_youth = (max(age) - age) / (max(age) - min(age)),
+      scale_youth = (mean(age) - age) / sd(age),
       group_distance = log(d2(x, y, x_pole, y_pole) + 0.01),
       youth_distance = log(d2(x, y, x_youth, y_youth) + 0.01),
       utility = params$group *
@@ -273,25 +273,25 @@ I produce several assignments under various assumptions about the strength of th
 
 scenarios <- bind_rows(
   list(
-    A = assign_actors_to_locations(
+    A = locate_actors(
       actors,
       locations,
       poles,
       params = list(group = -1, youth = 0, noise = 1)
     ),
-    B = assign_actors_to_locations(
+    B = locate_actors(
       actors,
       locations,
       poles,
       params = list(group = 0, youth = -1, noise = 1)
     ),
-    C = assign_actors_to_locations(
+    C = locate_actors(
       actors,
       locations,
       poles,
       params = list(group = -1, youth = -1, noise = 1)
     ),
-    D = assign_actors_to_locations(
+    D = locate_actors(
       actors,
       locations,
       poles,
@@ -304,9 +304,9 @@ scenarios <- bind_rows(
 ggplot(scenarios, aes(x, y, color = group, shape = sex, size = age)) +
   geom_point(alpha = 0.9) +
   facet_wrap(~scenario, nrow = 2) +
-  coord_equal(xlim = c(-0.03, 1.03), ylim = c(-0.03, 1.03), expand = FALSE) +
+  coord_equal() +
   scale_color_manual(values = group_colors) +
-  scale_size_continuous(range = c(0.8, 2.5)) +
+  scale_size_continuous(range = c(0.5, 3)) +
   labs(
     x = "Spatial coordinate x",
     y = "Spatial coordinate y",
@@ -420,7 +420,7 @@ ggplot(data = union_utils, aes(x = age_gap, fill = matched)) +
 
 ## A reusable data generating function
 
-For convenience, a data generator function can be wrapped around sub-functions that create actors, positions, position assignments, and matches. The main function, `simulate_marriage_market()`, returns a list containing the assigned singles, the realized matches, a lean exploded man-woman pair data set with matching utilities, and the parameters and metadata needed to identify the simulated scenario. I produce the fully exploded pair utilities because they are useful for the modeling that I cover in the next post.
+For convenience, a data generating function can be wrapped around sub-functions that create actors, positions, position assignments, and matches. The main function, `simulate_marriage_market()`, returns a list containing the assigned singles, the realized matches, a lean exploded man-woman pair data set with matching utilities, and relevant input parameters. I produce the fully exploded pair utilities because they are useful for the modeling that I cover in the next post.
 
 ```{r}
 #| label: reusable-data-generator
@@ -478,7 +478,7 @@ d2 <- function(x1, y1, x2, y2) {
   sqrt((x1 - x2)^2 + (y1 - y2)^2)
 }
 
-assign_actors_to_locations <- function(
+locate_actors <- function(
   actors,
   locations,
   poles,
@@ -491,7 +491,7 @@ assign_actors_to_locations <- function(
     mutate(
       x_youth = poles[poles$pole == "youth", ]$x_pole,
       y_youth = poles[poles$pole == "youth", ]$y_pole,
-      scale_youth = (max(age) - age) / (max(age) - min(age)),
+      scale_youth = (mean(age) - age) / sd(age),
       group_distance = log(d2(x, y, x_pole, y_pole) + 0.01),
       youth_distance = log(d2(x, y, x_youth, y_youth) + 0.01),
       utility = params$group *
@@ -551,6 +551,7 @@ make_union_utilities <- function(singles, params) {
         params$distance * log(distance + 0.01),
       utility = utility + params$noise * rnorm(n(), mean = 0, sd = sd(utility))
     ) |>
+    ungroup() |>
     arrange(id_man, id_woman)
 }
 
@@ -606,7 +607,7 @@ simulate_marriage_market <- function(
     age_concentration = age_concentration
   )
   locations <- make_locations(n, relax = location_relax)
-  singles <- assign_actors_to_locations(
+  singles <- locate_actors(
     actors = actors,
     locations = locations,
     poles = location_poles,
@@ -620,11 +621,11 @@ simulate_marriage_market <- function(
     singles = singles,
     matches = matches |>
       select(id_man, id_woman),
-    pair_utilities = union_utils |>
+    utilities = union_utils |>
       select(id_man, id_woman, utility),
-    location_params = location_params,
-    partner_params = partner_params,
-    metadata = list(
+    parameters = list(
+      location = location_params,
+      partner = partner_params,
       seed = seed,
       n = n,
       groups = groups,
@@ -640,17 +641,17 @@ simulate_marriage_market <- function(
 }
 ```
 
-As a quick check, I call the wrapper with a different set of assumptions and summarize the resulting matches. Specifically, I narrow the differences in group sizes, include stronger group clustering, invert the age clustering, and specify stronger preferences for same-group and same-age partners.
+As a quick check, I call the wrapper with a different set of assumptions and summarize the resulting matches. Specifically, I narrow the differences in group sizes, include stronger group clustering, reverse the age clustering effect, reduce the location assignment noise, and specify stronger preferences for same-group and same-age partners.
 
 ```{r}
-#| label: tweaked-generator-check
+#| label: wrapper-example
 
 scenario_E <- simulate_marriage_market(
   seed = 678,
   n = 600,
   group_shares = c(50, 30, 20),
   age_mean = c(35, 30, 25),
-  location_params = list(group = -2, youth = 1, noise = 2),
+  location_params = list(group = -1, youth = 1, noise = 0.2),
   partner_params = list(
     same_group = 2,
     age_gap = -0.2,
@@ -658,17 +659,42 @@ scenario_E <- simulate_marriage_market(
     noise = 0.5
   )
 )
+```
 
-scenario_E$pair_utilities |>
+This yields the following distribution of singles:
+
+```{r}
+#| label: wrapper-example-plot
+#| fig-cap: "Example marriage market generated by wrapper function."
+ggplot(scenario_E$singles, aes(x, y, color = group, shape = sex, size = age)) +
+  geom_point(alpha = 0.9) +
+  coord_equal() +
+  scale_color_manual(values = group_colors) +
+  labs(
+    x = "Spatial coordinate x",
+    y = "Spatial coordinate y",
+    color = "Group",
+    shape = "Sex",
+    size = "Age"
+  ) +
+  theme_void(base_size = 12) +
+  theme(plot.margin = margin(2, 2, 2, 2))
+```
+
+And the following associations between being matched, utility, and utility ranks:
+
+```{r}
+#| label: wrapper-example-utilities
+scenario_E$utilities |>
   left_join(
     scenario_E$matches |> mutate(matched = TRUE),
     by = c("id_man", "id_woman")
   ) |>
+  mutate(matched = if_else(is.na(matched), FALSE, matched)) |>
+  group_by(id_man) |>
+  mutate(rank_woman = rank(desc(utility))) |>
+  group_by(id_woman) |>
+  mutate(rank_man = rank(desc(utility))) |>
   group_by(matched) |>
-
-  summarize(
-    possible_pairs = n(),
-    unions = sum(matched),
-    mean_utility = mean(utility)
-  )
+  summarize(across(c(utility, rank_woman, rank_man), mean))
 ```
