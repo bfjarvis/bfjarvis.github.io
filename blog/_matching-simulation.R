@@ -45,7 +45,7 @@ make_candidate_positions <- function(n) {
   position_sequence <- halton(n = n, base = c(2, 3), start = 1L)
 
   tibble(
-    position_id = seq_len(n),
+    id_location = seq_len(n),
     x = position_sequence[, 1],
     y = position_sequence[, 2]
   )
@@ -100,17 +100,17 @@ assign_positions <- function(people, noise_scale = 1) {
     if (
       option$id %in%
         assigned_people ||
-        option$position_id %in% assigned_locations
+        option$id_location %in% assigned_locations
     ) {
       next
     }
 
     n_assigned <- n_assigned + 1L
     assignments[[n_assigned]] <- option |>
-      select(id, position_id)
+      select(id, id_location)
 
     assigned_people <- c(assigned_people, option$id)
-    assigned_locations <- c(assigned_locations, option$position_id)
+    assigned_locations <- c(assigned_locations, option$id_location)
 
     if (n_assigned == nrow(people)) {
       break
@@ -119,8 +119,8 @@ assign_positions <- function(people, noise_scale = 1) {
 
   people |>
     left_join(bind_rows(assignments), by = "id") |>
-    left_join(candidate_positions, by = "position_id") |>
-    select(-position_id)
+    left_join(candidate_positions, by = "id_location") |>
+    select(-id_location)
 }
 
 simulate_actors_and_locations <- function(seed = 543) {

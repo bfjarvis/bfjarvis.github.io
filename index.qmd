@@ -406,7 +406,7 @@ Benjamin F. Jarvis
 :::
 
 ::: {.content-card-description}
-The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set
+The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set, and data generating functions, to be used in subsequent posts.
 :::
 
 :::
