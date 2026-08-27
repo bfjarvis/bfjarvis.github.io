@@ -396,6 +396,26 @@ This course engages with classical and contemporary research on inequality and s
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
+2026 • matching, conditional logit, loglinear models, assortative mating
+:::
+
+### [Conditional Logit vs. Log-linear Models for Group-Level Assortative Mating](blog/clogit-vs-loglinear/)
+
+::: {.content-card-byline}
+Benjamin F. Jarvis
+:::
+
+::: {.content-card-description}
+The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table).
+:::
+
+:::
+:::
+
+::: {.content-card .post-card .compact-card}
+::: {.content-card-body}
+
+::: {.content-card-eyebrow}
 2026 • assortative mating, discrete choice models, log-linear models, simulation, spatial analysis
 :::
 
@@ -427,26 +447,6 @@ Benjamin F. Jarvis
 
 ::: {.content-card-description}
 The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis.
-:::
-
-:::
-:::
-
-::: {.content-card .post-card .compact-card}
-::: {.content-card-body}
-
-::: {.content-card-eyebrow}
-2026 • conditional logit, matching, assortative mating
-:::
-
-### [Does Conditional Logit Represent a Two-Sided Matching Process?](blog/clogit-two-sided-process/)
-
-::: {.content-card-byline}
-Benjamin F. Jarvis
-:::
-
-::: {.content-card-description}
-The fifth note in the series: revisit what a one-sided choice model can and cannot recover from a two-sided stable matching process.
 :::
 
 :::

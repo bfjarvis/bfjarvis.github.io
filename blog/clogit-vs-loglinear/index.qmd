@@ -1,7 +1,7 @@
 ---
-title: "Conditional Logit and Loglinear Models for Group-Level Assortative Mating"
-description: "The third note in the series: compare a conditional-logit choice representation and a loglinear table representation using only group-level covariates."
-date: "2026-07-17"
+title: "Conditional Logit vs. Log-linear Models for Group-Level Assortative Mating"
+description: "The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table)."
+date: "2026-08-27T16:00:00+02:00"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
@@ -10,118 +10,17 @@ categories:
   - "conditional logit"
   - "loglinear models"
   - "assortative mating"
-draft: true
+draft: false
 ---
 
-## Same Matches, Two Representations
+## Introduction
 
-The first two notes created a synthetic population and then used a two-sided matching process to assign partners. This note starts from the resulting matches and compares two ways of describing the group-level pattern.
+This is part 2 in the series discussing how and why to use conditional logistic regression models for assortative mating research. The goal of this post is to convince you that conditional logistic regression can provide the same answers to questions typically answered using log-linear models. I do so not through mathematical argument, which is already covered pretty well by Breen [-@breenIndividualLevelModels1994] and Logan [-@loganMultivariateModelMobility1983]. Instead, I just fit mathematically equivalent models to simulated data and demonstrate, not only that key parameters and their standard errors are the same, but also how to handle what is, for most people, the most daunting part of fitting a clogit model: building the correct data structure.
 
-The conditional-logit representation treats each matched man as choosing among possible women. The loglinear representation treats the observed matches as counts in a table. To keep the comparison focused, this note uses only group-level covariates.
-
-```{r}
-#| label: setup
-#| message: false
-#| warning: false
-
-source("../_matching-simulation.R")
-
-market <- simulate_actors_and_locations(seed = 543)
-partner_market <- match_partners(market$men, market$women)
-matched_pairs <- partner_market$matched_pairs
-choice_sets <- make_choice_sets(market$men, market$women, matched_pairs)
-group_counts <- group_pair_counts(matched_pairs)
-```
-
-## The Group Table
-
-The observed group-pairing table is compact. It is also the natural object for a loglinear model.
+To do so, I use a generator function 
 
 ```{r}
-#| label: group-table
-
-group_counts |>
-  pivot_wider(names_from = woman_group, values_from = n, values_fill = 0)
+getwd()
+source("./simulate_marriage_market.R")
 ```
 
-```{r}
-#| label: group-heatmap
-#| fig-cap: "Observed matched pairs by male and female group."
-#| fig-width: 5.8
-#| fig-height: 4.8
-
-ggplot(group_counts, aes(woman_group, man_group, fill = n)) +
-  geom_tile(color = "white", linewidth = 1) +
-  geom_text(aes(label = n), color = "white", fontface = "bold", size = 5) +
-  scale_fill_gradient(low = "#9aa0a3", high = "#c73535") +
-  labs(x = "Woman's group", y = "Man's group", fill = "Matches") +
-  theme_minimal(base_size = 12)
-```
-
-## Conditional Logit
-
-For the conditional-logit model, each man has a choice set containing all women. The model asks whether women from the same group are more likely to be selected, controlling for the availability of women in each candidate group.
-
-```{r}
-#| label: clogit-fit
-#| message: false
-
-library(survival)
-
-clogit_fit <- clogit(
-  choice ~ same_group + factor(candidate_group) + strata(chooser_id),
-  data = choice_sets
-)
-
-summary(clogit_fit)$coefficients
-```
-
-The coefficient on `same_group` is the group-level assortative-mating term in this one-sided choice representation. It compares same-group alternatives with different-group alternatives within each man's choice set.
-
-## Loglinear Model
-
-The loglinear model works directly with the count table. A simple parallel specification controls the male and female group margins, then adds a same-group association term.
-
-```{r}
-#| label: loglinear-fit
-
-loglinear_fit <- glm(
-  n ~ man_group + woman_group + same_group,
-  family = poisson,
-  data = group_counts
-)
-
-summary(loglinear_fit)$coefficients
-```
-
-The loglinear same-group coefficient describes the association structure in the table. It is not literally the same estimand as the conditional-logit coefficient, because the two models condition on different things and treat the data differently. But the two estimates are describing a related pattern: same-group matching is more common than expected from group availability alone.
-
-## Predicted Group Counts
-
-The two models can both be converted back to predicted group counts. For the conditional-logit model, fitted choice probabilities are summed over all men and women in the relevant group pairing. For the loglinear model, predicted counts come directly from the fitted Poisson means.
-
-```{r}
-#| label: predicted-counts
-
-clogit_pred <- choice_sets |>
-  mutate(linear_predictor = predict(clogit_fit, type = "lp")) |>
-  group_by(chooser_id) |>
-  mutate(probability = exp(linear_predictor) / sum(exp(linear_predictor))) |>
-  ungroup() |>
-  group_by(man_group = chooser_group, woman_group = candidate_group) |>
-  summarize(clogit = sum(probability), .groups = "drop")
-
-loglinear_pred <- group_counts |>
-  mutate(loglinear = as.numeric(predict(loglinear_fit, type = "response"))) |>
-  select(man_group, woman_group, loglinear)
-
-group_counts |>
-  select(man_group, woman_group, observed = n) |>
-  left_join(clogit_pred, by = c("man_group", "woman_group")) |>
-  left_join(loglinear_pred, by = c("man_group", "woman_group")) |>
-  mutate(across(c(clogit, loglinear), \(x) round(x, 2)))
-```
-
-## What This Comparison Does Not Yet Use
-
-This first comparison deliberately ignores age, distance, and attractiveness. That keeps the bookkeeping visible, but it also discards much of what was built into the simulation. The next note asks what the conditional-logit representation can use once those individual-level and pair-level covariates are allowed into the model.
