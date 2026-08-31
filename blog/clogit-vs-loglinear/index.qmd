@@ -1,7 +1,7 @@
 ---
-title: "Conditional Logit vs. Log-linear Models for Group-Level Assortative Mating"
+title: "Discrete Choice Models of Assortative Mating, Part 2: log-linear vs. multinomial vs. conditional logit"
 description: "The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table)."
-date: "2026-08-27T16:00:00+02:00"
+date: "2026-08-30T16:00:00+02:00"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
@@ -10,17 +10,373 @@ categories:
   - "conditional logit"
   - "loglinear models"
   - "assortative mating"
+bibliography: references.bib
 draft: false
 ---
 
 ## Introduction
 
-This is part 2 in the series discussing how and why to use conditional logistic regression models for assortative mating research. The goal of this post is to convince you that conditional logistic regression can provide the same answers to questions typically answered using log-linear models. I do so not through mathematical argument, which is already covered pretty well by Breen [-@breenIndividualLevelModels1994] and Logan [-@loganMultivariateModelMobility1983]. Instead, I just fit mathematically equivalent models to simulated data and demonstrate, not only that key parameters and their standard errors are the same, but also how to handle what is, for most people, the most daunting part of fitting a clogit model: building the correct data structure.
+This is part 2 in the series discussing how and why to use conditional logistic regression models for assortative mating research. The goal of this post is to convince you that conditional logistic regression can provide the same answers to questions typically answered using log-linear models. I do so not through mathematical argument, which is already covered pretty well by Breen [-@breenIndividualLevelModels1994] and Logan [-@loganMultivariateModelMobility1983]. Instead, I just fit mathematically equivalent models to simulated data and demonstrate not only that key parameters and their standard errors are the same, but also how to handle what is, for most people, the most daunting part of fitting a clogit model: building the correct data structure.
 
-To do so, I use a generator function 
+To do so, I use a generator function I developed in the [previous post](https://benjaminfjarvis.com/blog/actors-and-locations/) and which can be found [here](https://github.com/bfjarvis/bfjarvis.github.io/blob/main/blog/clogit-vs-loglinear/simulate_marriage_market.R). I use this function to generate matches in a marriage market characterized by four groups, located at four poles distributed around a city center, and where the groups are not only homogamous, but also where there is group hierarchy, with the majority group at the top of the hierarchy and minorities at various positions at the bottom of the hierarchy.
 
 ```{r}
-getwd()
-source("./simulate_marriage_market.R")
+source("simulate_marriage_market.R")
+
+marriage_market <- simulate_marriage_market(
+  seed = 543,
+  n = 2000,
+  groups = tibble(
+    group = c("a", "b", "c", "d"),
+    share = c(50, 15, 15, 20),
+    age_mean = c(35, 30, 30, 25),
+    age_min = 18,
+    age_max = 45,
+    age_concentration = 2
+  ),
+  location_relax = 1.2,
+  location_poles = tibble(
+    pole = c("a", "b", "c", "d", "youth"),
+    x_pole = c(0.25, 0.75, 0.25, 0.75, 0.5),
+    y_pole = c(0.75, 0.75, 0.25, 0.25, 0.5)
+  ),
+  location_params = list(group = -1, youth = -1, noise = 2),
+  partner_params = list(
+    same_group = 1,
+    rank_group = 1,
+    age_gap = -0.1,
+    distance = -1,
+    noise = 2
+  )
+)
 ```
 
+Plotting the positions of singles in the market confirms that the spatial allocation of different actors works as expected, with the majority clustered in the upper-right corner of the map and the largest minority in the the bottom right corner, but also the middle of the map, due to the unbalanced age distributions and the centralization of youth.  
+
+```{r}
+library(ggplot2)
+group_colors <- viridis::plasma(5)[1:4]
+ggplot(
+  marriage_market$singles,
+  aes(x, y, color = group, shape = sex, size = age)
+) +
+  geom_point() +
+  coord_equal() +
+  scale_color_manual(values = group_colors) +
+  scale_size_continuous(range = c(1, 3)) +
+  labs(
+    x = "Spatial coordinate x",
+    y = "Spatial coordinate y",
+    color = "Group",
+    shape = "Sex",
+    size = "Age"
+  ) +
+  theme_void(base_size = 12) +
+  theme(plot.margin = margin(2, 2, 2, 2))
+```
+
+
+## Data steps
+
+I'm going to fit log-linear models for aggregate, count data, multinomial models for individual-level data where the women are treated as the individuals, and the group membership of the partner is the outcome, and then conditional logit models for individual-by-alternative data, where the individuals are again women, and the rows represent the possible men they could be matched with. The first two can actually use the same data setup, but the conditional logit requires a different data setup. 
+
+### Contingency table for log-linear and multinomial models
+
+Constructing a contingency table for the matched data involves pulling the matches and joining in the group memberships for the men and women, followed by an aggregation into counts:
+
+```{r}
+loglin_data <-
+  marriage_market$matches |>
+  left_join(
+    marriage_market$singles |>
+      filter(sex == "man") |>
+      select(id_man = id, group_man = group)
+  ) |>
+  left_join(
+    marriage_market$singles |>
+      filter(sex == "woman") |>
+      select(id_woman = id, group_woman = group)
+  ) |>
+  count(group_man, group_woman)
+```
+
+The contingency table with the observed counts and the ratio of observed to what would be expected using a model of independence can be visualized as follows:
+
+```{r}
+loglin_data <- loglin_data |>
+  mutate(men_in_group = sum(n), .by = group_man) |>
+  mutate(women_in_group = sum(n), .by = group_woman) |>
+  mutate(expected = men_in_group * women_in_group / sum(n)) |>
+  mutate(ratio = n / expected)
+
+ggplot(
+  data = loglin_data,
+  aes(x = group_man, y = group_woman, fill = ratio, label = n)
+) +
+  geom_tile() +
+  theme_minimal() +
+  coord_equal() +
+  scale_fill_gradient2(
+    midpoint = 1,
+    transform = "log10"
+  ) +
+  geom_text()
+```
+
+The contingency table resulting from the simualated marriage market is clearly structured along group lines, as was specified in the data generating process. Relative to a model of independence, there is overrepresentation on the diagonal, especially in the interior of the table. There is also under representation of unions between members of group a and all out groups, particularly group d. 
+
+### Matched-pair data for conditional logit modeling
+
+For estimating a conditional logit model, I need a data set that ennumerates possible matched pairs (i.e., dyads). For now I use all possible pairs, but a convenient property of the conditional logit allows for downsampling of the unmatched pairs, which speeds up data management and estimation times when there are a many individuals in the dataset. But with only 1,000 singles on each side of the market in the simulated data, it remains feasible to work with all possible pairs. 
+
+The first step is to cross the lists of men and women. Note that in doing so, I'm bringing all the covariates, not just the group memberships, along for the ride, with some strategic renaming along the way to distinguish the attributes of the man vs. the woman in the dyad:
+
+```{r}
+clogit_data <-
+  cross_join(
+    marriage_market$singles |>
+      filter(sex == "man") |>
+      select(-sex) |>
+      rename_with(~ paste0(.x, sep = "_man")),
+    marriage_market$singles |>
+      filter(sex == "woman") |>
+      select(-sex) |>
+      rename_with(~ paste0(.x, sep = "_woman")),
+  )
+clogit_data
+```
+
+One difference between the clogit and contingency table data setups is the need to construct a binary dependent variable identifying the actually observed pairing. This is accomplied by simply joining up the data about observed matched from the generated marriage market data. I use a left join because I want to preserve all of the information about the unmatched pairs as well. This information is critical for estimating the model.
+
+```{r}
+clogit_data <- clogit_data |>
+  left_join(marriage_market$matches |> mutate(matched = TRUE)) |>
+  mutate(matched = if_else(is.na(matched), FALSE, TRUE))
+```
+
+
+## Models of Independence
+
+With the data prepared, I'm ready to estimate some models. I'll start with models of independence. The models of independence have slightly different specifications across the log-linear, multinomial, and conditional logit models, but lead to the same predictions. And they capture the same underlying null hypothesis of random partner choice, with no preferences for endogamy or exogamy. In this case, the numbers of unions for each combination of man's and woman's group are dictated by their marginal distributions. The main difference between the three modeling frameworks is in how they handle these marginal distributions.
+
+### Log-linear model of independence 
+
+For log-linear models, differences in marginal distributions are handled by specifying dummy parameters corresponding to row and column labels. I fit this model using poisson regression where group a is treated as the reference category for both the row and column coefficients.
+
+```{r}
+loglin_m1 <- glm(
+  n ~ group_man + group_woman,
+  family = poisson,
+  data = loglin_data
+)
+summary(loglin_m1)
+```
+
+### Multinomial model of independence
+
+In the multinomial models, the marginals for one dimension of the table are handled implicitly based on the number of (weighted) observations, while the marginals for the other dimension of the table are handled using group-specific intercepts. Note that I can run this model "forwards" or "backwards", i.e., predicting the man's group membership from the woman's perspective, or predicting the woman's group membership from the man's perspective. Whichever way its run, the intercepts have essentially the same parameter estimates and standard errors as their counterparts in the log-linear model. What's missing is the intercept for the grand mean, which is handled implicitly through the weights in the mulitnomial model.
+
+```{r}
+library(nnet)
+multinom_m1a <- nnet::multinom(group_man ~ 1, weights = n, data = loglin_data)
+multinom_m1b <- nnet::multinom(group_woman ~ 1, weights = n, data = loglin_data)
+
+broom::tidy(loglin_m1) |>
+  select(term, est.loglin = estimate, se.loglin = std.error) |>
+  left_join(
+    bind_rows(
+      list(
+        m1a = broom::tidy(multinom_m1a) |>
+          mutate(term = paste0("group_man", y.level)) |>
+          select(term, est.mnl = estimate, se.mnl = std.error),
+        m1b = broom::tidy(multinom_m1b) |>
+          mutate(term = paste0("group_woman", y.level)) |>
+          select(term, est.mnl = estimate, se.mnl = std.error)
+      ),
+      .id = 'mnl.model'
+    )
+  )
+```
+
+### Conditional logit model of independence
+
+In the conditional logit model, the model of independence actually needs no parameters at all. The marginals are handled entirely by the observed numbers of men and women on each side of the man-woman dyads. I can fit dummy variables for the man's or the women's group, but the resulting estimates are practically numerically indistinguishable from zero. What's crucial in these models, instead, is the specification of a stratifying variable. This requires adopting either the man's or the woman's perspective on the data. If I treat this as a problem of men choosing among a set of possible female partners, then I would stratify by the id of the man. If I view the data from the perspective of women choosing among possible male partners, then I would stratify by the id of the woman.
+
+```{r}
+library(survival)
+clogit_m1a <- clogit(matched ~ group_woman + strata(id_man), data = clogit_data)
+clogit_m1b <- clogit(matched ~ group_man + strata(id_woman), data = clogit_data)
+```
+
+### Predictive equivalence
+
+As it turns out, these models predict exactly the same contingency tables. We can confirm this by generating the predictions, binding them to the analytic data, and, where necessary, aggregating and pivoting. For the log-linear models with counts as the outcome, this is fairly straightforward. I employ a pivot merely to put the predictions into a familiar contingency table form. 
+
+```{r}
+loglin_data |>
+  bind_cols(pr = predict(loglin_m1, type = 'response')) |>
+  select(group_man, group_woman, pr) |>
+  pivot_wider(id_cols = group_woman, names_from = group_man, values_from = pr)
+```
+
+For the multinomial models, aggregation is needed. The predictions take the form not of counts, but of predicted probabilities. In the model I use for prediction below, I treated the observations as representing the women and the outcome as representing the category of the man with whom each woman was paired, with counts acting as weights indicating how many women chose men of the given type. The predictions are a set of probabilities, spread across columns, of partnering with men of the different types. To convert probabilities into counts, I just have to weight by the number of women represented by each row in the original data. No pivot is necessary because `multionom` in the `nnet` package spreads predicted probabalities for each category across columns.
+
+```{r}
+loglin_data |>
+  select(group_woman, n) |>
+  bind_cols(pr = predict(multinom_m1a, type = "probs") |> as.data.frame()) |>
+  summarize(across(c(a, b, c, d), ~ sum(n * .x)), .by = group_woman)
+```
+
+
+```{r}
+clogit_data |>
+  bind_cols(pr = predict(clogit_m1a)) |>
+  mutate(pr = exp(pr) / sum(exp(pr)), .by = id_man) |>
+  summarize(pr = sum(pr), .by = c(group_man, group_woman)) |>
+  pivot_wider(id_cols = group_woman, names_from = group_man, values_from = pr)
+```
+
+
+### Diversion: Fitting multinomial models with clogit
+
+The conditional logit model actually nests the multinomial model, and clogit can be used to obtain the same parameter estimates one would obtain when estimating an equivalent multinomial logit model. To do so, the data need to be restructed. The idea is to represent the potential categories of prospective partners in rows. Again, one must conceptually treat one side of the market (women in the example below) as the "choosers" and the other side as the "chosen". Then each distinct chooser receives a number of rows equal to the possible categories of the chosen. We then create an outcome, `matched`, which is TRUE for the appropriate cases. At the some time, I construct a strata variable the sets of observations corresponding to a single entry in the contingency table.
+
+```{r}
+multinom_as_clogit <- loglin_data |>
+  cross_join(tibble(alternative = letters[1:4])) |>
+  mutate(
+    matched = group_man == alternative,
+    strata = interaction(group_woman, group_man),
+    row = row_number()
+  ) |>
+  select(row, strata, group_woman, group_man = alternative, matched, n, row)
+```
+
+A segment of the resulting data structure is presented below, with strategic shading and highlights. The row highlights separate groups of four wherein the woman's group is constant, but the man's group varies. The red highlighted matching row, with the matching variable coded to `TRUE`, corresponds to the outcome for the cell of the contingency table that is being represented. For the current data, the first group of four rows actually corresponds to a single cell in the original contingency table, namely the cell for the count of women of group a matched to men of group a.
+
+```{r}
+#| echo: false
+library(flextable)
+multinom_as_clogit |>
+  filter(row_number() < 25) |>
+  flextable() |>
+  color(~ matched == TRUE, color = 'red') |>
+  bg(~ (ceiling(row / 4) %% 2) == 1, bg = 'gray80') |>
+  add_footer_lines(values = "etc.", top = FALSE) |>
+  border_remove() |>
+  hline_top(border = officer::fp_border(width = 2)) |>
+  align(align = 'center', part = 'footer') |>
+  hline_bottom(border = officer::fp_border(width = 2), part = "footer")
+```
+
+With the data structured in this way, we can estimate the equivalent of the multinomial logit using a conditional logit fitting function. In this case, the outcome is the binary match indicator, that explanatory variables are dummy variables indicating the possible categories of the men, and the strata variable is as constructed. 
+
+```{r}
+multinom_m1c <- clogit(
+  matched ~ group_man + strata(strata),
+  weights = n,
+  method = "efron",
+  data = multinom_as_clogit
+)
+```
+
+Because the data were constructed from the perspective of women as the "choosers", the coefficient estimates and that standard errors are equivalent to those in the Multinomial Model 1a. Any differences are a result of roudning error and the precision of the fitting functions.
+
+```{r}
+bind_cols(
+  broom::tidy(multinom_m1a) |>
+    select(group_man = y.level, mnl.est = estimate, mnl.se = std.error),
+  broom::tidy(multinom_m1c) |> select(cl.est = estimate, cl.se = std.error)
+)
+```
+
+
+## Saturated Models
+
+### Staturated log-linear model
+
+For a contingency table, the saturated count model specifies, in essence, a dummy variable for each cell in the table, with appropriate constraints to ensure the parameters are all statistically identified. The result is a model that perfectly reproduces all of the counts in the table. A standard way of specifying the saturated model is to include all row and column main effects and interactions as follows:
+
+```{r}
+loglin_mS <- glm(
+  n ~ group_man * group_woman,
+  family = poisson,
+  data = loglin_data
+)
+```
+
+### Saturated multinomial model
+
+Again, the multinomial model predicts a chosen partner's group membership conditional on the attributes of the "choosing" partner. The choice of whether to treat the man or the woman as the choosing partner is arbitrary and immaterial to the fit of the model. Here I run the model both ways.
+
+```{r}
+multinom_mSa <- nnet::multinom(
+  group_man ~ group_woman,
+  weights = n,
+  data = loglin_data
+)
+multinom_mSb <- nnet::multinom(
+  group_woman ~ group_man,
+  weights = n,
+  data = loglin_data
+)
+```
+
+### Saturated conditional logit model
+
+The saturated conditional logit model can be specified as below. Similar to the multinomial model, once must conceptualize the problem from either the man's or the woman's perspective, but the model fits will be the same.
+
+```{r}
+clogit_mSa <- clogit(
+  matched ~ group_man * group_woman + strata(id_woman),
+  data = clogit_data
+)
+clogit_mSb <- clogit(
+  matched ~ group_man * group_woman + strata(id_man),
+  data = clogit_data
+)
+```
+
+### Comparing parameters between saturated models
+
+Compiling the parameter estimates for all of the models reveals that, where it counts, the models have identical parameter estimates. All of the interaction terms, which represent group assortativity, are the same. They differ in only minor, purely technical respects. First, the multinomial models lack some of the intercept terms from the log-linear models. 
+
+
+```{r}
+#| echo: false
+broom::tidy(loglin_mS) |>
+  select(term, est.loglin = estimate) |>
+  str_replace(term, "group_", "") |>
+  left_join(
+    broom::tidy(multinom_mSa) |>
+      mutate(
+        term = if_else(
+          term == "(Intercept)",
+          paste0("group_man", y.level),
+          paste0("group_man", y.level, ":", term)
+        )
+      ) |>
+      select(term, est.mnl.a = estimate)
+  ) |>
+  left_join(
+    broom::tidy(multinom_mSb) |>
+      mutate(
+        term = if_else(
+          term == "(Intercept)",
+          paste0("group_woman", y.level),
+          paste0(term, ":group_woman", y.level)
+        )
+      ) |>
+      select(term, est.mnl.b = estimate)
+  ) |>
+  left_join(
+    broom::tidy(clogit_mSa) |>
+      select(term, est.cl.a = estimate)
+  ) |>
+  left_join(
+    broom::tidy(clogit_mSb) |>
+      select(term, est.cl.b = estimate)
+  ) |>
+  flextable()
+```

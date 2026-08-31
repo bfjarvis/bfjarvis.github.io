@@ -41,32 +41,38 @@ make_locations <- function(n, relax = 1.2) {
 
 make_actors <- function(
   n,
-  groups,
-  group_shares,
-  age_mean,
-  age_min,
-  age_max,
-  age_concentration
+  groups = tibble(
+    group = c("a", "b", "c", "d"),
+    share = c(60, 10, 10, 20),
+    age_mean = c(35, 30, 30, 25),
+    age_min = 18,
+    age_max = 45,
+    age_concentration = 2
+  )
 ) {
-  G <- length(groups)
-  group_shares <- group_shares / sum(group_shares)
-  group_counts <- as.integer(n * group_shares)
-  group_counts[G] <- n - sum(group_counts[-G])
-
-  tibble(group = groups, age_mean, group_counts) |>
+  tibble(sex = c("man", "woman"), count = n / 2) |>
+    reframe(
+      group = sample(
+        x = groups$group,
+        size = count,
+        replace = TRUE,
+        prob = groups$share
+      ),
+      .by = c(sex)
+    ) |>
+    count(sex, group) |>
+    left_join(groups) |>
     reframe(
       age = rbeta_scaled(
-        group_counts,
+        n,
         age_mean,
         precision = age_concentration,
         min_value = age_min,
         max_value = age_max
       ),
-      .by = c(group, age_mean)
+      .by = c(group, sex)
     ) |>
     mutate(id = row_number()) |>
-    group_by(group) |>
-    mutate(sex = if_else(as.logical(row_number() %% 2), "man", "woman")) |>
     select(id, sex, group, age)
 }
 
@@ -177,12 +183,14 @@ make_unions <- function(union_utils) {
 simulate_marriage_market <- function(
   seed = 543,
   n = 1000,
-  groups = c("a", "b", "c"),
-  group_shares = c(60, 30, 10),
-  age_mean = c(35, 30, 25),
-  age_min = 18,
-  age_max = 45,
-  age_concentration = 2,
+  groups = tibble(
+    group = c("a", "b", "c", "d"),
+    shares = c(60, 10, 10, 20),
+    age_mean = c(35, 30, 30, 25),
+    age_min = 18,
+    age_max = 45,
+    age_concentration = 2
+  ),
   location_relax = 1.2,
   location_poles = tibble(
     pole = c("a", "b", "c", "youth"),
@@ -202,12 +210,7 @@ simulate_marriage_market <- function(
 
   actors <- make_actors(
     n = n,
-    groups = groups,
-    group_shares = group_shares,
-    age_mean = age_mean,
-    age_min = age_min,
-    age_max = age_max,
-    age_concentration = age_concentration
+    groups = groups
   )
   locations <- make_locations(n, relax = location_relax)
   singles <- locate_actors(
@@ -232,11 +235,6 @@ simulate_marriage_market <- function(
       seed = seed,
       n = n,
       groups = groups,
-      group_shares = group_shares,
-      age_mean = age_mean,
-      age_min = age_min,
-      age_max = age_max,
-      age_concentration = age_concentration,
       location_relax = location_relax,
       location_poles = location_poles
     )
