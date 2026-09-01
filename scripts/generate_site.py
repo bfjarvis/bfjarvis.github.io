@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -757,11 +758,34 @@ def unquote_yaml_value(value: str) -> str:
     return value
 
 
+def yaml_bool(value: object) -> bool:
+    return str(value).strip().lower() in {"true", "yes", "1"}
+
+
+def blog_date_value(post: dict) -> datetime:
+    value = str(post.get("date", "")).strip()
+    if not value:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    normalized = value.replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        try:
+            parsed = datetime.fromisoformat(normalized.split("T", 1)[0])
+        except ValueError:
+            return datetime.min.replace(tzinfo=timezone.utc)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
 def discover_blog_posts() -> list[dict]:
     posts = []
     for path in sorted((ROOT / "blog").glob("*/index.qmd")):
         metadata = parse_front_matter(path)
         if not metadata:
+            continue
+        if yaml_bool(metadata.get("draft", False)):
             continue
         slug = path.parent.name
         metadata.setdefault("title", slug.replace("-", " ").title())
@@ -771,7 +795,7 @@ def discover_blog_posts() -> list[dict]:
         metadata["slug"] = slug
         metadata["url"] = f"{slug}/"
         posts.append(metadata)
-    return sorted(posts, key=lambda post: str(post.get("date", "")), reverse=True)
+    return sorted(posts, key=blog_date_value, reverse=True)
 
 
 def split_cv_sections(cv_body: str) -> dict[str, str]:
@@ -890,8 +914,6 @@ def main() -> None:
         "skills": render_cv_markdown_entries(cv_sections.get("skills", "")),
         "miscellaneous": render_cv_markdown_entries(cv_sections.get("miscellaneous", "")),
     }))
-    write("blog/index.qmd", render_template("blog-index.qmd.j2", {}))
-
 
 if __name__ == "__main__":
     main()

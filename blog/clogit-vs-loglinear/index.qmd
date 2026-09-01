@@ -1,13 +1,14 @@
 ---
 title: "Discrete Choice Models of Assortative Mating, Part 2: log-linear vs. multinomial vs. conditional logit"
 description: "The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table)."
-date: "2026-09-01T9:00:00+02:00"
+date: "2026-09-01T09:00:00+02:00"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
 categories:
   - "matching"
   - "conditional logit"
+  - "multinomial logit"
   - "loglinear models"
   - "assortative mating"
 bibliography: references.bib

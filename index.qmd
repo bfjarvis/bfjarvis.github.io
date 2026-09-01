@@ -10,7 +10,7 @@ body-class: generated-page
 :::
 
 ::: {.intro-copy}
-I am an associate professor at The Institute for Analytical Sociology at Linkoping University. My research examines ethnic segregation and patterns of residential and social mobility. I combine discrete choice models and agent-based simulations to make the link between micro behaviors and macro outcomes.
+I am Associate Professor at The Institute for Analytical Sociology at Linkoping University. My research examines ethnic segregation and patterns of residential and social mobility. I combine discrete choice models and agent-based simulations to make the link between micro behaviors and macro outcomes.
 
 This site is a record of formal outputs and a home for short research notes. You can also find my [CV](cv.qmd), [Google Scholar](https://scholar.google.com/citations?user=AZvfKd8AAAAJ&hl=en&oi=ao), [ORCID](https://orcid.org/0000-0001-8127-4051), [GitHub](https://github.com/bfjarvis), or reach out by [e-mail](mailto:benjamin.jarvis@liu.se).
 :::
@@ -396,7 +396,7 @@ This course engages with classical and contemporary research on inequality and s
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
-2026 • matching, conditional logit, loglinear models, assortative mating
+2026 • matching, conditional logit, multinomial logit, loglinear models, assortative mating
 :::
 
 ### [Discrete Choice Models of Assortative Mating, Part 2: log-linear vs. multinomial vs. conditional logit](blog/clogit-vs-loglinear/)
@@ -427,26 +427,6 @@ Benjamin F. Jarvis
 
 ::: {.content-card-description}
 The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set, and data generating functions, to be used in subsequent posts.
-:::
-
-:::
-:::
-
-::: {.content-card .post-card .compact-card}
-::: {.content-card-body}
-
-::: {.content-card-eyebrow}
-2026 • conditional logit, loglinear models, assortative mating
-:::
-
-### [What Conditional Logit Can Use That a Group Table Cannot](blog/clogit-beyond-loglinear/)
-
-::: {.content-card-byline}
-Benjamin F. Jarvis
-:::
-
-::: {.content-card-description}
-The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis.
 :::
 
 :::
