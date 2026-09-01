@@ -1,2 +1,1270 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"></html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Benjamin F. Jarvis">
+<meta name="description" content="The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table).">
+
+<title>Discrete Choice Models of Assortative Mating, Part 2: log-linear vs.&nbsp;multinomial vs.&nbsp;conditional logit – Benjamin F. Jarvis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="../../site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="../../site_libs/tabwid-1.1.3/tabwid.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles-quarto.css">
+<link rel="stylesheet" href="../../sticky-sections.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Benjamin F. Jarvis</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html"> 
+<span class="menu-text">CV</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#three-models-and-their-mathematical-equivalence" id="toc-three-models-and-their-mathematical-equivalence" class="nav-link" data-scroll-target="#three-models-and-their-mathematical-equivalence">Three models and their mathematical equivalence</a></li>
+  <li><a href="#data-steps" id="toc-data-steps" class="nav-link" data-scroll-target="#data-steps">Data steps</a>
+  <ul class="collapse">
+  <li><a href="#contingency-table-for-log-linear-and-multinomial-models" id="toc-contingency-table-for-log-linear-and-multinomial-models" class="nav-link" data-scroll-target="#contingency-table-for-log-linear-and-multinomial-models">Contingency table for log-linear and multinomial models</a></li>
+  <li><a href="#matched-pair-data-for-conditional-logit-modeling" id="toc-matched-pair-data-for-conditional-logit-modeling" class="nav-link" data-scroll-target="#matched-pair-data-for-conditional-logit-modeling">Matched-pair data for conditional logit modeling</a></li>
+  </ul></li>
+  <li><a href="#models-of-independence" id="toc-models-of-independence" class="nav-link" data-scroll-target="#models-of-independence">Models of Independence</a>
+  <ul class="collapse">
+  <li><a href="#log-linear-model-of-independence" id="toc-log-linear-model-of-independence" class="nav-link" data-scroll-target="#log-linear-model-of-independence">Log-linear model of independence</a></li>
+  <li><a href="#multinomial-model-of-independence" id="toc-multinomial-model-of-independence" class="nav-link" data-scroll-target="#multinomial-model-of-independence">Multinomial model of independence</a></li>
+  <li><a href="#conditional-logit-model-of-independence" id="toc-conditional-logit-model-of-independence" class="nav-link" data-scroll-target="#conditional-logit-model-of-independence">Conditional logit model of independence</a></li>
+  <li><a href="#parameter-equivalence" id="toc-parameter-equivalence" class="nav-link" data-scroll-target="#parameter-equivalence">Parameter equivalence</a></li>
+  <li><a href="#predictive-equivalence" id="toc-predictive-equivalence" class="nav-link" data-scroll-target="#predictive-equivalence">Predictive equivalence</a></li>
+  </ul></li>
+  <li><a href="#saturated-models" id="toc-saturated-models" class="nav-link" data-scroll-target="#saturated-models">Saturated Models</a>
+  <ul class="collapse">
+  <li><a href="#saturated-log-linear-model" id="toc-saturated-log-linear-model" class="nav-link" data-scroll-target="#saturated-log-linear-model">Saturated log-linear model</a></li>
+  <li><a href="#saturated-multinomial-model" id="toc-saturated-multinomial-model" class="nav-link" data-scroll-target="#saturated-multinomial-model">Saturated multinomial model</a></li>
+  <li><a href="#saturated-conditional-logit-model" id="toc-saturated-conditional-logit-model" class="nav-link" data-scroll-target="#saturated-conditional-logit-model">Saturated conditional logit model</a></li>
+  <li><a href="#comparing-parameters-between-saturated-models" id="toc-comparing-parameters-between-saturated-models" class="nav-link" data-scroll-target="#comparing-parameters-between-saturated-models">Comparing parameters between saturated models</a></li>
+  <li><a href="#predictive-equivalence-of-the-saturated-models" id="toc-predictive-equivalence-of-the-saturated-models" class="nav-link" data-scroll-target="#predictive-equivalence-of-the-saturated-models">Predictive equivalence of the saturated models</a></li>
+  <li><a href="#methodological-footnote-fitting-multinomial-models-directly-with-clogit" id="toc-methodological-footnote-fitting-multinomial-models-directly-with-clogit" class="nav-link" data-scroll-target="#methodological-footnote-fitting-multinomial-models-directly-with-clogit">Methodological footnote: Fitting multinomial models directly with clogit</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Discrete Choice Models of Assortative Mating, Part 2: log-linear vs.&nbsp;multinomial vs.&nbsp;conditional logit</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">matching</div>
+    <div class="quarto-category">conditional logit</div>
+    <div class="quarto-category">multinomial logit</div>
+    <div class="quarto-category">loglinear models</div>
+    <div class="quarto-category">assortative mating</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    The second note in the series. Here I estimate and compare parameter estimates from conditional logit, multinomial logit, and loglinear models of two-way contingency tables (or data that can be reduced to such a table).
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Benjamin F. Jarvis </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 data-anchor-id="introduction">Introduction</h2>
+<p>This is Part 2 in a series discussing how and why to use conditional logistic regression models for assortative mating research. The goal of this post is to convince you that conditional logistic regression can, at the very least, provide the same answers to questions typically answered using log-linear and multinomial logit models. I do so partly by recapitulating mathematical arguments already covered pretty well by Breen <span class="citation" data-cites="breenIndividualLevelModels1994">(<a href="#ref-breenIndividualLevelModels1994" role="doc-biblioref">1994</a>)</span> and Logan <span class="citation" data-cites="loganMultivariateModelMobility1983">(<a href="#ref-loganMultivariateModelMobility1983" role="doc-biblioref">1983</a>)</span>. But then I go ahead and beat the proverbial dead horse with my laptop, fitting mathematically equivalent models to simulated data and comparing the parameter estimates. This should, I hope, drive the point home and demonstrate that standard fitting routines will yield estimates of key parameters, and their standard errors, that are the same across the three models. Along the way, I show how to handle what is often the most daunting part of fitting a clogit model: building the correct data structure.</p>
+<p>A later post will turn to the specific advantages of the conditional logit. The more limited task here is to show that, for conventional mobility tables, these modeling frameworks can be made to estimate the same underlying association parameters. So the impression from this post will be that fitting a conditional logit model is just a lot of extra work with no real pay-off. The pay-off should be more apparent in the next post.</p>
+<p>This post will continue to make use of simulated marriage data. To generate the simulated data, I use a slight modification of a function I developed in the <a href="https://benjaminfjarvis.com/blog/actors-and-locations/">previous post</a> and which can be found <a href="https://github.com/bfjarvis/bfjarvis.github.io/blob/main/blog/clogit-vs-loglinear/simulate_marriage_market.R">here</a>. I use this function to generate matches in a marriage market characterized by four groups, located at four poles distributed around a fictive city. The groups are not only homogamous, but also hierarchically ordered, with the majority group at the top of the hierarchy and minorities at various positions at the bottom of the hierarchy. Those at the top of the hierarchy are preferred as partners relative to those at the bottom of the hierkarchy. There is also an age dimension to mating in the simulated data. Singles are more attracted to others of a similar age, but the groups differ in their age distributions. And younger singles are assumed to be drawn to the center of the city. I load the simulation function and generate singles and matches using the following calls:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"simulate_marriage_market.R"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>marriage_market <span class="ot">&lt;-</span> <span class="fu">simulate_marriage_market</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">543</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">groups =</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">share =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">15</span>, <span class="dv">15</span>, <span class="dv">20</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_mean =</span> <span class="fu">c</span>(<span class="dv">35</span>, <span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">25</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_min =</span> <span class="dv">18</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_max =</span> <span class="dv">45</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_concentration =</span> <span class="dv">2</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_relax =</span> <span class="fl">1.2</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_poles =</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pole =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"youth"</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_pole =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_pole =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_params =</span> <span class="fu">list</span>(<span class="at">group =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">youth =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">noise =</span> <span class="dv">2</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">partner_params =</span> <span class="fu">list</span>(</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_group =</span> <span class="dv">1</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_group =</span> <span class="dv">1</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_gap =</span> <span class="sc">-</span><span class="fl">0.1</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">distance =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> <span class="dv">2</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plotting the positions of singles in the market confirms that the spatial allocation of different actors works as expected, with the majority clustered in the upper-right corner of the map and the largest minority in the bottom right corner, but also the middle of the map, due to the unbalanced age distributions and the centralization of youth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>group_colors <span class="ot">&lt;-</span> viridis<span class="sc">::</span><span class="fu">plasma</span>(<span class="dv">5</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  marriage_market<span class="sc">$</span>singles,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(x, y, <span class="at">color =</span> group, <span class="at">shape =</span> sex, <span class="at">size =</span> age)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> group_colors) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Spatial coordinate x"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Spatial coordinate y"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Group"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="st">"Sex"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="st">"Age"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="three-models-and-their-mathematical-equivalence" class="level2">
+<h2 data-anchor-id="three-models-and-their-mathematical-equivalence">Three models and their mathematical equivalence</h2>
+<p>Before getting to the laborious—and frankly flagrantly superfluous—exercise of fitting equivalent log-linear, multinomial, and conditional logit models to data and comparing their estimates, it’s worth stating the models in mathematical terms and working through their equivalences.</p>
+<p>The standard log-linear model for a two-way table, in this case the cross classification of unions by the woman’s group membership, <span class="math inline">\(f\)</span>, and the man’s group membership, <span class="math inline">\(m\)</span>, is given by the expression:</p>
+<p><span class="math display">\[
+\log(\mu_{fm}) = \lambda + \alpha_f + \gamma_m + \theta_{fm}.
+\]</span></p>
+<p>Here, <span class="math inline">\(\lambda\)</span> represents a grand mean, while <span class="math inline">\(\alpha_f\)</span> and <span class="math inline">\(\gamma_m\)</span> capture the relative sizes of the female and male groups, a.k.a., their marginal distributions. These marginal distribution parameters are essentially nuisance parameters, instrumental in generating a plausible null model, but otherwise of little instrinsic interest. Instead, analytical attention is usually focused on the parameters represented by <span class="math inline">\(\theta_{fm}\)</span>. These parameters capture the association between women’s and men’s groups. They represent the deviations of particular cells from an implicit null model of random mating or categorical independence. The social science of mobility table analysis largely centers on what specifications of <span class="math inline">\(\theta_{fm}\)</span> provide the closest and most parsimonious fit to the data.</p>
+<p>This count model can be reworked into a set of conditional probabilities, adopting either the man’s or the woman’s perspective and conditioning on his or her group membership. For example, below I condition on the woman’s group membership: Given a woman belonging to group <span class="math inline">\(f\)</span>, the probability that she will be observed to be in a union with a man of group <span class="math inline">\(m\)</span> is:</p>
+<p><span class="math display">\[
+\begin{split}
+p_{m \mid f}
+&amp; =
+\frac{\mu_{fm}}{\sum_\ell \mu_{f\ell}} \\
+&amp; =
+\frac{\exp(\lambda + \alpha_f + \gamma_m + \theta_{fm})}
+{\sum_\ell \exp(\lambda + \alpha_f + \gamma_\ell + \theta_{f\ell})} \\
+&amp; =
+\frac{\exp(\gamma_m + \theta_{fm})}
+{\sum_\ell \exp(\gamma_\ell + \theta_{f\ell})}.
+\end{split}
+\]</span></p>
+<p>This is the familiar multinomial logit model. A bit of extra math can demonstrate that maximizing a likelihood associated with this model gives the same estimates of <span class="math inline">\(\gamma_m\)</span> and <span class="math inline">\(\theta_{fm}\)</span> as the count-data model. However, in the multinomial logit model, the female-group parameter <span class="math inline">\(\alpha_f\)</span> and the grand mean term, <span class="math inline">\(\lambda\)</span>, disappear because we divide the cell counts by <span class="math inline">\(\mu_{f+}=\sum_\ell \mu_{f\ell}\)</span>. That is, these parameters are conditioned out by construction.</p>
+<p>The conditional logit model takes the same idea down to the level of a fully exploded, dyadic data set. Let <span class="math inline">\(i\)</span> index individual women and <span class="math inline">\(j\)</span> index individual men. In a conditional logit model, if we assume all women have a non-zero probability of partnering with each man (my assumptions, they are heroic!), the probability that woman <span class="math inline">\(i\)</span> chooses man <span class="math inline">\(j\)</span> out of all men, indexed by <span class="math inline">\(k\)</span> (and including <span class="math inline">\(j\)</span>) in the denominator is:</p>
+<p><span class="math display">\[
+P(j|i)
+=
+\frac{\exp(V_{ij})}{\sum_k \exp(V_{ik})},
+\]</span></p>
+<p>where <span class="math inline">\(V_{ij}\)</span> is typically a linear-in-parameters function indicating the utility woman <span class="math inline">\(i\)</span> gets from forming a union with man <span class="math inline">\(j\)</span>. Along the lines of the log-linear model, we can specify utilities that are functions only of women’s and men’s group memberships and corresponding parameters, where <span class="math inline">\(f(i)\)</span> is the woman’s group and <span class="math inline">\(m(j)\)</span> is the man’s group:</p>
+<p><span class="math display">\[
+V_{ij} = \eta_{m(j)} + \delta_{f(i)m(j)}.
+\]</span></p>
+<p>Here I distinguish the parameters in the conditional logit, <span class="math inline">\(\eta_m\)</span> and <span class="math inline">\(\delta_{fm}\)</span>, from those estimated in the log-linear and multinomial models. As I will show in a moment, there is actually an direct relationship between these parameters and the previous parameters, but for now I refrain from presuming an equivalence. As with the multinomial model, there are no main effects for the women’s group memberships, nor for a grand mean. These are conditioned out in the probability expression.</p>
+<p>To see the relationship between the conditional logit and the multinomial model parameters, I aggregate the individual probabilities to the level of men’s groups. Let <span class="math inline">\(N_m\)</span> (alternately, <span class="math inline">\(N_\ell\)</span>) be the number of available men in group <span class="math inline">\(m\)</span> (or <span class="math inline">\(\ell\)</span>). To aggregate, I make use of two facts. First, conditional on their own group membership, all women have the same utility function. Second, from a given woman’s perspective, all men in group <span class="math inline">\(m\)</span> have the same utility. Then, using the law of total probability yields:</p>
+<p><span class="math display">\[
+\begin{split}
+P(m \mid f)
+&amp;= \sum_{m(j)=m} P(j \mid i:f(i)=f) \\
+&amp;= \sum_{m(j)=m} \frac{\exp(\eta_{m(j)} + \delta_{f(i)m(j)})}
+{\sum_k \exp(\eta_{m(k)} + \delta_{f(i)m(k)})} \\
+&amp;=
+\frac{N_m \exp(\eta_m + \delta_{fm})}
+{\sum_\ell N_\ell \exp(\eta_\ell + \delta_{f\ell})} \\
+&amp;=
+\frac{\exp\left(\log N_m + \eta_m + \delta_{fm}\right)}
+{\sum_\ell \exp\left(\log N_\ell  + \eta_\ell + \delta_{f\ell}\right)}.
+\end{split}
+\]</span></p>
+<p>This bears a striking resemblance to the multinomial model previously discussed:</p>
+<p><span class="math display">\[
+p_{m \mid f} =
+\frac{\exp(\gamma_m + \theta_{fm})}
+{\sum_\ell \exp(\gamma_\ell + \theta_{f\ell})}.
+\]</span></p>
+<p>There is just a slight difference in the parameterization. Specifically, the conditional logit model contains an additional <span class="math inline">\(\log N_m\)</span> term. We can ask under what conditions these two expressions would be equal, i.e.,</p>
+<p><span class="math display">\[
+\frac{\exp(\gamma_m + \theta_{fm})}
+{\sum_\ell \exp(\gamma_\ell + \theta_{f\ell})} = \frac{\exp\left(\log N_m + \eta_m + \delta_{fm}\right)}
+{\sum_\ell \exp\left(\log N_\ell + \eta_\ell + \delta_{f\ell}\right)}
+\]</span></p>
+<p>Immediately, it’s apparent that one parameterization that would make these equivalent is:</p>
+<p><span class="math display">\[
+\gamma_m = \log N_m + \eta_m
+\quad \text{and} \quad
+\theta_{fm} = \delta_{fm}.
+\]</span> Under this paramterization, <span class="math inline">\(\theta_{fm}\)</span> and <span class="math inline">\(\delta_{fm}\)</span> would be equivalent right off the bat. But the group-specific intercepts from the two models, <span class="math inline">\(\gamma_m\)</span> and <span class="math inline">\(\eta_m\)</span>, would differ by <span class="math inline">\(\log(N_m)\)</span>. But a simple reshuffling shows a quick fix:</p>
+<p><span class="math display">\[
+\eta_m = \gamma_m - \log N_m
+\]</span></p>
+<p>This means that specifying <span class="math inline">\(-\log(N_m)\)</span> as an offest when estimating the conditional logit model will lead the group-specific intercepts to match <span class="math inline">\(\gamma_m\)</span> directly. In other words, in the model:</p>
+<p><span class="math display">\[
+P(j|i) = \frac{\exp \left(\gamma_{m(j)} + \theta_{f(i)m(j)} - \log N_{m(j)}\right)}
+{\sum_k \exp\left(\gamma_{m(k)} + \theta_{f(i)m(k)}- \log N_{m(k)}\right)}
+\]</span></p>
+<p>the parameters <span class="math inline">\(\gamma_m\)</span> and <span class="math inline">\(\theta_{fm}\)</span> will be exactly equivalent to their counterparts in the multinomial model, and hence, the log-linear model. Without the offset, the <span class="math inline">\(\gamma\)</span> parameters will differ, although the <span class="math inline">\(\theta\)</span> parameters will still match. This math should be sufficient to prove the fundamental equivalence between these three models when they are properly specified. But for the skeptical and the more empirically minded, I demonstrate this computationally below.</p>
+</section>
+<section id="data-steps" class="level2">
+<h2 data-anchor-id="data-steps">Data steps</h2>
+<p>To numerically demonstrate the equivalence between models, I’m going to fit log-linear models, multinomial models, and conditional logit models to the simulated data set I presented above. The first two models can actually use the same data setup, which is just a contingency table counting the number of unions for each combination of man’s and woman’s group. The conditional logit requires a slightly different setup.</p>
+<section id="contingency-table-for-log-linear-and-multinomial-models" class="level3">
+<h3 data-anchor-id="contingency-table-for-log-linear-and-multinomial-models">Contingency table for log-linear and multinomial models</h3>
+<p>Constructing a contingency table of female group by male group matches from the simulated data involves pulling the matches and joining in the group memberships for the men and women, followed by an aggregation to counts:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  marriage_market<span class="sc">$</span>matches <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="at">id_man =</span> id, <span class="at">group_man =</span> group)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="at">id_woman =</span> id, <span class="at">group_woman =</span> group)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(group_woman, group_man)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The contingency table with the observed counts and the ratio of observed to what would be expected using a model of independence can be visualized as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="ot">&lt;-</span> loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">men_in_group =</span> <span class="fu">sum</span>(n), <span class="at">.by =</span> group_man) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">women_in_group =</span> <span class="fu">sum</span>(n), <span class="at">.by =</span> group_woman) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">expected =</span> men_in_group <span class="sc">*</span> women_in_group <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ratio =</span> n <span class="sc">/</span> expected)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> group_man, <span class="at">y =</span> group_woman, <span class="at">fill =</span> ratio, <span class="at">label =</span> n)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">midpoint =</span> <span class="dv">1</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">transform =</span> <span class="st">"log10"</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The contingency table resulting from the simulated marriage market is clearly structured along group lines, as was specified in the data generating process. Relative to a model of independence, there is overrepresentation on the diagonal, especially in the interior of the table. There is also underrepresentation of unions between members of group a and all out groups, particularly group d.</p>
+</section>
+<section id="matched-pair-data-for-conditional-logit-modeling" class="level3">
+<h3 data-anchor-id="matched-pair-data-for-conditional-logit-modeling">Matched-pair data for conditional logit modeling</h3>
+<p>For estimating a conditional logit model, I need a data set that enumerates possible matched pairs (i.e., dyads). For now I use all possible pairs, but a convenient property of the conditional logit allows for downsampling of the unmatched pairs, which speeds up data management and estimation times when there are many individuals in the dataset. But with only 1,000 singles on each side of the market in the simulated data, it remains feasible to work with all possible pairs.</p>
+<p>The first step is to cross the lists of men and women. Note that in doing so, I’m bringing all the covariates, not just the group memberships, along for the ride, with some strategic renaming along the way to distinguish the attributes of the man vs.&nbsp;the woman in the dyad:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="ot">&lt;-</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross_join</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>sex) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">paste0</span>(.x, <span class="at">sep =</span> <span class="st">"_man"</span>)),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>sex) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">paste0</span>(.x, <span class="at">sep =</span> <span class="st">"_woman"</span>)),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>clogit_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,000,000 × 10
+   id_man group_man age_man x_man y_man id_woman group_woman age_woman x_woman
+    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;
+ 1      1 a            21.7 0.991 0.546     1001 a                25.9  0.25  
+ 2      1 a            21.7 0.991 0.546     1002 a                23.5  0.287 
+ 3      1 a            21.7 0.991 0.546     1003 a                44.8  0.0648
+ 4      1 a            21.7 0.991 0.546     1004 a                40.5  0.139 
+ 5      1 a            21.7 0.991 0.546     1005 a                43.1  0.583 
+ 6      1 a            21.7 0.991 0.546     1006 a                28.8  0.194 
+ 7      1 a            21.7 0.991 0.546     1007 a                18.2  0.583 
+ 8      1 a            21.7 0.991 0.546     1008 a                42.1  0.731 
+ 9      1 a            21.7 0.991 0.546     1009 a                25.4  0.343 
+10      1 a            21.7 0.991 0.546     1010 a                41.3  0.0648
+# ℹ 999,990 more rows
+# ℹ 1 more variable: y_woman &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>One difference between the clogit and contingency table data setups is the need to construct a binary dependent variable identifying the actually observed pairing. This is accomplished by simply joining up the data about observed matches from the generated marriage market data. I use a left join because I want to preserve all of the information about the unmatched pairs as well. This information is critical for estimating the model. I also calculate the number of available men and women in each group, which is needed for the availability offsets used below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="ot">&lt;-</span> clogit_data <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(marriage_market<span class="sc">$</span>matches <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched), <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_men_g =</span> <span class="fu">n_distinct</span>(id_man),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> group_man</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_women_g =</span> <span class="fu">n_distinct</span>(id_woman),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> group_woman</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="models-of-independence" class="level2">
+<h2 data-anchor-id="models-of-independence">Models of Independence</h2>
+<p>With the data prepared, I’m ready to estimate some models. I’ll start with models of independence. The models of independence have slightly different specifications across the log-linear, multinomial, and conditional logit models, but lead to the same predictions. And they capture the same underlying null hypothesis of random partner choice, with no preferences for endogamy or exogamy. In this case, the numbers of unions for each combination of man’s and woman’s group are dictated by their marginal distributions. The main difference between the three modeling frameworks is in how they handle these marginal distributions.</p>
+<section id="log-linear-model-of-independence" class="level3">
+<h3 data-anchor-id="log-linear-model-of-independence">Log-linear model of independence</h3>
+<p>For log-linear models, differences in marginal distributions are handled by specifying dummy parameters corresponding to row and column labels. I fit this model using poisson regression where group a is treated as the reference category for both the row and column coefficients.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>loglin_m1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  n <span class="sc">~</span> group_woman <span class="sc">+</span> group_man,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> poisson,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="multinomial-model-of-independence" class="level3">
+<h3 data-anchor-id="multinomial-model-of-independence">Multinomial model of independence</h3>
+<p>In the multinomial models, the marginals for one dimension of the table are handled implicitly based on the number of (weighted) observations, while the marginals for the other dimension of the table are handled using group-specific intercepts. Note that I can run this model “forwards” or “backwards”, i.e., predicting the man’s group membership from the woman’s perspective, or predicting the woman’s group membership from the man’s perspective. Whichever way its run, the intercepts have essentially the same parameter estimates and standard errors as their counterparts in the log-linear model. What’s missing is the intercept for the grand mean and the intercepts for the woman’s group (when run from the woman’s perspective) or the man’s group (when run from the man’s perspective). These are handled implicitly through the weights in the multinomial model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>multinom_m1a <span class="ot">&lt;-</span> <span class="fu">multinom</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  group_man <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> n,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>multinom_m1b <span class="ot">&lt;-</span> <span class="fu">multinom</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  group_woman <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> n,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="conditional-logit-model-of-independence" class="level3">
+<h3 data-anchor-id="conditional-logit-model-of-independence">Conditional logit model of independence</h3>
+<p>In the conditional logit model, the model of independence technically needs no parameters at all. The marginals are handled entirely by the observed numbers of men and women on each side of the fully ennumerated man-woman dyads that make up the data set. However, we can obtain group-specific intercepts if we fit dummy variables for the men’s or, alternately, the women’s group.</p>
+<p>What’s crucial in these models, however, is the specification of a stratifying or grouping variable. This requires adopting either the man’s or the woman’s perspective on the data. If I treat this as a problem of men choosing among a set of single women, then I would stratify by the id of the man. If I view the data from the perspective of women choosing among single men, then I would stratify by the id of the woman.</p>
+<p>Note also that the models include <span class="math inline">\(-\log N_m\)</span> or <span class="math inline">\(-\log N_f\)</span> as offsets. As shown above, this makes the reported conditional-logit coefficients directly comparable to the <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\theta\)</span> coefficients from the multinomial and log-linear models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>clogit_m1a <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_man <span class="sc">+</span> <span class="fu">offset</span>(<span class="sc">-</span><span class="fu">log</span>(n_men_g)) <span class="sc">+</span> <span class="fu">strata</span>(id_woman),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>clogit_m1b <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_woman <span class="sc">+</span> <span class="fu">offset</span>(<span class="sc">-</span><span class="fu">log</span>(n_women_g)) <span class="sc">+</span> <span class="fu">strata</span>(id_man),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="parameter-equivalence" class="level3">
+<h3 data-anchor-id="parameter-equivalence">Parameter equivalence</h3>
+<p>We can compare the parameters by plotting the estimates and confidence intervals from each model. Note: Empty positions in the clusters indicate parameters that are conditioned out or otherwise not estimated in a given model.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/independence-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Parameter estimates from models of independence.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot shows that comparable parameters, across models, have identical estimates and standard errors. This exercise confirms what the math tells us to expect: the parameters in these models are equivalent to each other.</p>
+</section>
+<section id="predictive-equivalence" class="level3">
+<h3 data-anchor-id="predictive-equivalence">Predictive equivalence</h3>
+<p>As it turns out, these models also predict exactly the same contingency tables. We can confirm this by generating the predictions, binding them to the analytic data, and, where necessary, aggregating and pivoting. For the log-linear models with counts as the outcome, this is fairly straightforward. I employ a pivot merely to put the predictions into a familiar contingency table form.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(loglin_m1, <span class="at">type =</span> <span class="st">'response'</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group_man, group_woman, pr) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> group_woman, <span class="at">names_from =</span> group_man, <span class="at">values_from =</span> pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           263.   72.8  67.8  91.6
+2 b            75.4  20.9  19.5  26.3
+3 c            90.8  25.1  23.4  31.6
+4 d           102.   28.2  26.3  35.5</code></pre>
+</div>
+</div>
+<p>For the multinomial models, aggregation is needed. The predictions take the form not of counts, but of predicted probabilities. In the model I use for prediction below, I treated the observations as representing the women and the outcome as representing the category of the man with whom each woman was paired, with counts acting as weights indicating how many women chose men of the given type. The predictions are a set of probabilities, spread across columns, of partnering with men of the different types. To convert probabilities into counts, I just have to weight by the number of women represented by each row in the original data. No pivot is necessary because <code>multinom</code> in the <code>nnet</code> package spreads predicted probabilities for each category across columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group_woman, n) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(multinom_m1a, <span class="at">type =</span> <span class="st">"probs"</span>) <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(a, b, c, d), <span class="sc">~</span> <span class="fu">sum</span>(n <span class="sc">*</span> .x)), <span class="at">.by =</span> group_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           263.   72.8  67.8  91.6
+2 b            75.4  20.9  19.5  26.3
+3 c            90.8  25.1  23.4  31.6
+4 d           102.   28.2  26.3  35.5</code></pre>
+</div>
+</div>
+<p>For the conditional logit, aggregation is relatively simple. For each woman, we can obtain the predicted probability of forming a union with each man. We obtain the contingency table by summing these predicted probabilities jointly within the male and female groups.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(clogit_m1a)) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr =</span> <span class="fu">exp</span>(pr) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(pr)), <span class="at">.by =</span> id_woman) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pr =</span> <span class="fu">sum</span>(pr), <span class="at">.by =</span> <span class="fu">c</span>(group_woman, group_man)) <span class="sc">|&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> group_woman, <span class="at">names_from =</span> group_man, <span class="at">values_from =</span> pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           263.   72.8  67.8  91.6
+2 b            75.4  20.9  19.5  26.3
+3 c            90.8  25.1  23.4  31.6
+4 d           102.   28.2  26.3  35.5</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="saturated-models" class="level2">
+<h2 data-anchor-id="saturated-models">Saturated Models</h2>
+<section id="saturated-log-linear-model" class="level3">
+<h3 data-anchor-id="saturated-log-linear-model">Saturated log-linear model</h3>
+<p>For a contingency table, the saturated count model specifies, in essence, a dummy variable for each cell in the table, with appropriate constraints to ensure the parameters are all statistically identified. The result is a model that perfectly reproduces all of the counts in the table. A standard way of specifying the saturated model is to include all row and column main effects and interactions as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>loglin_mS <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  n <span class="sc">~</span> group_woman <span class="sc">*</span> group_man,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> poisson,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="saturated-multinomial-model" class="level3">
+<h3 data-anchor-id="saturated-multinomial-model">Saturated multinomial model</h3>
+<p>Again, the multinomial model predicts a chosen partner’s group membership conditional on the attributes of the “choosing” partner. The choice of whether to treat the man or the woman as the choosing partner is arbitrary and immaterial to the fit of the model. Here I run the model both ways.</p>
+<div class="cell" data-messages="false">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>multinom_mSa <span class="ot">&lt;-</span> <span class="fu">multinom</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  group_man <span class="sc">~</span> group_woman,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> n,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>multinom_mSb <span class="ot">&lt;-</span> <span class="fu">multinom</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  group_woman <span class="sc">~</span> group_man,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> n,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> loglin_data,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="saturated-conditional-logit-model" class="level3">
+<h3 data-anchor-id="saturated-conditional-logit-model">Saturated conditional logit model</h3>
+<p>The saturated conditional logit model can be specified as below. Similar to the multinomial model, one must conceptualize the problem from either the man’s or the woman’s perspective, but the model fits will be the same. The group count offsets make the intercept terms commensurable with the <span class="math inline">\(\alpha\)</span> and/or <span class="math inline">\(\gamma\)</span> coefficients obtained in the other models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>clogit_mSa <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_woman <span class="sc">*</span> group_man <span class="sc">+</span> <span class="fu">offset</span>(<span class="sc">-</span><span class="fu">log</span>(n_men_g)) <span class="sc">+</span> <span class="fu">strata</span>(id_woman),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>clogit_mSb <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_woman <span class="sc">*</span> group_man <span class="sc">+</span> <span class="fu">offset</span>(<span class="sc">-</span><span class="fu">log</span>(n_women_g)) <span class="sc">+</span> <span class="fu">strata</span>(id_man),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="comparing-parameters-between-saturated-models" class="level3">
+<h3 data-anchor-id="comparing-parameters-between-saturated-models">Comparing parameters between saturated models</h3>
+<p>I compile the parameter estimates for all the models in the plot below. Once gain, empty positions in the clusters indicate parameters that are not estimated in a given model. Just as with the independence models, the commensurable parameter estimates are identical across models.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/saturated-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Parameter estimates from saturated models.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="predictive-equivalence-of-the-saturated-models" class="level3">
+<h3 data-anchor-id="predictive-equivalence-of-the-saturated-models">Predictive equivalence of the saturated models</h3>
+<p>My claim is that the saturated models will perfectly reproduce the observed contingency table. We can confirm this through a saturated mode analog of the same prediction exercise used for the independence model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(loglin_mS, <span class="at">type =</span> <span class="st">'response'</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group_man, group_woman, pr) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> group_woman, <span class="at">names_from =</span> group_man, <span class="at">values_from =</span> pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           401.   45.0  32.0  17.0
+2 b            46.0  64.0  14.0  18.0
+3 c            53.0  20.0  63.0  35.0
+4 d            31.0  18.0  28.0 115. </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group_woman, n) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(multinom_mSa, <span class="at">type =</span> <span class="st">"probs"</span>) <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(a, b, c, d), <span class="sc">~</span> <span class="fu">sum</span>(n <span class="sc">*</span> .x)), <span class="at">.by =</span> group_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           401.   45.0  32.0  17.0
+2 b            46.0  64.0  14.0  18.0
+3 c            53.0  20.0  63.0  35.0
+4 d            31.0  18.0  28.0 115. </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">pr =</span> <span class="fu">predict</span>(clogit_mSa)) <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr =</span> <span class="fu">exp</span>(pr) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(pr)), <span class="at">.by =</span> id_woman) <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pr =</span> <span class="fu">sum</span>(pr), <span class="at">.by =</span> <span class="fu">c</span>(group_woman, group_man)) <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> group_woman, <span class="at">names_from =</span> group_man, <span class="at">values_from =</span> pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  group_woman     a     b     c     d
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 a           401.   45.0  32.0  17.0
+2 b            46.0  64.0  14.0  18.0
+3 c            53.0  20.0  63.0  35.0
+4 d            31.0  18.0  28.0 115. </code></pre>
+</div>
+</div>
+</section>
+<section id="methodological-footnote-fitting-multinomial-models-directly-with-clogit" class="level3">
+<h3 data-anchor-id="methodological-footnote-fitting-multinomial-models-directly-with-clogit">Methodological footnote: Fitting multinomial models directly with clogit</h3>
+<p>There is an alternative way to fit the multinomial model using clogit without exploding the data into all possible dyads. There’s no real reason to do this if you have <code>nnet</code>, but this further demonstrates the fundamental equivalence between the multinomial logit and the conditional logit. The idea is to represent the potential <em>categories</em> of prospective partners, rather than the individual partners themselves, in separate rows. Again, one must conceptually treat one side of the market (women in the example below) as the “choosers” and the other side as the “chosen”. Then each distinct chooser receives a number of rows equal to the possible categories of the chosen. We then create an outcome, <code>matched</code>, which is TRUE for the appropriate cases. At the same time, a strata variable is needed to distinguish the sets of observations corresponding to a single entry in the contingency table. I construct the data as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>multinom_as_clogit <span class="ot">&lt;-</span> loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross_join</span>(<span class="fu">tibble</span>(<span class="at">alternative =</span> letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])) <span class="sc">|&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> group_man <span class="sc">==</span> alternative,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">strata =</span> <span class="fu">interaction</span>(group_woman, group_man),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">row =</span> <span class="fu">row_number</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(row, strata, group_woman, <span class="at">group_man =</span> alternative, matched, n, row)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A segment of the resulting data structure is presented below, with strategic shading and highlights. The row highlights separate groups of four wherein the woman’s group is constant, but the man’s group varies. The red highlighted matching row, with the matching variable coded to <code>TRUE</code>, corresponds to the outcome for the cell of the contingency table that is being represented. For the current data, the first group of four rows actually corresponds to a single cell in the original contingency table, namely the cell for the count of women of group a matched to men of group a.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-30373304{}.cl-3031d3d2{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3031d3dc{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 0, 0, 1.00);background-color:transparent;}.cl-303402d8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-303402d9{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-303402e2{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-30341ba6{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341bc4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341bc5{width:0.75in;background-color:rgba(204, 204, 204, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341bd8{width:0.75in;background-color:rgba(204, 204, 204, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341bd9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341bda{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30341be2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-30373304"><thead><tr style="overflow-wrap:break-word;"><th class="cl-30341ba6"><p class="cl-303402d8"><span class="cl-3031d3d2">row</span></p></th><th class="cl-30341bc4"><p class="cl-303402d9"><span class="cl-3031d3d2">strata</span></p></th><th class="cl-30341bc4"><p class="cl-303402d9"><span class="cl-3031d3d2">group_woman</span></p></th><th class="cl-30341bc4"><p class="cl-303402d9"><span class="cl-3031d3d2">group_man</span></p></th><th class="cl-30341ba6"><p class="cl-303402d8"><span class="cl-3031d3d2">matched</span></p></th><th class="cl-30341ba6"><p class="cl-303402d8"><span class="cl-3031d3d2">n</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">1</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">401</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">2</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">401</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">3</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">c</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">401</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">4</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">d</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">401</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">5</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">45</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">6</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">a.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">b</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">45</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">7</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">c</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">45</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">8</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">d</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">45</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">9</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.c</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">32</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">10</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.c</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">32</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">11</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a.c</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">c</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">32</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">12</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a.c</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">d</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">32</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">13</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.d</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">14</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.d</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">15</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a.d</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">c</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">16</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">a.d</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">d</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">17</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">b.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">b</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3dc">a</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3dc">46</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">18</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">46</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">19</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">c</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">46</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">20</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b.a</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bd8"><p class="cl-303402d9"><span class="cl-3031d3d2">d</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bc5"><p class="cl-303402d8"><span class="cl-3031d3d2">46</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">21</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">a</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">64</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">22</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">b.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3dc">b</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">true</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3dc">64</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">23</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">c</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">64</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">24</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b.b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">b</span></p></td><td class="cl-30341bda"><p class="cl-303402d9"><span class="cl-3031d3d2">d</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">false</span></p></td><td class="cl-30341bd9"><p class="cl-303402d8"><span class="cl-3031d3d2">64</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-30341be2"><p class="cl-303402e2"><span class="cl-3031d3d2">etc.</span></p></td></tr></tfoot></table></div>
+</div>
+</div>
+<p>With the data structured in this way, we can estimate the equivalent of the multinomial logit using a conditional logit fitting function. In this case, the outcome is the binary match indicator, the explanatory variables are dummy variables indicating the possible categories of the men, and the strata variable is as constructed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>multinom_m1c <span class="ot">&lt;-</span> <span class="fu">clogit</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_man <span class="sc">+</span> <span class="fu">strata</span>(strata),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> n,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"efron"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> multinom_as_clogit</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Because the data were constructed from the perspective of women as the “choosers”, the coefficient estimates and that standard errors are equivalent to those in Multinomial Model 1a.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(multinom_m1a) <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">group_man =</span> y.level, <span class="at">mnl.est =</span> estimate, <span class="at">mnl.se =</span> std.error),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(multinom_m1c) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="at">cl.est =</span> estimate, <span class="at">cl.se =</span> std.error)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  group_man mnl.est mnl.se cl.est  cl.se
+  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1 b           -1.28 0.0932  -1.28 0.0932
+2 c           -1.35 0.0958  -1.35 0.0958
+3 d           -1.05 0.0854  -1.05 0.0854</code></pre>
+</div>
+</div>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-breenIndividualLevelModels1994" class="csl-entry" role="listitem">
+Breen, Richard. 1994. <span>“Individual <span>Level</span> <span>Models</span> for <span>Mobility</span> <span>Tables</span> and Other <span>Cross</span>-<span>Classifications</span>.”</span> <em>Sociological Methods &amp; Research</em> 23 (2): 147–73. <a href="https://doi.org/10.1177/0049124194023002001">https://doi.org/10.1177/0049124194023002001</a>.
+</div>
+<div id="ref-loganMultivariateModelMobility1983" class="csl-entry" role="listitem">
+Logan, John A. 1983. <span>“A <span>Multivariate</span> <span>Model</span> for <span>Mobility</span> <span>Tables</span>.”</span> <em>American Journal of Sociology</em> 89 (2): 324–49. <a href="http://www.jstor.org/stable/2779144">http://www.jstor.org/stable/2779144</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/bfjarvis\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© Benjamin F. Jarvis</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="mailto:benjamin.jarvis@liu.se">
+<p>Email</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=AZvfKd8AAAAJ&amp;hl=en&amp;oi=ao">
+<p>Google Scholar</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0001-8127-4051">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/bfjarvis">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
