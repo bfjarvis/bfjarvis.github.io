@@ -10,7 +10,7 @@ body-class: generated-page
 :::
 
 ::: {.intro-copy}
-I am Associate Professor at The Institute for Analytical Sociology at Linkoping University. My research examines ethnic segregation and patterns of residential and social mobility. I combine discrete choice models and agent-based simulations to make the link between micro behaviors and macro outcomes.
+I am an associate professor at The Institute for Analytical Sociology at Linkoping University. My research examines ethnic segregation and patterns of residential and social mobility. I combine discrete choice models and agent-based simulations to make the link between micro behaviors and macro outcomes.
 
 This site is a record of formal outputs and a home for short research notes. You can also find my [CV](cv.qmd), [Google Scholar](https://scholar.google.com/citations?user=AZvfKd8AAAAJ&hl=en&oi=ao), [ORCID](https://orcid.org/0000-0001-8127-4051), [GitHub](https://github.com/bfjarvis), or reach out by [e-mail](mailto:benjamin.jarvis@liu.se).
 :::
