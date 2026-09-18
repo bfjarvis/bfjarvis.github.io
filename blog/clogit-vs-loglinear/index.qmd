@@ -218,6 +218,7 @@ ggplot(
   data = loglin_data,
   aes(x = group_man, y = group_woman, fill = ratio, label = n)
 ) +
+  labs(x = "Man's group", y = "Woman's group", fill = "Observed/\nExpected") +
   geom_tile() +
   theme_minimal() +
   coord_equal() +
@@ -527,15 +528,21 @@ saturated_parameters <-
           paste0("group_woman", y.level, ":", term)
         )
       ),
-    `cl woman` = broom::tidy(clogit_mSa),
-    `cl man` = broom::tidy(clogit_mSb),
+    `clogit woman` = broom::tidy(clogit_mSa),
+    `clogit man` = broom::tidy(clogit_mSb),
     .id = "model"
   ) |>
   filter(!is.na(estimate), !is.na(std.error)) |>
   mutate(
     model = factor(
       model,
-      levels = c("log-linear", "mnl woman", "mnl man", "cl woman", "cl man")
+      levels = c(
+        "log-linear",
+        "mnl woman",
+        "mnl man",
+        "clogit woman",
+        "clogit man"
+      )
     ),
     term = str_replace_all(term, "group_(man|woman)([abcd])", "\\1(\\2)"),
     conf.low = estimate - 1.96 * std.error,

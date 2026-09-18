@@ -1,83 +1,199 @@
 ---
-title: "What Conditional Logit Can Use That a Group Table Cannot"
-description: "The fourth note in the series: add age gaps and distance to the conditional-logit model and compare this with conventional group-level loglinear analysis."
-date: "2026-07-17"
+title: "What conditional logit can do that models of contingency tables cannot"
+description: "I show how a conditional logit model can be used to model matching on person-to-person dyadic covariates. The third in a series about using conditional logit models for modeling assortative mating and mobility"
+date: "2026-09-13"
 author: "Benjamin F. Jarvis"
 metadata-files:
   - ../_post-defaults.yml
 categories:
   - "conditional logit"
-  - "loglinear models"
   - "assortative mating"
 draft: true
 ---
 
-## Beyond the Group Table
+## Introduction
 
-A conventional group-by-group table is useful, but it is also intentionally compressed. Once the data have been reduced to group counts, information about age gaps, spatial distance, and individual attractiveness is no longer available.
+This is the third post in a series about using conditional logistic regression for modeling assortative mating (and by implication, social mobility). In my first post, I simulated a fictive marriage market containing actors spread across three groups, with the groups spatially segregated and differing in their age distributions. Actors were presumed to form unions with each other based on a combination of group homophily, age similarity, and spatial proximity. In my second post, I showed the equivalence between log-linear models and conditional logistic regression models when it came to modeling patterns of assortativity between groups. I showed this equivalence both mathematically and when applied to the simulated union data.
 
-The conditional-logit representation can keep those pair-level covariates because the rows are possible partners, not only table cells.
+In this post, my aim is to show what conditional logistic regression can do that log-linear modeling can't. Specifically, because conditional logistic regression is formulated at the level of dyads, rather than aggregated counts in a contingency table, conditional logistic regression enables the inclusion of dyad specific covariates. This also means that, given the right data, one can estimate models that account for and characterize individual level heterogeneity in the union formation behaviors. There are other potential advantages and extensions that I may be able to treat in subsequent posts. But I think the micro-level orientation is a huge advantage, and conditional logistic regression should increasingly be the default model among analysts of assortative mating. I hope by the end of this poste, you'll be mostly convinced. 
+ 
+## Simulating data: homogamy without homophily
+
+Some of my own reasearch has explored how segregation---residential, institutional, social, etc.---intervenes in processes of union formation. This is a subject that is *not* amenable to log-linear modeling, because space doesn't obey log-linear modeling's underlying strictures of categorical division. In practice, it is very difficult to formulate log-linear models that address anything but the most crude aspects of spatial heterogeneity. But because of its micro-level, dyadic foundation, handling space is quite natural in conditional logistic regression. Data permitting, one can measure the fine-grained residential distances, either as the crow flies or in terms of travel times calculated along transportation networks, between any two potential partners and use these dyad-specific covariates in the model directly. And what goes for distance goes for other, continuously distributed individual and dyadic covariates, not least age and income.
+
+I want to bring these issues into focus using a specially designed example. In this example, I'll specify a marriage process that has no direct dependence on group membership. It will depend only on age similarity and spatial proximity. However, the groups will be strongly spatially segregated and will differ in their age distributions. Under these circumstances, the unions should be, in a descriptive sense, homogamous. But at the micro-level, a properly specified empirical model should show no direct effect of group membership on the likelihood of union formation. 
+
+I use the same marriage market simulation functions I developed and used in the previous two posts. The call is below. In this fictive marriage market, there are 1,000 men and 1,000 women divided into four groups denoted simply by letters. These could denote any kind of categorical distinction one wishes to impose upon them. Here, I specify 40% in the "a" group, 20% in "b", 20% in "c", and 20% in "d", with small, random deviations in relative group shares among men and women. The groups differ in their mean ages, but the ages are constrained to vary between 18 and 45. The men and women are distributed in a two-dimensional space using a semi-random location assignment algorithm, with members of each group tending to locate near group-specific poles that are distributed around the city center, and with those at younger ages being more likely to reside in the city center. Unions are made using a Gale-Shapley approach, but with men and women having the same preferences and a small amount of noise added. 
 
 ```{r}
-#| label: setup
-#| message: false
-#| warning: false
+source("simulate_marriage_market.R")
 
-source("../_matching-simulation.R")
-library(survival)
-
-market <- simulate_actors_and_locations(seed = 543)
-partner_market <- match_partners(market$men, market$women)
-choice_sets <- make_choice_sets(market$men, market$women, partner_market$matched_pairs)
+marriage_market <- simulate_marriage_market(
+  seed = 543,
+  n = 2000,
+  groups = tibble(
+    group = c("a", "b", "c", "d"),
+    share = c(40, 20, 20, 20),
+    age_mean = c(35, 32, 28, 24),
+    age_min = 18,
+    age_max = 45,
+    age_concentration = 2
+  ),
+  location_relax = 1.2,
+  location_poles = tibble(
+    pole = c("a", "b", "c", "d", "youth"),
+    x_pole = c(0.25, 0.75, 0.25, 0.75, 0.5),
+    y_pole = c(0.75, 0.75, 0.25, 0.25, 0.5)
+  ),
+  location_params = list(group = -1, youth = -1, noise = 1.5),
+  partner_params = list(
+    same_group = 0,
+    rank_group = 0,
+    age_gap = -0.2,
+    distance = -2,
+    noise = 1
+  )
+)
 ```
 
-## A Richer Choice Model
+The resulting distribution of singles is shown below. As specified in the generative model, the groups are clustered in different parts of the city, with the city center tending to be younger and, hence, containing a larger share of the younger group.
 
 ```{r}
-#| label: rich-clogit
-
-group_only <- clogit(
-  choice ~ same_group + factor(candidate_group) + strata(chooser_id),
-  data = choice_sets
-)
-
-with_pair_covariates <- clogit(
-  choice ~ same_group + age_gap + log(distance + 0.01) + factor(candidate_group) + strata(chooser_id),
-  data = choice_sets
-)
-
-rbind(
-  group_only = AIC(group_only),
-  with_pair_covariates = AIC(with_pair_covariates)
-)
+library(ggplot2)
+library(stringr)
+group_colors <- viridis::plasma(5)[1:4]
+ggplot(
+  marriage_market$singles,
+  aes(x, y, color = group, shape = sex, size = age)
+) +
+  geom_point() +
+  coord_equal() +
+  scale_color_manual(values = group_colors) +
+  scale_size_continuous(range = c(1, 3)) +
+  labs(
+    x = "Spatial coordinate x",
+    y = "Spatial coordinate y",
+    color = "Group",
+    shape = "Sex",
+    size = "Age"
+  ) +
+  theme_void(base_size = 12) +
+  theme(plot.margin = margin(2, 2, 2, 2))
 ```
 
-```{r}
-#| label: rich-coefficients
-
-summary(with_pair_covariates)$coefficients
-```
-
-The richer model uses the same matched outcome, but it asks a more detailed question. Are same-group partners more likely to be chosen net of age gaps and geographic distance? That question is difficult to pose once the data have been collapsed to a group table.
-
-## What the Loglinear Table Misses
-
-The loglinear model can be extended by adding more dimensions to the table, but doing so quickly creates sparse cells. Age gaps and distances are continuous. Turning them into table dimensions requires binning, and each bin multiplies the number of cells.
-
-This is one reason the conditional-logit representation can be attractive. It keeps the pair-level structure while preserving the choice-set interpretation.
+Because of the strong patterning of the spatial distribution of groups, the unions are characterized by clear homogamy, even absent a direct effect of group membership on union formation.   
 
 ```{r}
-#| label: observed-choice-covariates
+#| echo: false
 
-choice_sets |>
-  group_by(choice) |>
-  summarize(
-    mean_same_group = mean(same_group),
-    mean_age_gap = mean(age_gap),
-    mean_distance = mean(distance),
-    .groups = "drop"
+loglin_data <- marriage_market$matches |>
+  left_join(
+    marriage_market$singles |>
+      filter(sex == "man") |>
+      select(id_man = id, group_man = group)
   ) |>
-  mutate(across(where(is.numeric), \(x) round(x, 3)))
+  left_join(
+    marriage_market$singles |>
+      filter(sex == "woman") |>
+      select(id_woman = id, group_woman = group)
+  ) |>
+  count(group_woman, group_man) |>
+  mutate(men_in_group = sum(n), .by = group_man) |>
+  mutate(women_in_group = sum(n), .by = group_woman) |>
+  mutate(expected = men_in_group * women_in_group / sum(n)) |>
+  mutate(ratio = n / expected)
+
+loglin_data |>
+  ggplot(
+    aes(x = group_man, y = group_woman, fill = ratio, label = n)
+  ) +
+  labs(x = "Man's group", y = "Woman's group", fill = "Observed/\nExpected") +
+  geom_tile() +
+  theme_minimal() +
+  coord_equal() +
+  scale_fill_gradient2(
+    midpoint = 1,
+    transform = "log10"
+  ) +
+  geom_text()
 ```
 
-The next question is more delicate: even if the conditional logit uses more of the data, does it represent the underlying two-sided matching process that generated the matches?
+## Log-linear model of group assortativity
+
+We can estimate a saturated log-linear model of assortative mating by group using these data using `glm` as follows:
+
+```{r}
+glm(n ~ group_woman * group_man, data = loglin_data, family = "poisson") |>
+  summary()
+```
+
+The interaction coefficients of the log-linear model confirm the group homogamy patterns observed descriptively, with even seemingly positive assortativity between groups d and groups b and c, but not between groups b and c. It seems likely that this positive assortativity between group d and others, particularly c and d, will be related to the relative youth of group d, which places more group d members near the center of the map, and resulting proximity between groups d and other groups, especially groups b and d. However, there could also be a contribution from age assortativity, given that groups b and c are younger on average than group a.
+
+## Conditional logit models of group assortativity
+
+In the previous post, I showed how you can estimate a conditional logit model that is mathematically equivalent to the log-linear model, albeit with a dramatically different data set-up. In essence, you need a fully dyadic data set, where the rows represent all the possible combinations of individual men and women. With 1,000 men and 1,000 women, this means constructing a dataset with 1,000,000 rows. Note, however, that there are ways of obtaining (nearly) the same estimates using dyad sampling procedures that dramatically reduces the size of the data necessary to estimate the model. I'll cover this in a separate post.
+
+For now, I proceed with the full ennumeration of all dyads. I do this by cross the list of men with the list of women as follows:
+
+```{r}
+clogit_data <-
+  crossing(
+    marriage_market$singles |>
+      filter(sex == "man") |>
+      select(-sex) |>
+      mutate(n_group = n(), .by = group) |>
+      rename_with(~ paste0(.x, "_man")),
+    marriage_market$singles |>
+      filter(sex == "woman") |>
+      select(-sex) |>
+      mutate(n_group = n(), .by = group) |>
+      rename_with(~ paste0(.x, "_woman"))
+  )
+```
+
+I can obtain the same log-linear model parameters if I create an offset varibiable that counts the number of women/men in each group. I've incorporated this calculation into the preceding code. The last thing to do is to contruct the dependen variable, which is just a binary variable marking which of the potential dyads are actually observed to realized a union. This is accomplished using a join with the appropriate table from the marriage market data.
+
+```{r}
+clogit_data <-
+  clogit_data |>
+  left_join(
+    marriage_market$matches |> mutate(matched = 1L)
+  ) |>
+  mutate(matched = if_else(is.na(matched), 0, matched))
+```
+
+With that offset in hand, the conditional logit can be estimated using `R`'s `survival` package. The reason that the survival package includes a clogit (convenience) function is that the likelihood for the conditional logit model, when treating the data properly, is identical to the likelihood for a Cox proportional hazards model, which of course is one of the key models featured in the `survival` package. I don't have the time or the wherewithal for a proof, but proofs can be found online and elsewhere.
+
+At any rate, one can confirm that the output below is essentially identical to the log-linear output, as I showed in the previous post:
+
+```{r}
+library(survival)
+clogit(
+  matched ~ group_man *
+    group_woman +
+    strata(id_woman) +
+    offset(log(n_group_woman)),
+  data = clogit_data
+)
+```
+
+But now that we have the log-linear model, we can start pulling apart the log-linear modeling assumption that it is group membership *per se* that leads to the patterns of assortativity observed in the simulated data. But I stipulated, when simulating the data, that there is no direct effect of group membership. In fact the assortativity is entirely driven by proximity and age, perhaps with an assist from the iterative matching process that was used to create matches conditional on the simulated utilities. This means that controlling for proximity and age sorting should, in theory, push the assortativity coefficients towards zero. 
+
+
+```{r}
+clogit_data |>
+  mutate(
+    log_dist = log(d2(x_man, y_man, x_woman, y_woman)),
+    age_diff = abs(age_man - age_woman)
+  ) |>
+  clogit(
+    data = _,
+    formula = matched ~ group_man *
+      group_woman +
+      log_dist +
+      age_diff +
+      strata(id_woman) +
+      offset(log(n_group_woman))
+  )
+```
+
