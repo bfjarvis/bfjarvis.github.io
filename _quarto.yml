@@ -17,7 +17,7 @@ execute:
 
 website:
   title: "Benjamin F. Jarvis"
-  site-url: "https://bfjarvis.github.io"
+  site-url: "https://benjaminfjarvis.com"
   description: "Academic website for Benjamin F. Jarvis: publications, projects, teaching, CV, and research notes."
   navbar:
     title: "Benjamin F. Jarvis"
