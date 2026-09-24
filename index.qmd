@@ -396,10 +396,10 @@ This course engages with classical and contemporary research on inequality and s
 ::: {.content-card-body}
 
 ::: {.content-card-eyebrow}
-2026 • conditional logit, assortative mating
+2026 • conditional logit, log-linear models, assortative mating
 :::
 
-### [Discrete Choice Models of Assortative Mating, Part 3](blog/clogit-beyond-loglinear/)
+### [What Conditional Logit Models Do That Log-Linear Models Struggle to Do](blog/clogit-beyond-loglinear/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
@@ -419,7 +419,7 @@ I show how a conditional logit model can be used to model matching on person-to-
 2026 • matching, conditional logit, multinomial logit, loglinear models, assortative mating
 :::
 
-### [Discrete Choice Models of Assortative Mating, Part 2: log-linear vs. multinomial vs. conditional logit](blog/clogit-vs-loglinear/)
+### [Log-Linear vs. Multinomial vs. Conditional Logit Models of Assortative Mating](blog/clogit-vs-loglinear/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
@@ -439,7 +439,7 @@ The second note in the series. Here I estimate and compare parameter estimates f
 2026 • assortative mating, discrete choice models, log-linear models, simulation, spatial analysis
 :::
 
-### [Discrete Choice Models of Assortative Mating, Part 1: Simulating a Marriage Market](blog/actors-and-locations/)
+### [Discrete Choice Models of Assortative Mating, Part 1](blog/actors-and-locations/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis

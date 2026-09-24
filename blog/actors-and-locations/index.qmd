@@ -1,6 +1,6 @@
 ---
 title: "Simulating a Spatial Marriage Market"
-title: "Discrete Choice Models of Assortative Mating, Part 1"
+subtitle: "Discrete Choice Models of Assortative Mating, Part 1"
 description: "The first in a series looking at the advantages and pitfalls of using DCM for AM research. This post develops a simulated data set, and data generating functions, to be used in subsequent posts."
 date: "2026-08-25T11:00:00+02:00"
 author: "Benjamin F. Jarvis"
