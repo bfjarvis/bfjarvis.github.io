@@ -1,2 +1,1338 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"></html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Benjamin F. Jarvis">
+<meta name="dcterms.date" content="2026-09-13">
+<meta name="description" content="I show how a conditional logit model can be used to model matching on person-to-person dyadic covariates, and the advantage of clogit compared to the log-linear analysis of contingency tables. The third in a series about using conditional logit models for modeling assortative mating and mobility">
+
+<title>What conditional logit models do that log-linear models struggle to do – Benjamin F. Jarvis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles-quarto.css">
+<link rel="stylesheet" href="../../sticky-sections.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Benjamin F. Jarvis</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html"> 
+<span class="menu-text">CV</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#simulating-data-strong-homogamy-with-only-weak-homophily" id="toc-simulating-data-strong-homogamy-with-only-weak-homophily" class="nav-link" data-scroll-target="#simulating-data-strong-homogamy-with-only-weak-homophily">Simulating data: strong homogamy with only weak homophily</a></li>
+  <li><a href="#log-linear-models-of-group-assortativity" id="toc-log-linear-models-of-group-assortativity" class="nav-link" data-scroll-target="#log-linear-models-of-group-assortativity">Log-linear models of group assortativity</a></li>
+  <li><a href="#conditional-logit-models-of-group-assortativity" id="toc-conditional-logit-models-of-group-assortativity" class="nav-link" data-scroll-target="#conditional-logit-models-of-group-assortativity">Conditional logit models of group assortativity</a></li>
+  <li><a href="#beyond-and-beneath-group-assortativity" id="toc-beyond-and-beneath-group-assortativity" class="nav-link" data-scroll-target="#beyond-and-beneath-group-assortativity">Beyond and beneath group assortativity</a></li>
+  <li><a href="#an-analogous-log-linear-approach" id="toc-an-analogous-log-linear-approach" class="nav-link" data-scroll-target="#an-analogous-log-linear-approach">An Analogous log-linear approach</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">What conditional logit models do that log-linear models struggle to do</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">conditional logit</div>
+    <div class="quarto-category">assortative mating</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    I show how a conditional logit model can be used to model matching on person-to-person dyadic covariates, and the advantage of clogit compared to the log-linear analysis of contingency tables. The third in a series about using conditional logit models for modeling assortative mating and mobility
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Benjamin F. Jarvis </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 13, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 data-anchor-id="introduction">Introduction</h2>
+<p>This is the third post in a series about using conditional logistic regression for modeling assortative mating. In my <a href="https://benjaminfjarvis.com/blog/actors-and-locations/">first post</a>, I simulated a fictive marriage market containing actors spread across three groups, with the groups spatially segregated and differing in their age distributions. Actors were presumed to form unions with each other based on a combination of group homophily, age similarity, and spatial proximity. In my <a href="https://benjaminfjarvis.com/blog/clogit-vs-loglinear/">second post</a>, I showed the equivalence between log-linear models and conditional logistic regression models when it came to modeling patterns of assortativity between groups. I showed this equivalence both mathematically and when applied to the simulated union data, using saturated models and models of independence as test cases.</p>
+<p>In this post, my aim is to demonstrate what conditional logistic regression can do quite naturally and elegantly that log-linear modeling can do only crudely. Specifically, because conditional logistic regression is formulated at the level of person-to-person dyads, rather than cells in a contingency table, conditional logistic regression readily accommodates dyad-specific covariates. This also means that, given the right data, one can estimate models that account for micro-level heterogeneity in the behaviors and covariates guiding union formation. This permits a clever analyst to tease apart mechanistic explanations of patterns of assortative mating and investigate covariates that might explain or moderate endogamy and/or exogamy. I think this micro-level orientation is a huge advantage and it militates in favor of including conditional logistic regression as a fixture in the toolkit for assortative mating analysis. I hope by the end of this post, you’ll be mostly convinced, but also see a path forward for using these models in your own research.</p>
+</section>
+<section id="simulating-data-strong-homogamy-with-only-weak-homophily" class="level2">
+<h2 data-anchor-id="simulating-data-strong-homogamy-with-only-weak-homophily">Simulating data: strong homogamy with only weak homophily</h2>
+<p>Some of my research has explored how residential segregation intervenes in processes of union formation. It is possible to formulate log-linear models that address this spatial heterogeneity. However, log-linear analysis often begins by aggregating data into contingency tables, which can entail substantial information loss for spatial and other continuously distributed covariates. By contrast, conditional logistic regression has a micro-level, dyadic foundation that makes it well suited to handling spatial information. Data permitting, one can measure fine-grained residential distances—either as the crow flies or as travel times along transportation networks—between potential partners and include these dyad-specific covariates directly in the model. And what goes for distance also goes for other continuously distributed covariates, including age and income.</p>
+<p>I bring these issues into focus using an admittedly specially engineered example. In this example, I’ll specify a marriage process that has only weak dependence on group membership. It will depend more strongly on age similarity and spatial proximity. At the same time, the groups will be spatially segregated and will differ in their age distributions. Under these circumstances, the unions should be, in a descriptive sense, strongly homogamous. But at the micro-level, a reasonably good empirical model should show only a weak effect of group membership on union formation.</p>
+<p>I use the same marriage market simulation functions I developed and used in the previous two posts. The call is below. In this fictive marriage market, there are 1,000 men and 1,000 women divided into four groups denoted simply by letters. These could denote any kind of categorical distinction one wishes to impose upon them. Here, I specify approximately 40% in the “a” group, 20% in “b”, 20% in “c”, and 20% in “d”, with small, random deviations in relative group shares among men and women. The groups differ in their mean ages, but the ages are constrained to vary between 18 and 45. The men and women are distributed in a two-dimensional space using a semi-random location assignment algorithm, with members of each group tending to locate near group-specific poles that are scattered around the city, and with those at younger ages being more likely to reside near the center of the map. Unions are made using a Gale-Shapley algorithm, where men and women have the same objective/utility functions (i.e., preferences), and random noise is added to utility.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"simulate_marriage_market.R"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>marriage_market <span class="ot">&lt;-</span> <span class="fu">simulate_marriage_market</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">543</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">groups =</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">share =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">20</span>, <span class="dv">20</span>, <span class="dv">20</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_mean =</span> <span class="fu">c</span>(<span class="dv">34</span>, <span class="dv">30</span>, <span class="dv">27</span>, <span class="dv">25</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_min =</span> <span class="dv">18</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_max =</span> <span class="dv">45</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_concentration =</span> <span class="dv">2</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_relax =</span> <span class="fl">1.2</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_poles =</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pole =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"youth"</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_pole =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_pole =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.75</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">location_params =</span> <span class="fu">list</span>(<span class="at">group =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">youth =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">noise =</span> <span class="dv">2</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">partner_params =</span> <span class="fu">list</span>(</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_group =</span> <span class="fl">0.2</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_group =</span> <span class="dv">0</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_gap =</span> <span class="sc">-</span><span class="fl">0.3</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">distance =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> <span class="dv">2</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The resulting distribution of individuals is shown below. As specified in the generative model, the groups are clustered in different parts of the city, with the city center attracting younger individuals. This leads younger groups, particularly the “d” group, to be disproportionately represented in the center of the city.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I construct a group-by-group contingency table from the resulting marriage data below. Along the way, I generate variables that will be helpful for later log-linear modeling, and I calculate the ratio of observed counts to expected counts, the latter based on a model of independence.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="ot">&lt;-</span> marriage_market<span class="sc">$</span>matches <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="at">id_man =</span> id, <span class="at">group_man =</span> group)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="at">id_woman =</span> id, <span class="at">group_woman =</span> group)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(group_woman, group_man) <span class="sc">|&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">men_in_group =</span> <span class="fu">sum</span>(n), <span class="at">.by =</span> group_man) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">women_in_group =</span> <span class="fu">sum</span>(n), <span class="at">.by =</span> group_woman) <span class="sc">|&gt;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">expected =</span> men_in_group <span class="sc">*</span> women_in_group <span class="sc">/</span> <span class="fu">sum</span>(n),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio =</span> n <span class="sc">/</span> expected,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">homog =</span> <span class="dv">1</span>L <span class="sc">*</span> (group_woman <span class="sc">==</span> group_man),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">homog_spec =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(homog <span class="sc">==</span> <span class="dv">1</span>L, group_man, <span class="st">" "</span>))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The contingency table is visualized below. Reflecting a weak homogamy effect, age assortativity, and the spatial patterning of the groups, the unions are characterized by relatively strong homogamy, which can be seen by the massing of high counts on the diagonal relative to a model of independence.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-contingency" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-contingency-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Assortative mating by group: observed counts and the ratio to expected
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="log-linear-models-of-group-assortativity" class="level2">
+<h2 data-anchor-id="log-linear-models-of-group-assortativity">Log-linear models of group assortativity</h2>
+<p>We can estimate a saturated log-linear model of assortative mating by group using these data using <code>glm</code> as follows:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = n ~ group_woman * group_man, family = "poisson", 
+    data = loglin_data)
+
+Coefficients:
+                        Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)              5.44674    0.06565  82.962  &lt; 2e-16 ***
+group_womanb            -1.11600    0.13217  -8.444  &lt; 2e-16 ***
+group_womanc            -1.36920    0.14581  -9.391  &lt; 2e-16 ***
+group_womand            -1.43940    0.14997  -9.598  &lt; 2e-16 ***
+group_manb              -1.25708    0.13951  -9.011  &lt; 2e-16 ***
+group_manc              -1.28785    0.14119  -9.121  &lt; 2e-16 ***
+group_mand              -1.73317    0.16941 -10.230  &lt; 2e-16 ***
+group_womanb:group_manb  1.18903    0.21611   5.502 3.76e-08 ***
+group_womanc:group_manb  0.47538    0.27101   1.754   0.0794 .  
+group_womand:group_manb  0.58195    0.27085   2.149   0.0317 *  
+group_womanb:group_manc  0.51247    0.24832   2.064   0.0390 *  
+group_womanc:group_manc  1.35345    0.22969   5.893 3.80e-09 ***
+group_womand:group_manc  1.13067    0.24371   4.639 3.49e-06 ***
+group_womanb:group_mand  0.69827    0.28088   2.486   0.0129 *  
+group_womanc:group_mand  1.36920    0.26465   5.174 2.30e-07 ***
+group_womand:group_mand  1.94534    0.24817   7.839 4.55e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 3.8611e+02  on 15  degrees of freedom
+Residual deviance: 1.6875e-14  on  0  degrees of freedom
+AIC: 125.05
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>The significant interaction coefficients of the log-linear model are consistent with group homogamy in the data and even suggest off-diagonal associations. This off-diagonal assortativity, particularly between groups d and others could be related to the more central position occupied by d.&nbsp;This stems from its younger age profile and a youth centralization effect included in the data generating function.</p>
+<p>Here I should note that for this model, and all subsequent models, we should not expect to directly recover the parameters of the marriage-generating process. That is because the generating function is neither a log-linear nor a conditional logit model. The parameters that generated the data can, at best, be only loosely represented by these statistical models. The goal here, then, is to compare the model outputs roughly to what was input into the data-generating function. To the extent that our empirical models approximate the underlying process, we might expect their estimates to align in broad terms; for example, in direction and relative importance. And ideally, when homogamy is present in the data-generating process, the model should detect a statistically significant homogamy effect; when homogamy is absent, we should find no statistically significant effect. But the estimates should not be interpreted as corresponding exactly to the data generating parameters. I mean, this is (almost?) always the case we find ourselves in in empirical settings, so this caveat is pretty much a standard operating assumption. But it’s good to keep in mind.</p>
+<p>Moving on, we can estimate a simplified model that represents only a generalized homogamy effect, with no off-diagonal assortativity parameters as well:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = n ~ group_woman + group_man + homog, family = "poisson", 
+    data = loglin_data)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   4.71532    0.07097  66.443  &lt; 2e-16 ***
+group_womanb -0.50250    0.08838  -5.686 1.30e-08 ***
+group_womanc -0.61705    0.09081  -6.795 1.08e-11 ***
+group_womand -0.54413    0.09001  -6.045 1.49e-09 ***
+group_manb   -0.67071    0.08962  -7.484 7.21e-14 ***
+group_manc   -0.56512    0.08742  -6.465 1.02e-10 ***
+group_mand   -0.74429    0.09209  -8.082 6.35e-16 ***
+homog         0.72025    0.06621  10.879  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 386.108  on 15  degrees of freedom
+Residual deviance:  17.865  on  8  degrees of freedom
+AIC: 126.92
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>Or we can estimate a model with group-specific homogamy effects, but no off-diagonal elements:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = n ~ group_woman + group_man + homog_spec, family = "poisson", 
+    data = loglin_data)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)    4.6590     0.1265  36.831  &lt; 2e-16 ***
+group_womanb  -0.4705     0.1257  -3.744 0.000181 ***
+group_womanc  -0.5031     0.1295  -3.886 0.000102 ***
+group_womand  -0.5602     0.1266  -4.426 9.60e-06 ***
+group_manb    -0.6406     0.1273  -5.031 4.87e-07 ***
+group_manc    -0.4619     0.1217  -3.795 0.000148 ***
+group_mand    -0.7694     0.1301  -5.914 3.34e-09 ***
+homog_speca    0.7877     0.1425   5.527 3.26e-08 ***
+homog_specb    0.7148     0.1818   3.931 8.47e-05 ***
+homog_specc    0.4492     0.1851   2.427 0.015240 *  
+homog_specd    0.8901     0.1866   4.771 1.83e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 386.108  on 15  degrees of freedom
+Residual deviance:  14.904  on  5  degrees of freedom
+AIC: 129.96
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>The above models suggest that there is a strong, general homogamy effect and that homogamy may be stronger for groups a and d than it is for groups b and c, at least before we control for age and space.</p>
+</section>
+<section id="conditional-logit-models-of-group-assortativity" class="level2">
+<h2 data-anchor-id="conditional-logit-models-of-group-assortativity">Conditional logit models of group assortativity</h2>
+<p>In the previous post, I showed how you can estimate a conditional logit model that is mathematically equivalent to the log-linear model, albeit with a dramatically different data set-up. In essence, you need a fully dyadic data set, where the rows represent all the possible combinations of individual men and women. With 1,000 men and 1,000 women, this means constructing a dataset with 1,000,000 rows. Note, however, that there are ways of obtaining (nearly) the same estimates using dyad sampling procedures that dramatically reduces the size of the data necessary to estimate the model. I’ll cover this in a separate post.</p>
+<p>For now, I proceed with the full enumeration of all dyads. I do this by crossing the list of men with the list of women as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="ot">&lt;-</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"man"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>sex) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">offset =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fu">n</span>()), <span class="at">.by =</span> group) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">paste0</span>(.x, <span class="st">"_man"</span>)),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>singles <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"woman"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>sex) <span class="sc">|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">offset =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fu">n</span>()), <span class="at">.by =</span> group) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">paste0</span>(.x, <span class="st">"_woman"</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I can obtain the same log-linear model parameters if I create an offset based on the counts of the number of men in each group. I’ve incorporated this calculation into the preceding code. The last thing to do is to construct the dependent variable, which is just a binary variable marking which of the potential dyads formed a union. This is accomplished using a join with the appropriate table from the marriage market data. I also add some useful covariates for subsequent modelling steps, including variables representing patterns of homogamy and variables describing spatial distances and age differences between partners:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clogit_data <span class="ot">&lt;-</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  clogit_data <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    marriage_market<span class="sc">$</span>matches <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">matched =</span> <span class="dv">1</span>L)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">matched =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(matched), <span class="dv">0</span>, matched),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist =</span> <span class="fu">d2</span>(x_man, y_man, x_woman, y_woman),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_diff =</span> <span class="fu">abs</span>(age_man <span class="sc">-</span> age_woman),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">homog =</span> <span class="dv">1</span>L <span class="sc">*</span> (group_man <span class="sc">==</span> group_woman),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">homog_spec =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(homog <span class="sc">==</span> <span class="dv">1</span>L, group_man, <span class="st">" "</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The conditional logit can be estimated using <code>R</code>’s <code>survival</code> package. The reason is that the likelihood for the conditional logit model is identical to the likelihood for a Cox proportional hazards model. In fact, the <code>survival</code> package calls the <code>coxph</code> function when fitting a conditional logit model. I don’t have the time or the wherewithal for a proof of the equivalence between these models, but discussion can be found in the <a href="https://cran.r-project.org/web/packages/survival/survival.pdf"><code>survival</code> package documentation</a> and <a href="https://github.com/mronkko/SurvivalModelLogisticRelationship">elsewhere online</a>. At any rate, one can confirm that the output of a saturated model of group assortativity, displayed below, is essentially identical to the log-linear output, as I showed in the previous post:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+clogit(matched ~ group_woman * group_man + strata(id_woman) + 
+    offset(offset_man), data = clogit_data)
+
+                           coef exp(coef) se(coef)       z        p
+group_womanb                 NA        NA   0.0000      NA       NA
+group_womanc                 NA        NA   0.0000      NA       NA
+group_womand                 NA        NA   0.0000      NA       NA
+group_manb              -1.2571    0.2845   0.1395  -9.011  &lt; 2e-16
+group_manc              -1.2879    0.2759   0.1412  -9.121  &lt; 2e-16
+group_mand              -1.7332    0.1767   0.1694 -10.230  &lt; 2e-16
+group_womanb:group_manb  1.1890    3.2839   0.2161   5.502 3.76e-08
+group_womanc:group_manb  0.4754    1.6086   0.2710   1.754   0.0794
+group_womand:group_manb  0.5820    1.7895   0.2708   2.149   0.0317
+group_womanb:group_manc  0.5125    1.6694   0.2483   2.064   0.0390
+group_womanc:group_manc  1.3535    3.8708   0.2297   5.893 3.80e-09
+group_womand:group_manc  1.1307    3.0977   0.2437   4.639 3.49e-06
+group_womanb:group_mand  0.6983    2.0103   0.2809   2.486   0.0129
+group_womanc:group_mand  1.3692    3.9322   0.2647   5.174 2.30e-07
+group_womand:group_mand  1.9453    6.9960   0.2482   7.839 4.55e-15
+
+Likelihood ratio test=272.8  on 12 df, p=&lt; 2.2e-16
+n= 1000000, number of events= 1000 </code></pre>
+</div>
+</div>
+<p>The <code>survival</code> package is actually a bit slow and memory inefficient for estimating models like this, mostly because <code>clogit</code> is provided as a convenience function that reworks the data slightly and then calls <code>coxph</code>. My colleague, Jesper Lindmarker, has implemented a faster and more memory efficient estimation routine in a package posted on GitHub: <a href="https://github.com/jeppelina/fastclogit" class="uri">https://github.com/jeppelina/fastclogit</a>. This can be installed using, for example, <code>pak::pak("jeppelina/fastclogit")</code>.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man * group_woman, data = clogit_data, 
+    strata = "id_woman", offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6843.0677 
+  Converged:    TRUE (5 iterations, via primary)
+
+Coefficients:
+                        Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb               -1.2571     0.1395  -9.011  &lt; 2e-16 ***
+group_manc               -1.2879     0.1412  -9.121  &lt; 2e-16 ***
+group_mand               -1.7332     0.1694 -10.230  &lt; 2e-16 ***
+group_manb:group_womanb   1.1890     0.2161   5.502 3.76e-08 ***
+group_manb:group_womanc   0.4754     0.2710   1.754   0.0794 .  
+group_manb:group_womand   0.5820     0.2708   2.149   0.0317 *  
+group_manc:group_womanb   0.5125     0.2483   2.064   0.0390 *  
+group_manc:group_womanc   1.3535     0.2297   5.893 3.80e-09 ***
+group_manc:group_womand   1.1307     0.2437   4.639 3.49e-06 ***
+group_mand:group_womanb   0.6983     0.2809   2.486   0.0129 *  
+group_mand:group_womanc   1.3692     0.2647   5.174 2.30e-07 ***
+group_mand:group_womand   1.9453     0.2482   7.839 4.55e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>We can also run analogues of the homogamy models that I estimated using <code>glm</code> above. This includes a generalized homogamy model:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man + homog, data = clogit_data, 
+    strata = "id_woman", offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6852 
+  Converged:    TRUE (5 iterations, via primary)
+
+Coefficients:
+           Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb -0.67071    0.08962  -7.484 7.21e-14 ***
+group_manc -0.56512    0.08742  -6.465 1.02e-10 ***
+group_mand -0.74429    0.09209  -8.082 6.35e-16 ***
+homog       0.72025    0.06621  10.879  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>And a group specific homogamy model.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man + homog_spec, data = clogit_data, 
+    strata = "id_woman", offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6850.5197 
+  Converged:    TRUE (5 iterations, via primary)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb   -0.6406     0.1273  -5.031 4.87e-07 ***
+group_manc   -0.4619     0.1217  -3.795 0.000148 ***
+group_mand   -0.7694     0.1301  -5.914 3.34e-09 ***
+homog_speca   0.7877     0.1425   5.527 3.26e-08 ***
+homog_specb   0.7148     0.1818   3.931 8.47e-05 ***
+homog_specc   0.4492     0.1851   2.427 0.015240 *  
+homog_specd   0.8901     0.1866   4.771 1.83e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>These models yield the same parameter estimates and standard errors as their log-linear equivalents.</p>
+</section>
+<section id="beyond-and-beneath-group-assortativity" class="level2">
+<h2 data-anchor-id="beyond-and-beneath-group-assortativity">Beyond and beneath group assortativity</h2>
+<p>But now that we have the clogit equivalent of the log-linear models working, we can start exploring the extent to which group membership <em>per se</em> is associated with the patterns of assortativity observed in the simulated data. I stipulated, when simulating the data, that there is only a weak direct effect of group membership. In fact the assortativity should be mostly driven by proximity and age, perhaps with an assist from the iterative matching algorithm that ensured unique, stable, one-to-one matches conditional on the objective functions (i.e., match utilities). This means that controlling for proximity and age sorting in the empirical model should, in theory, strongly attenuate the assortativity coefficients.</p>
+<p>I test this using the <code>fclogit</code> call below. Here I calculate log-distances between potential partners and absolute differences in age, then feed these covariates into the model along with group effects and interactions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fclogit</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> matched <span class="sc">~</span> group_woman <span class="sc">*</span> group_man <span class="sc">+</span> log_dist <span class="sc">+</span> age_diff,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">'id_woman'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="st">'offset_man'</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">log_dist =</span> <span class="fu">log</span>(dist))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_woman * group_man + log_dist + 
+    age_diff, data = mutate(clogit_data, log_dist = log(dist)), 
+    strata = "id_woman", offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6049.8932 
+  Converged:    TRUE (6 iterations, via primary)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb              -0.947326   0.143469  -6.603 4.03e-11 ***
+group_manc              -0.819677   0.145487  -5.634 1.76e-08 ***
+group_mand              -1.055148   0.175846  -6.000 1.97e-09 ***
+log_dist                -1.018674   0.033576 -30.340  &lt; 2e-16 ***
+age_diff                -0.191624   0.008429 -22.734  &lt; 2e-16 ***
+group_womanb:group_manb  0.478821   0.222807   2.149   0.0316 *  
+group_womanb:group_manc  0.147876   0.256095   0.577   0.5637    
+group_womanb:group_mand -0.023676   0.291511  -0.081   0.9353    
+group_womanc:group_manb  0.204947   0.276498   0.741   0.4586    
+group_womanc:group_manc  0.441460   0.238512   1.851   0.0642 .  
+group_womanc:group_mand  0.433338   0.277205   1.563   0.1180    
+group_womand:group_manb -0.087781   0.275498  -0.319   0.7500    
+group_womand:group_manc  0.199949   0.251169   0.796   0.4260    
+group_womand:group_mand  0.381774   0.261033   1.463   0.1436    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>The model that accounts for distance and age differences suggests that net of these, there is no significant group assortativity in the simulated data. The p-values for all of the man’s group by woman’s group interactions fall above 0.1, and their magnitudes are all diminished compared to the original, saturated model that excluded the distance and age covariates. However, this model is over-specified and is a relatively poor representation of the data generating objective function. That objective function included only a single homogamy term that applied equally to all groups. So a more apt empirical model might omit the full set of group interactions and instead specify only a single homogamy term:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fclogit</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_man <span class="sc">+</span> homog <span class="sc">+</span> log_dist <span class="sc">+</span> age_diff,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">'id_woman'</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="st">'offset_man'</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">log_dist =</span> <span class="fu">log</span>(dist))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man + homog + log_dist + age_diff, 
+    data = mutate(clogit_data, log_dist = log(dist)), strata = "id_woman", 
+    offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6052.343 
+  Converged:    TRUE (6 iterations, via primary)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb -0.758179   0.091471  -8.289  &lt; 2e-16 ***
+group_manc -0.614146   0.090585  -6.780  1.2e-11 ***
+group_mand -0.837333   0.097859  -8.557  &lt; 2e-16 ***
+homog       0.231384   0.069990   3.306 0.000947 ***
+log_dist   -1.020162   0.033512 -30.442  &lt; 2e-16 ***
+age_diff   -0.191534   0.008413 -22.767  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>This more narrowly specified model, which parallels the data generating specification, detects a weak assortativity effect, albeit just below conventional thresholds of statistical significance.</p>
+<p>But what if I’m uncertain about the age and distance effect specifications; all I know is that they should enter into the model somehow? A typical analyst, might, for example, specify a linear effect of distance and an interaction between the man’s age and the woman’s age. These effects capture the phenomenon of spatial and age assortativity, even if they don’t align with the objective function’s form in the data generating process. Do I still find an attenuated homogamy effect?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fclogit</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_man <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    homog <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    dist <span class="sc">*</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      age_man <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    age_woman<span class="sc">:</span>age_man,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">'id_woman'</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="st">'offset_man'</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man + homog + dist * age_man + 
+    age_woman:age_man, data = clogit_data, strata = "id_woman", 
+    offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6218.884 
+  Converged:    TRUE (9 iterations, via secondary)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb        -0.716234   0.093106  -7.693 1.44e-14 ***
+group_manc        -0.646782   0.094326  -6.857 7.04e-12 ***
+group_mand        -0.961934   0.103857  -9.262  &lt; 2e-16 ***
+homog              0.216341   0.070111   3.086  0.00203 ** 
+dist              -5.339926   0.563091  -9.483  &lt; 2e-16 ***
+age_man           -0.453479   0.023366 -19.408  &lt; 2e-16 ***
+dist:age_man       0.049741   0.016255   3.060  0.00221 ** 
+age_man:age_woman  0.014350   0.000718  19.986  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>Yes, the model still yields an estimate of homogamy that is qualitatively consistent with the data generating process and substantially attenuated compared to a model that omits the age and distance interactions.</p>
+<p>One could take an even more agnostic or naive approach to modeling the association between spatial positions and union formation, for example by using Hout’s row and column effects models <span class="citation" data-cites="houtStatusAutonomyTraining1984">(<a href="#ref-houtStatusAutonomyTraining1984" role="doc-biblioref">Hout 1984</a>)</span>, which specify only continuous-by-continuous interactions. We could apply this interactive effect logic to the coordinates themselves, without transforming the coordinates into Euclidean distances:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fclogit</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  matched <span class="sc">~</span> group_man <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    homog <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    x_man <span class="sc">*</span> x_woman <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    y_man <span class="sc">*</span> y_woman <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    age_man <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    age_woman<span class="sc">:</span>age_man,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> clogit_data,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">'id_woman'</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="st">'offset_man'</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+fclogit(formula = matched ~ group_man + homog + x_man * x_woman + 
+    y_man * y_woman + age_man + age_woman:age_man, data = clogit_data, 
+    strata = "id_woman", offset = "offset_man")
+
+Conditional Logit (fastclogit)
+  Observations:  1,000,000 
+  Choice sets:   1,000 
+  Log-likelihood:  -6315.0506 
+  Converged:    TRUE (9 iterations, via secondary)
+
+Coefficients:
+                    Estimate Std. Error z value Pr(&gt;|z|)    
+group_manb        -0.6894429  0.0978024  -7.049 1.80e-12 ***
+group_manc        -0.7076629  0.0984157  -7.191 6.45e-13 ***
+group_mand        -0.9656050  0.1090947  -8.851  &lt; 2e-16 ***
+homog              0.2850932  0.0698187   4.083 4.44e-05 ***
+x_man             -3.1381813  0.2526589 -12.421  &lt; 2e-16 ***
+y_man             -3.3104944  0.2647983 -12.502  &lt; 2e-16 ***
+age_man           -0.4691184  0.0230255 -20.374  &lt; 2e-16 ***
+x_man:x_woman      6.2772742  0.4292821  14.623  &lt; 2e-16 ***
+y_man:y_woman      6.2998437  0.4416746  14.264  &lt; 2e-16 ***
+age_man:age_woman  0.0148600  0.0007161  20.751  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+---
+SE type: model </code></pre>
+</div>
+</div>
+<p>This model again yields a positive and statistically significant estimate of the homogamy effect as well as significant spatial coordinate and age interactions. So these models also pick out associations between partners’ ages and spatial positions, and these bear a qualitative resemblance to the data generating process.</p>
+</section>
+<section id="an-analogous-log-linear-approach" class="level2">
+<h2 data-anchor-id="an-analogous-log-linear-approach">An Analogous log-linear approach</h2>
+<p>While I’ve suggested it’s not really natural to do so, it’s still possible to specify a log-linear model that accounts for differences between groups in their positions and ages. One possibility is to summarize aggregate differences between groups and enter these into a log-linear models for count data. So, we could use the average distances between groups as an explanatory variable, rather than the individual-level distances. And we could calculate aggregate age differences as well. To do this, I start from the clogit data, calculate distances and age differences, and then collapse using a mean:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>group_covs <span class="ot">&lt;-</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  clogit_data <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist =</span> <span class="fu">d2</span>(x_man, y_man, x_woman, y_woman),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_dist =</span> <span class="fu">log</span>(dist),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_diff =</span> <span class="fu">abs</span>(age_man <span class="sc">-</span> age_woman)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group_man, group_woman) <span class="sc">|&gt;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>      dist,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      log_dist,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>      age_diff,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>      x_man,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>      x_woman,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>      y_man,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>      y_woman,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      age_man,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>      age_woman</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">mean</span>(.x)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then I join these covariates to the count data and estimate a model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(group_covs) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> _,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> n <span class="sc">~</span> group_man <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      group_woman <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      homog <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      log_dist <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>      age_diff,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"poisson"</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = n ~ group_man + group_woman + homog + log_dist + 
+    age_diff, family = "poisson", data = left_join(loglin_data, 
+    group_covs))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   4.94214    0.65159   7.585 3.33e-14 ***
+group_manb   -0.81968    0.10517  -7.794 6.50e-15 ***
+group_manc   -0.69295    0.10233  -6.772 1.27e-11 ***
+group_mand   -0.89067    0.11993  -7.427 1.11e-13 ***
+group_womanb -0.62310    0.09781  -6.371 1.88e-10 ***
+group_womanc -0.82511    0.11654  -7.080 1.44e-12 ***
+group_womand -0.75900    0.12395  -6.124 9.15e-10 ***
+homog         0.21041    0.18269   1.152  0.24943    
+log_dist     -1.36363    0.69052  -1.975  0.04829 *  
+age_diff     -0.10792    0.04035  -2.675  0.00748 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 386.108  on 15  degrees of freedom
+Residual deviance:   5.339  on  6  degrees of freedom
+AIC: 118.39
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>It’s immediately clear that the log-linear model doesn’t represent the data generating process quite as well as the conditional logit model seems to. The homogamy effect is positive, but not significant. And the distance effect is not significant. It seems, with individual-level and dyadic covariates collapsed and micro-level variation swept away, the model is struggling to decipher an effect of space and age assortativity. Torturing the spatial and age associations along the lines of Hout’s approach does lead, finally, to a significant homogamy effect:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>loglin_data <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(group_covs) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> _,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> n <span class="sc">~</span> group_man <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      group_woman <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      homog <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      age_man<span class="sc">:</span>age_woman <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      x_man<span class="sc">:</span>x_woman <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>      y_man<span class="sc">:</span>y_woman,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"poisson"</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = n ~ group_man + group_woman + homog + age_man:age_woman + 
+    x_man:x_woman + y_man:y_woman, family = "poisson", data = left_join(loglin_data, 
+    group_covs))
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)       -4.481198   4.241559  -1.056  0.29074   
+group_manb        -0.509936   0.733759  -0.695  0.48708   
+group_manc         1.510641   0.755065   2.001  0.04543 * 
+group_mand         1.299298   0.921357   1.410  0.15848   
+group_womanb      -0.232426   0.693843  -0.335  0.73764   
+group_womanc       1.632455   0.791386   2.063  0.03913 * 
+group_womand       1.708806   0.981045   1.742  0.08154 . 
+homog              0.397873   0.142573   2.791  0.00526 **
+age_man:age_woman  0.004905   0.003925   1.250  0.21137   
+x_man:x_woman      2.305929   3.197227   0.721  0.47077   
+y_man:y_woman      8.951405   3.722934   2.404  0.01620 * 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 386.108  on 15  degrees of freedom
+Residual deviance:   3.259  on  5  degrees of freedom
+AIC: 118.31
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>But compared to the equivalent conditional logit model, the magnitude of the homogamy effect is overstated by about 50%, and the spatial and age assortativity parameters are not significant. An analyst using this model might infer that homogamy is partly explained by spatial and age assortativity, but would also conclude that these other sources of assortativity are not, on their own, predictive of union formation.</p>
+<p>There are, of course, more holistic ways of characterizing differences in spatial and age distributions between groups, and these could be included in alternative specifications of the above log-linear models. But doing so seems like a superfluous and potentially error-prone exercise. Rather than sifting through a hodge-podge of distributional comparative measures, trying to pick out the specification that yields parameter estimates and p-values that conform to the analyst’s expectations (ruh-roh!!), why not just estimate the clogit directly? It’s more natural and flexible, opens up even more possibilities for including additional controls, and, as I hope the above coding exercises demonstrate, it’s not so hard!</p>
+<p>Here I should add a caveat, which will also be the subject of a future post: The conditional logit, while having a lot to recommend it, is not a panacea. It represents a statistically rich, but still very particular, or perhaps even peculiar, view of how marriage markets work. The models are two-sex, in that they represent covariates on both sides of the marriage market, but they are not two-sided. In their basic form, and as implemented in the software I demonstrated above, conditional logit models do not address the possibility that the parameters guiding choices on one side of the market (e.g., men’s preferences) differ from those guiding choices on the other side of the market (e.g., women’s preferences). Nor do they consider the reciprocal constraints that men’s and women’s preferences and choices impose on each other. Just as with log-linear models and related two-sex models of assortative mating, the parameters represent a more abstract “degree of mutual attraction” <span class="citation" data-cites="schoenHarmonicMeanBasis1981">(<a href="#ref-schoenHarmonicMeanBasis1981" role="doc-biblioref">Schoen 1981</a>)</span> operating at the level of dyads, not individuals. It would be incorrect to attribute the parameters to either men’s or women’s behaviors. They represent an indeterminate mix of both.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-houtStatusAutonomyTraining1984" class="csl-entry" role="listitem">
+Hout, Michael. 1984. <span>“Status, <span>Autonomy</span>, and <span>Training</span> in <span>Occupational</span> <span>Mobility</span>.”</span> <em>American Journal of Sociology</em> 89 (6): 1379–409. <a href="https://www.jstor.org/stable/2779187">https://www.jstor.org/stable/2779187</a>.
+</div>
+<div id="ref-schoenHarmonicMeanBasis1981" class="csl-entry" role="listitem">
+Schoen, Robert. 1981. <span>“The <span>Harmonic Mean</span> as the <span>Basis</span> of a <span>Realistic Two-Sex Marriage Model</span>.”</span> <em>Demography</em> 18 (2): 201–16. <a href="https://doi.org/10.2307/2061093">https://doi.org/10.2307/2061093</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/bfjarvis\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© Benjamin F. Jarvis</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="mailto:benjamin.jarvis@liu.se">
+<p>Email</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=AZvfKd8AAAAJ&amp;hl=en&amp;oi=ao">
+<p>Google Scholar</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0001-8127-4051">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/bfjarvis">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

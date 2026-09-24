@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/clogit-beyond-loglinear/index.html",
       "/blog/clogit-vs-loglinear/index.html",
       "/blog/actors-and-locations/index.html"
     ]
