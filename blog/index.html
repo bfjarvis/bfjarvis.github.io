@@ -77,9 +77,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-subtitle','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-subtitle","listing-image","listing-description","listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -181,7 +181,7 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="YXNzb3J0YXRpdmUlMjBtYXRpbmc=">assortative mating <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Y29uZGl0aW9uYWwlMjBsb2dpdA==">conditional logit <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ZGlzY3JldGUlMjBjaG9pY2UlMjBtb2RlbHM=">discrete choice models <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bG9nLWxpbmVhciUyMG1vZGVscw==">log-linear models <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bG9nbGluZWFyJTIwbW9kZWxz">loglinear models <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bWF0Y2hpbmc=">matching <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bXVsdGlub21pYWwlMjBsb2dpdA==">multinomial logit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2ltdWxhdGlvbg==">simulation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3BhdGlhbCUyMGFuYWx5c2lz">spatial analysis <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="YXNzb3J0YXRpdmUlMjBtYXRpbmc=">assortative mating <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Y29uZGl0aW9uYWwlMjBsb2dpdA==">conditional logit <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ZGlzY3JldGUlMjBjaG9pY2UlMjBtb2RlbHM=">discrete choice models <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bG9nLWxpbmVhciUyMG1vZGVscw==">log-linear models <span class="quarto-category-count">(2)</span></div><div class="category" data-category="bG9nbGluZWFyJTIwbW9kZWxz">loglinear models <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bWF0Y2hpbmc=">matching <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bXVsdGlub21pYWwlMjBsb2dpdA==">multinomial logit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2ltdWxhdGlvbg==">simulation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3BhdGlhbCUyMGFuYWx5c2lz">spatial analysis <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7">Blog</h1></header>
 
@@ -201,7 +201,7 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Y29uZGl0aW9uYWwlMjBsb2dpdCUyQ2Fzc29ydGF0aXZlJTIwbWF0aW5n" data-listing-date-sort="1789250400000" data-listing-file-modified-sort="1790249728227" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3790">
+<div class="quarto-post image-right" data-index="0" data-categories="Y29uZGl0aW9uYWwlMjBsb2dpdCUyQ2xvZy1saW5lYXIlMjBtb2RlbHMlMkNhc3NvcnRhdGl2ZSUyMG1hdGluZw==" data-listing-date-sort="1790168400000" data-listing-file-modified-sort="1790254209435" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3790">
 <div class="thumbnail">
 <p><a href="../blog/clogit-beyond-loglinear/index.html" class="no-external"></a></p><a href="../blog/clogit-beyond-loglinear/index.html" class="no-external">
 <p class="card-img-top"><img src="clogit-beyond-loglinear/index_files/figure-html/unnamed-chunk-2-1.png"  class="thumbnail-image card-img"/></p>
@@ -209,14 +209,17 @@ window.Quarto = {
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../blog/clogit-beyond-loglinear/index.html" class="no-external">What conditional logit models do that log-linear models struggle to do</a>
+<a href="../blog/clogit-beyond-loglinear/index.html" class="no-external">What Conditional Logit Models Do That Log-Linear Models Struggle to Do</a>
 </h3>
 <div class="listing-subtitle">
-<a href="../blog/clogit-beyond-loglinear/index.html" class="no-external"></a>
+<a href="../blog/clogit-beyond-loglinear/index.html" class="no-external">Discrete Choice Codels of Assortative Mating, Part 3</a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Y29uZGl0aW9uYWwlMjBsb2dpdA=='); return false;">
 conditional logit
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('bG9nLWxpbmVhciUyMG1vZGVscw=='); return false;">
+log-linear models
 </div>
 <div class="listing-category" onclick="window.quartoListingCategory('YXNzb3J0YXRpdmUlMjBtYXRpbmc='); return false;">
 assortative mating
@@ -229,7 +232,7 @@ assortative mating
 <div class="metadata">
 <a href="../blog/clogit-beyond-loglinear/index.html" class="no-external">
 <div class="listing-date">
-Sep 13, 2026
+Sep 23, 2026
 </div>
 <div class="listing-author">
 Benjamin F. Jarvis
@@ -237,7 +240,7 @@ Benjamin F. Jarvis
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="bWF0Y2hpbmclMkNjb25kaXRpb25hbCUyMGxvZ2l0JTJDbXVsdGlub21pYWwlMjBsb2dpdCUyQ2xvZ2xpbmVhciUyMG1vZGVscyUyQ2Fzc29ydGF0aXZlJTIwbWF0aW5n" data-listing-date-sort="1788246000000" data-listing-file-modified-sort="1790164292614" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="26" data-listing-word-count-sort="5177">
+<div class="quarto-post image-right" data-index="1" data-categories="bWF0Y2hpbmclMkNjb25kaXRpb25hbCUyMGxvZ2l0JTJDbXVsdGlub21pYWwlMjBsb2dpdCUyQ2xvZ2xpbmVhciUyMG1vZGVscyUyQ2Fzc29ydGF0aXZlJTIwbWF0aW5n" data-listing-date-sort="1788246000000" data-listing-file-modified-sort="1790254973991" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="26" data-listing-word-count-sort="5177">
 <div class="thumbnail">
 <p><a href="../blog/clogit-vs-loglinear/index.html" class="no-external"></a></p><a href="../blog/clogit-vs-loglinear/index.html" class="no-external">
 <p class="card-img-top"><img src="clogit-vs-loglinear/index_files/figure-html/unnamed-chunk-2-1.png"  class="thumbnail-image card-img"/></p>
@@ -245,10 +248,10 @@ Benjamin F. Jarvis
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../blog/clogit-vs-loglinear/index.html" class="no-external">Discrete Choice Models of Assortative Mating, Part 2: log-linear vs.&nbsp;multinomial vs.&nbsp;conditional logit</a>
+<a href="../blog/clogit-vs-loglinear/index.html" class="no-external">Log-Linear vs.&nbsp;Multinomial vs.&nbsp;Conditional Logit Models of Assortative Mating</a>
 </h3>
 <div class="listing-subtitle">
-<a href="../blog/clogit-vs-loglinear/index.html" class="no-external"></a>
+<a href="../blog/clogit-vs-loglinear/index.html" class="no-external">Discrete Choice Models of Assortative Mating, Part 2</a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('bWF0Y2hpbmc='); return false;">
@@ -282,7 +285,7 @@ Benjamin F. Jarvis
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="YXNzb3J0YXRpdmUlMjBtYXRpbmclMkNkaXNjcmV0ZSUyMGNob2ljZSUyMG1vZGVscyUyQ2xvZy1saW5lYXIlMjBtb2RlbHMlMkNzaW11bGF0aW9uJTJDc3BhdGlhbCUyMGFuYWx5c2lz" data-listing-date-sort="1787648400000" data-listing-file-modified-sort="1787822424942" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4491">
+<div class="quarto-post image-right" data-index="2" data-categories="YXNzb3J0YXRpdmUlMjBtYXRpbmclMkNkaXNjcmV0ZSUyMGNob2ljZSUyMG1vZGVscyUyQ2xvZy1saW5lYXIlMjBtb2RlbHMlMkNzaW11bGF0aW9uJTJDc3BhdGlhbCUyMGFuYWx5c2lz" data-listing-date-sort="1787648400000" data-listing-file-modified-sort="1790254961778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4491">
 <div class="thumbnail">
 <p><a href="../blog/actors-and-locations/index.html" class="no-external"></a></p><a href="../blog/actors-and-locations/index.html" class="no-external">
 <p class="card-img-top"><img src="actors-and-locations/index_files/figure-html/age-plot-1.png"  class="thumbnail-image card-img"/></p>
@@ -290,10 +293,10 @@ Benjamin F. Jarvis
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../blog/actors-and-locations/index.html" class="no-external">Discrete Choice Models of Assortative Mating, Part 1: Simulating a Marriage Market</a>
+<a href="../blog/actors-and-locations/index.html" class="no-external">Simulating a Spatial Marriage Market</a>
 </h3>
 <div class="listing-subtitle">
-<a href="../blog/actors-and-locations/index.html" class="no-external"></a>
+<a href="../blog/actors-and-locations/index.html" class="no-external">Discrete Choice Models of Assortative Mating, Part 1</a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('YXNzb3J0YXRpdmUlMjBtYXRpbmc='); return false;">
