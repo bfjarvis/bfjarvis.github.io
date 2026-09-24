@@ -399,7 +399,7 @@ This course engages with classical and contemporary research on inequality and s
 2026 • conditional logit, assortative mating
 :::
 
-### [What conditional logit models do that log-linear models struggle to do](blog/clogit-beyond-loglinear/)
+### [Discrete Choice Models of Assortative Mating, Part 3](blog/clogit-beyond-loglinear/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis
