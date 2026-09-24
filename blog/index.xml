@@ -6,15 +6,15 @@
       version="2.0">
 <channel>
 <title>Benjamin F. Jarvis</title>
-<link>https://bfjarvis.github.io/blog/</link>
-<atom:link href="https://bfjarvis.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
+<link>https://benjaminfjarvis.com/blog/</link>
+<atom:link href="https://benjaminfjarvis.com/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Academic website for Benjamin F. Jarvis: publications, projects, teaching, CV, and research notes.</description>
 <generator>quarto-1.6.42</generator>
 <lastBuildDate>Wed, 23 Sep 2026 13:00:00 GMT</lastBuildDate>
 <item>
   <title>What Conditional Logit Models Do That Log-Linear Models Struggle to Do</title>
   <dc:creator>Benjamin F. Jarvis</dc:creator>
-  <link>https://bfjarvis.github.io/blog/clogit-beyond-loglinear/</link>
+  <link>https://benjaminfjarvis.com/blog/clogit-beyond-loglinear/</link>
   <description><![CDATA[ 
 
 
@@ -231,7 +231,7 @@ font-style: inherit;">2</span></span>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/clogit-beyond-loglinear/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/clogit-beyond-loglinear/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -373,7 +373,7 @@ font-style: inherit;">" "</span>))</span>
 <div id="fig-contingency" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="https://bfjarvis.github.io/blog/clogit-beyond-loglinear/index_files/figure-html/fig-contingency-1.png" class="img-fluid figure-img" width="672">
+<img src="https://benjaminfjarvis.com/blog/clogit-beyond-loglinear/index_files/figure-html/fig-contingency-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Assortative mating by group: observed counts and the ratio to expected
@@ -1322,14 +1322,14 @@ Schoen, Robert. 1981. <span>“The <span>Harmonic Mean</span> as the <span>Basis
   <category>conditional logit</category>
   <category>log-linear models</category>
   <category>assortative mating</category>
-  <guid>https://bfjarvis.github.io/blog/clogit-beyond-loglinear/</guid>
+  <guid>https://benjaminfjarvis.com/blog/clogit-beyond-loglinear/</guid>
   <pubDate>Wed, 23 Sep 2026 13:00:00 GMT</pubDate>
-  <media:content url="https://bfjarvis.github.io/blog/clogit-beyond-loglinear/index_files/figure-html/fig-contingency-1.png" medium="image" type="image/png" height="103" width="144"/>
+  <media:content url="https://benjaminfjarvis.com/blog/clogit-beyond-loglinear/index_files/figure-html/fig-contingency-1.png" medium="image" type="image/png" height="103" width="144"/>
 </item>
 <item>
   <title>Log-Linear vs. Multinomial vs. Conditional Logit Models of Assortative Mating</title>
   <dc:creator>Benjamin F. Jarvis</dc:creator>
-  <link>https://bfjarvis.github.io/blog/clogit-vs-loglinear/</link>
+  <link>https://benjaminfjarvis.com/blog/clogit-vs-loglinear/</link>
   <description><![CDATA[ 
 
 
@@ -1665,7 +1665,7 @@ font-style: inherit;">2</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/clogit-vs-loglinear/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/clogit-vs-loglinear/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1899,7 +1899,7 @@ font-style: inherit;">geom_text</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/clogit-vs-loglinear/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/clogit-vs-loglinear/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2214,7 +2214,7 @@ font-style: inherit;">data =</span> clogit_data</span>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/clogit-vs-loglinear/index_files/figure-html/independence-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="https://benjaminfjarvis.com/blog/clogit-vs-loglinear/index_files/figure-html/independence-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
 <figcaption>Parameter estimates from models of independence.</figcaption>
 </figure>
 </div>
@@ -2519,7 +2519,7 @@ font-style: inherit;">data =</span> clogit_data</span>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/clogit-vs-loglinear/index_files/figure-html/saturated-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="https://benjaminfjarvis.com/blog/clogit-vs-loglinear/index_files/figure-html/saturated-parameter-plot-1.png" class="img-fluid figure-img" width="768"></p>
 <figcaption>Parameter estimates from saturated models.</figcaption>
 </figure>
 </div>
@@ -2831,13 +2831,13 @@ Logan, John A. 1983. <span>“A <span>Multivariate</span> <span>Model</span> for
   <category>multinomial logit</category>
   <category>loglinear models</category>
   <category>assortative mating</category>
-  <guid>https://bfjarvis.github.io/blog/clogit-vs-loglinear/</guid>
+  <guid>https://benjaminfjarvis.com/blog/clogit-vs-loglinear/</guid>
   <pubDate>Tue, 01 Sep 2026 07:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Simulating a Spatial Marriage Market</title>
   <dc:creator>Benjamin F. Jarvis</dc:creator>
-  <link>https://bfjarvis.github.io/blog/actors-and-locations/</link>
+  <link>https://benjaminfjarvis.com/blog/actors-and-locations/</link>
   <description><![CDATA[ 
 
 
@@ -3305,7 +3305,7 @@ font-style: inherit;">12</span>)</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/age-plot-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/age-plot-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>Groups differ in mean age, but the simulated age distributions overlap.</figcaption>
 </figure>
 </div>
@@ -3510,7 +3510,7 @@ font-style: inherit;">2</span>)</span>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/attractor-plot-1.png" class="img-fluid figure-img" style="width:86.0%"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/attractor-plot-1.png" class="img-fluid figure-img" style="width:86.0%"></p>
 <figcaption>Group-specific attractors and the central youth attractor.</figcaption>
 </figure>
 </div>
@@ -4102,7 +4102,7 @@ font-style: inherit;">2</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/assigned-location-plot-1.png" class="img-fluid figure-img" style="width:86.0%"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/assigned-location-plot-1.png" class="img-fluid figure-img" style="width:86.0%"></p>
 <figcaption>Assigned locations. Point size increases with age.</figcaption>
 </figure>
 </div>
@@ -4350,7 +4350,7 @@ font-style: inherit;">group"</span>)</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/union-utility-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/union-utility-plot-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Simulated match utilities by man and woman’s group membership.</figcaption>
 </figure>
 </div>
@@ -4534,7 +4534,7 @@ font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/match-vs-no-distance-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/match-vs-no-distance-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Distance to opposite sex in matched vs.&nbsp;non-matched pairs</figcaption>
 </figure>
 </div>
@@ -4573,7 +4573,7 @@ font-style: inherit;">theme_minimal</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/match-vs-no-agegap-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/match-vs-no-agegap-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Absolute age difference from opposite sex in matched vs.&nbsp;non-matched pairs</figcaption>
 </figure>
 </div>
@@ -5828,7 +5828,7 @@ font-style: inherit;">2</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bfjarvis.github.io/blog/actors-and-locations/index_files/figure-html/wrapper-example-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://benjaminfjarvis.com/blog/actors-and-locations/index_files/figure-html/wrapper-example-plot-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Example marriage market generated by wrapper function.</figcaption>
 </figure>
 </div>
@@ -5968,7 +5968,7 @@ McFadden, Daniel. 1974. <span>“Conditional <span>Logit</span> <span>Analysis</
   <category>log-linear models</category>
   <category>simulation</category>
   <category>spatial analysis</category>
-  <guid>https://bfjarvis.github.io/blog/actors-and-locations/</guid>
+  <guid>https://benjaminfjarvis.com/blog/actors-and-locations/</guid>
   <pubDate>Tue, 25 Aug 2026 09:00:00 GMT</pubDate>
 </item>
 </channel>
