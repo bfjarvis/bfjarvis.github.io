@@ -1,11 +1,11 @@
 ---
 title: "What Conditional Logit Models Do That Log-Linear Models Struggle to Do"
-subtitle: "Discrete Choice Codels of Assortative Mating, Part 3"
+subtitle: "Discrete Choice Models of Assortative Mating, Part 3"
 description: "I show how a conditional logit model can be used to model matching on person-to-person dyadic covariates, and the advantage of clogit compared to the log-linear analysis of contingency tables. The third in a series about using conditional logit models for modeling assortative mating and mobility"
 date: "2026-09-23T15:00:00+02:00"
 author: "Benjamin F. Jarvis"
 
-image: fig-contingency-1.png
+image: ./index_files/figure-html/fig-contingency-1.png
 image-alt: "Heatmap comparing observed and expected unions across groups"
 
 metadata-files:
