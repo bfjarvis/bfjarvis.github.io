@@ -1,7 +1,13 @@
 toc: true
 toc-location: right
 link-citations: true
+
 execute:
   message: false
   warning: false
   freeze: auto
+
+website:
+  open-graph: true
+  twitter-card:
+    card-style: summary_large_image

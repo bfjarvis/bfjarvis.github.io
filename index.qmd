@@ -439,7 +439,7 @@ The second note in the series. Here I estimate and compare parameter estimates f
 2026 • assortative mating, discrete choice models, log-linear models, simulation, spatial analysis
 :::
 
-### [Discrete Choice Models of Assortative Mating, Part 1](blog/actors-and-locations/)
+### [Simulating a Spatial Marriage Market](blog/actors-and-locations/)
 
 ::: {.content-card-byline}
 Benjamin F. Jarvis

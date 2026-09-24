@@ -5,6 +5,9 @@ description: "I show how a conditional logit model can be used to model matching
 date: "2026-09-23T15:00:00+02:00"
 author: "Benjamin F. Jarvis"
 
+image: fig-contingency-1.png
+image-alt: "Heatmap comparing observed and expected unions across groups"
+
 metadata-files:
   - ../_post-defaults.yml
 
