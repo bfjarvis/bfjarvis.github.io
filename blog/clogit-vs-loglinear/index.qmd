@@ -90,7 +90,7 @@ $$
 \log(\mu_{fm}) = \lambda + \alpha_f + \gamma_m + \theta_{fm}.
 $$
 
-Here, $\lambda$ represents a grand mean, while $\alpha_f$ and $\gamma_m$ capture the relative sizes of the female and male groups, a.k.a., their marginal distributions. These marginal distribution parameters are essentially nuisance parameters, instrumental in generating a plausible null model, but otherwise of little instrinsic interest. Instead, analytical attention is usually focused on the parameters represented by $\theta_{fm}$. These parameters capture the association between women's and men's groups. They represent the deviations of particular cells from an implicit null model of random mating or categorical independence. The social science of mobility table analysis largely centers on what specifications of $\theta_{fm}$ provide the closest and most parsimonious fit to the data.
+Here, $\lambda$ represents a grand mean, while $\alpha_f$ and $\gamma_m$ capture the relative sizes of the female and male groups, a.k.a., their marginal distributions. These marginal distribution parameters are essentially nuisance parameters, instrumental in generating a plausible null model, but otherwise of little intrinsic interest. Instead, analytical attention is usually focused on the parameters represented by $\theta_{fm}$. These parameters capture the association between women's and men's groups. They represent the deviations of particular cells from an implicit null model of random mating or categorical independence. The social science of mobility table analysis largely centers on what specifications of $\theta_{fm}$ provide the closest and most parsimonious fit to the data.
 
 This count model can be reworked into a set of conditional probabilities, adopting either the man's or the woman's perspective and conditioning on his or her group membership. For example, below I condition on the woman's group membership: Given a woman belonging to group $f$, the probability that she will be observed to be in a union with a man of group $m$ is:
 
@@ -166,13 +166,13 @@ $$
 \quad \text{and} \quad
 \theta_{fm} = \delta_{fm}.
 $$
-Under this paramterization, $\theta_{fm}$ and $\delta_{fm}$ would be equivalent right off the bat. But the group-specific intercepts from the two models, $\gamma_m$ and $\eta_m$, would differ by $\log(N_m)$. But a simple reshuffling shows a quick fix: 
+Under this parameterization, $\theta_{fm}$ and $\delta_{fm}$ would be equivalent right off the bat. But the group-specific intercepts from the two models, $\gamma_m$ and $\eta_m$, would differ by $\log(N_m)$. But a simple reshuffling shows a quick fix: 
 
 $$
 \eta_m = \gamma_m - \log N_m
 $$
 
-This means that specifying $-\log(N_m)$ as an offest when estimating the conditional logit model will lead the group-specific intercepts to match $\gamma_m$ directly. In other words, in the model:
+This means that specifying $-\log(N_m)$ as an offset when estimating the conditional logit model will lead the group-specific intercepts to match $\gamma_m$ directly. In other words, in the model:
 
 $$
 P(j|i) = \frac{\exp \left(\gamma_{m(j)} + \theta_{f(i)m(j)} - \log N_{m(j)}\right)}
